@@ -1,0 +1,1282 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Potenzen & Wurzeln – Klasse 9</title>
+  <style>
+    :root {
+      --primary: #1a3a5c;
+      --accent: #2e7dd1;
+      --accent2: #e8761a;
+      --green: #27ae60;
+      --red: #e74c3c;
+      --bg: #f0f4f8;
+      --card: #ffffff;
+      --border: #d1dbe8;
+      --text: #1a2a3a;
+      --muted: #6b7c93;
+      --radius: 12px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* ── HEADER ── */
+    header {
+      background: linear-gradient(135deg, var(--primary) 0%, #2563a8 100%);
+      color: white;
+      padding: 28px 24px 20px;
+      text-align: center;
+    }
+    header h1 { font-size: 2rem; font-weight: 700; letter-spacing: -0.5px; }
+    header p  { margin-top: 6px; opacity: .85; font-size: .95rem; }
+
+    /* ── NAV TABS ── */
+    nav {
+      display: flex;
+      justify-content: center;
+      gap: 4px;
+      background: var(--primary);
+      padding: 0 16px 14px;
+      flex-wrap: wrap;
+    }
+    nav button {
+      background: rgba(255,255,255,.15);
+      border: none;
+      color: white;
+      padding: 8px 22px;
+      border-radius: 30px;
+      font-size: .9rem;
+      cursor: pointer;
+      transition: background .2s;
+    }
+    nav button:hover  { background: rgba(255,255,255,.28); }
+    nav button.active { background: white; color: var(--primary); font-weight: 600; }
+
+    /* ── MAIN ── */
+    main { max-width: 960px; margin: 0 auto; padding: 28px 16px 60px; }
+
+    .tab { display: none; }
+    .tab.active { display: block; }
+
+    /* ── SECTION TITLES ── */
+    .section-title {
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 18px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .section-title span {
+      background: var(--accent);
+      color: white;
+      border-radius: 8px;
+      width: 32px; height: 32px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: .85rem;
+    }
+
+    /* ── LAW CARDS ── */
+    .laws-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 16px;
+      margin-bottom: 36px;
+    }
+    .law-card {
+      background: var(--card);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px 20px;
+      cursor: pointer;
+      transition: transform .15s, box-shadow .15s, border-color .15s;
+    }
+    .law-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 24px rgba(0,0,0,.1);
+      border-color: var(--accent);
+    }
+    .law-card.expanded { border-color: var(--accent); }
+    .law-name {
+      font-size: .8rem;
+      text-transform: uppercase;
+      letter-spacing: .6px;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+    .law-formula {
+      font-size: 1.35rem;
+      font-weight: 600;
+      color: var(--primary);
+      font-family: 'Cambria Math', 'Georgia', serif;
+      margin-bottom: 4px;
+    }
+    .law-cond {
+      font-size: .78rem;
+      color: var(--muted);
+      margin-bottom: 10px;
+    }
+    .law-example {
+      display: none;
+      margin-top: 12px;
+      background: #f0f7ff;
+      border-radius: 8px;
+      padding: 12px 14px;
+      border-left: 3px solid var(--accent);
+      font-size: .88rem;
+    }
+    .law-card.expanded .law-example { display: block; }
+    .law-example .ex-title { font-weight: 600; margin-bottom: 6px; color: var(--accent); font-size: .8rem; text-transform: uppercase; }
+    .law-example .ex-line { margin: 3px 0; }
+
+    /* ── INTERACTIVE EXPLORER ── */
+    .explorer-card {
+      background: var(--card);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      margin-bottom: 24px;
+    }
+    .explorer-card h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 16px;
+    }
+    .input-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+    .input-group {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .input-group label { font-size: .78rem; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: .4px; }
+    .input-group input, .input-group select {
+      padding: 8px 12px;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      font-size: 1rem;
+      width: 80px;
+      color: var(--text);
+      background: white;
+      transition: border-color .2s;
+    }
+    .input-group input:focus, .input-group select:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+    .input-group select { width: 200px; }
+
+    .calc-btn {
+      background: var(--accent);
+      color: white;
+      border: none;
+      padding: 9px 22px;
+      border-radius: 8px;
+      font-size: .92rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background .2s, transform .1s;
+      margin-top: 16px;
+    }
+    .calc-btn:hover { background: #1a6bbf; }
+    .calc-btn:active { transform: scale(.97); }
+
+    .result-box {
+      background: linear-gradient(135deg, #f0f7ff, #e8f4fd);
+      border: 1.5px solid #c5ddf7;
+      border-radius: 10px;
+      padding: 16px 20px;
+      margin-top: 14px;
+      min-height: 56px;
+    }
+    .result-box .step { margin: 4px 0; font-size: .95rem; }
+    .result-box .step .arrow { color: var(--accent); font-weight: 700; margin: 0 6px; }
+    .result-box .final {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin-top: 8px;
+    }
+
+    /* ── NUMBER LINE VISUALIZER ── */
+    .viz-wrap {
+      overflow-x: auto;
+      margin-top: 12px;
+    }
+    canvas#powerViz {
+      border-radius: 8px;
+      background: #f9fbff;
+      display: block;
+      max-width: 100%;
+    }
+
+    /* ── QUIZ ── */
+    .quiz-controls {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+    }
+    .quiz-controls select {
+      padding: 9px 14px;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      font-size: .92rem;
+      color: var(--text);
+      background: white;
+      cursor: pointer;
+    }
+    .gen-btn {
+      background: var(--accent2);
+      color: white;
+      border: none;
+      padding: 9px 22px;
+      border-radius: 8px;
+      font-size: .92rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background .2s;
+    }
+    .gen-btn:hover { background: #c9620e; }
+
+    .quiz-progress {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+    .progress-bar-wrap {
+      flex: 1;
+      height: 8px;
+      background: var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .progress-bar-fill {
+      height: 100%;
+      background: var(--green);
+      border-radius: 8px;
+      transition: width .4s ease;
+    }
+    .score-badge {
+      font-weight: 700;
+      color: var(--primary);
+      font-size: .92rem;
+      white-space: nowrap;
+    }
+
+    #quizContainer { display: none; }
+    #quizContainer.visible { display: block; }
+
+    .question-card {
+      background: var(--card);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      margin-bottom: 16px;
+      transition: border-color .2s;
+    }
+    .question-card.correct  { border-color: var(--green); background: #f0fbf4; }
+    .question-card.wrong    { border-color: var(--red);   background: #fff5f5; }
+
+    .q-meta {
+      font-size: .75rem;
+      text-transform: uppercase;
+      letter-spacing: .6px;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+    .q-text {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--primary);
+      margin-bottom: 16px;
+      font-family: 'Cambria Math', Georgia, serif;
+    }
+    .q-input-wrap {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+    .q-input {
+      padding: 8px 14px;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      font-size: 1rem;
+      width: 120px;
+      transition: border-color .2s;
+    }
+    .q-input:focus { outline: none; border-color: var(--accent); }
+    .q-input.correct { border-color: var(--green); background: #f0fbf4; }
+    .q-input.wrong   { border-color: var(--red);   background: #fff5f5; }
+
+    .check-btn {
+      background: var(--accent);
+      color: white;
+      border: none;
+      padding: 8px 18px;
+      border-radius: 8px;
+      font-size: .88rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background .2s;
+    }
+    .check-btn:hover   { background: #1a6bbf; }
+    .check-btn:disabled { background: #a0b4cc; cursor: default; }
+
+    .q-feedback {
+      margin-top: 10px;
+      font-size: .88rem;
+      font-weight: 600;
+      display: none;
+    }
+    .q-feedback.show { display: block; }
+    .q-feedback.ok  { color: var(--green); }
+    .q-feedback.err { color: var(--red); }
+
+    .q-hint {
+      margin-top: 8px;
+      font-size: .82rem;
+      color: var(--muted);
+      display: none;
+    }
+    .q-hint.show { display: block; }
+
+    /* Multiple choice */
+    .choices {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 6px;
+    }
+    .choice-btn {
+      padding: 8px 18px;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      background: white;
+      font-size: .95rem;
+      cursor: pointer;
+      transition: border-color .15s, background .15s;
+    }
+    .choice-btn:hover          { border-color: var(--accent); background: #f0f7ff; }
+    .choice-btn.selected-ok    { border-color: var(--green); background: #e6f9ee; color: var(--green); font-weight: 700; }
+    .choice-btn.selected-err   { border-color: var(--red);   background: #ffe6e6; color: var(--red);   font-weight: 700; }
+    .choice-btn.reveal-correct { border-color: var(--green); background: #e6f9ee; }
+    .choice-btn:disabled       { cursor: default; }
+
+    /* ── SUMMARY ── */
+    #quizSummary {
+      display: none;
+      background: var(--card);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius);
+      padding: 32px;
+      text-align: center;
+      margin-bottom: 24px;
+    }
+    #quizSummary.show { display: block; }
+    #quizSummary .big-score { font-size: 3rem; font-weight: 800; color: var(--primary); }
+    #quizSummary .sub { font-size: 1rem; color: var(--muted); margin-top: 4px; }
+    #quizSummary .emoji { font-size: 2.5rem; margin-bottom: 12px; }
+
+    /* ── REFERENCE CARD ── */
+    .ref-table {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--card);
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0,0,0,.06);
+    }
+    .ref-table th {
+      background: var(--primary);
+      color: white;
+      padding: 10px 14px;
+      text-align: left;
+      font-size: .85rem;
+    }
+    .ref-table td {
+      padding: 11px 14px;
+      border-bottom: 1px solid var(--border);
+      font-size: .9rem;
+    }
+    .ref-table tr:last-child td { border-bottom: none; }
+    .ref-table tr:nth-child(even) td { background: #f6f9fd; }
+    .ref-table .formula-cell { font-family: 'Cambria Math', Georgia, serif; font-size: 1rem; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 600px) {
+      header h1 { font-size: 1.5rem; }
+      .laws-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Potenzen &amp; Wurzeln</h1>
+  <p>Interaktive Lernseite &nbsp;·&nbsp; Mathematik Klasse 9</p>
+</header>
+
+<nav>
+  <button class="active" onclick="switchTab('uebersicht', this)">📋 Gesetze</button>
+  <button onclick="switchTab('erkunden', this)">🔢 Erkunden</button>
+  <button onclick="switchTab('quiz', this)">✏️ Quiz</button>
+  <button onclick="switchTab('referenz', this)">📖 Referenz</button>
+</nav>
+
+<main>
+
+  <!-- ══════════════ TAB: ÜBERSICHT ══════════════ -->
+  <div id="tab-uebersicht" class="tab active">
+
+    <p class="section-title">
+      <span>1</span> Alle Potenzgesetze &nbsp;<small style="font-size:.75rem;font-weight:400;color:var(--muted)">(Karte anklicken für Beispiel)</small>
+    </p>
+
+    <div class="laws-grid" id="lawsGrid"></div>
+
+    <p class="section-title" style="margin-top:10px;">
+      <span>2</span> Was ist eine Potenz?
+    </p>
+    <div class="explorer-card">
+      <div style="display:flex;flex-wrap:wrap;gap:40px;align-items:center;">
+        <div>
+          <p style="font-size:.88rem;color:var(--muted);margin-bottom:14px;">Tippe eine Basis und einen Exponenten ein:</p>
+          <div class="input-row">
+            <div class="input-group">
+              <label>Basis</label>
+              <input type="number" id="visBase" value="3" min="-10" max="10">
+            </div>
+            <div style="font-size:1.8rem;font-weight:700;color:var(--muted);padding-top:14px;">^</div>
+            <div class="input-group">
+              <label>Exponent</label>
+              <input type="number" id="visExp" value="4" min="-5" max="8">
+            </div>
+            <button class="calc-btn" onclick="updateViz()" style="margin-top:18px;">Visualisieren</button>
+          </div>
+          <div id="vizResult" class="result-box"></div>
+        </div>
+        <div class="viz-wrap">
+          <canvas id="powerViz" width="400" height="160"></canvas>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ══════════════ TAB: ERKUNDEN ══════════════ -->
+  <div id="tab-erkunden" class="tab">
+
+    <p class="section-title"><span>🔬</span> Gesetze interaktiv erkunden</p>
+
+    <div class="explorer-card">
+      <h3>Wähle ein Gesetz und probiere eigene Zahlen aus</h3>
+      <div class="input-row">
+        <div class="input-group">
+          <label>Gesetz</label>
+          <select id="lawSelect" onchange="lawChanged()" style="width:260px;">
+            <option value="mult">Multiplikation (gleiche Basis)</option>
+            <option value="div">Division (gleiche Basis)</option>
+            <option value="potpot">Potenz einer Potenz</option>
+            <option value="prodbasis">Produkt als Basis</option>
+            <option value="quotbasis">Quotient als Basis</option>
+            <option value="exp0">Exponent 0</option>
+            <option value="negexp">Negativer Exponent</option>
+            <option value="fracexp">Gebrochener Exponent (Wurzel)</option>
+          </select>
+        </div>
+      </div>
+
+      <div id="lawInputs"></div>
+      <button class="calc-btn" onclick="calculateLaw()">Berechnen &amp; Erklären</button>
+      <div id="lawResult" class="result-box" style="display:none;margin-top:16px;"></div>
+    </div>
+
+  </div>
+
+  <!-- ══════════════ TAB: QUIZ ══════════════ -->
+  <div id="tab-quiz" class="tab">
+
+    <p class="section-title"><span>✏</span> Übungsaufgaben</p>
+
+    <div class="quiz-controls">
+      <select id="quizDifficulty">
+        <option value="easy">Einfach (Klasse 9 – Anfang)</option>
+        <option value="medium" selected>Mittel (Klasse 9)</option>
+        <option value="hard">Schwer (Klasse 9 – Ende)</option>
+      </select>
+      <select id="quizTopic">
+        <option value="all">Alle Themen</option>
+        <option value="mult">Multiplikation / Division</option>
+        <option value="potenz">Potenz einer Potenz</option>
+        <option value="spezial">Exp. 0 &amp; negativ</option>
+        <option value="wurzel">Wurzeln &amp; gebrochene Exp.</option>
+      </select>
+      <select id="quizCount">
+        <option value="5">5 Aufgaben</option>
+        <option value="8" selected>8 Aufgaben</option>
+        <option value="12">12 Aufgaben</option>
+      </select>
+      <button class="gen-btn" onclick="generateQuiz()">Neues Quiz starten</button>
+    </div>
+
+    <div id="quizSummary">
+      <div class="emoji" id="summaryEmoji">🎉</div>
+      <div class="big-score" id="summaryScore">—</div>
+      <div class="sub" id="summaryText"></div>
+      <button class="gen-btn" onclick="generateQuiz()" style="margin-top:20px;">Nochmal versuchen</button>
+    </div>
+
+    <div class="quiz-progress" id="quizProgress" style="display:none;">
+      <div class="score-badge" id="scoreDisplay">0 / 0</div>
+      <div class="progress-bar-wrap">
+        <div class="progress-bar-fill" id="progressFill" style="width:0%"></div>
+      </div>
+      <div style="font-size:.82rem;color:var(--muted);" id="questionsLeft"></div>
+    </div>
+
+    <div id="quizContainer"></div>
+
+  </div>
+
+  <!-- ══════════════ TAB: REFERENZ ══════════════ -->
+  <div id="tab-referenz" class="tab">
+    <p class="section-title"><span>📖</span> Schnellübersicht aller Potenzgesetze</p>
+    <table class="ref-table">
+      <thead>
+        <tr><th>Gesetz</th><th>Formel</th><th>Bedingung</th><th>Beispiel</th></tr>
+      </thead>
+      <tbody id="refTableBody"></tbody>
+    </table>
+    <div style="margin-top:24px;" class="explorer-card">
+      <h3>Merkhilfe: Potenz = wiederholte Multiplikation</h3>
+      <p style="font-size:.92rem;line-height:1.7;margin-top:8px;">
+        <strong>a<sup>n</sup></strong> bedeutet: Die Zahl <em>a</em> wird <em>n</em>-mal mit sich selbst multipliziert.<br>
+        Beispiel: &nbsp;2<sup>5</sup> = 2 · 2 · 2 · 2 · 2 = <strong>32</strong><br><br>
+        Die <strong>Basis</strong> ist die Zahl, die multipliziert wird.<br>
+        Der <strong>Exponent</strong> gibt an, wie oft multipliziert wird.
+      </p>
+    </div>
+  </div>
+
+</main>
+
+<script>
+// ════════════════════════════════════════════
+//  DATA
+// ════════════════════════════════════════════
+const LAWS = [
+  {
+    id: 'mult',
+    name: 'Multiplikation (gl. Basis)',
+    formula: 'aᵐ · aⁿ = aᵐ⁺ⁿ',
+    formulaHTML: 'a<sup>m</sup> · a<sup>n</sup> = a<sup>m+n</sup>',
+    cond: 'a ≠ 0',
+    desc: 'Beim Multiplizieren von Potenzen mit gleicher Basis werden die Exponenten addiert.',
+    examples: [
+      '2³ · 2⁴ = 2⁷ = 128',
+      '3² · 3³ = 3⁵ = 243',
+      'x⁵ · x² = x⁷',
+    ],
+    refFormula: 'a<sup>m</sup> · a<sup>n</sup> = a<sup>m+n</sup>',
+    refExample: '2³ · 2⁴ = 2⁷ = 128',
+  },
+  {
+    id: 'div',
+    name: 'Division (gl. Basis)',
+    formula: 'aᵐ : aⁿ = aᵐ⁻ⁿ',
+    formulaHTML: 'a<sup>m</sup> : a<sup>n</sup> = a<sup>m−n</sup>',
+    cond: 'a ≠ 0',
+    desc: 'Beim Dividieren von Potenzen mit gleicher Basis werden die Exponenten subtrahiert.',
+    examples: [
+      '2⁶ : 2² = 2⁴ = 16',
+      '5⁵ : 5³ = 5² = 25',
+      'x⁷ : x³ = x⁴',
+    ],
+    refFormula: 'a<sup>m</sup> : a<sup>n</sup> = a<sup>m−n</sup>',
+    refExample: '3⁵ : 3² = 3³ = 27',
+  },
+  {
+    id: 'potpot',
+    name: 'Potenz einer Potenz',
+    formula: '(aᵐ)ⁿ = aᵐ·ⁿ',
+    formulaHTML: '(a<sup>m</sup>)<sup>n</sup> = a<sup>m·n</sup>',
+    cond: '–',
+    desc: 'Eine Potenz, die nochmals potenziert wird: Exponenten werden multipliziert.',
+    examples: [
+      '(2³)² = 2⁶ = 64',
+      '(3²)⁴ = 3⁸ = 6561',
+      '(x⁵)³ = x¹⁵',
+    ],
+    refFormula: '(a<sup>m</sup>)<sup>n</sup> = a<sup>m·n</sup>',
+    refExample: '(2³)² = 2⁶ = 64',
+  },
+  {
+    id: 'prodbasis',
+    name: 'Produkt als Basis',
+    formula: 'aⁿ · bⁿ = (a·b)ⁿ',
+    formulaHTML: 'a<sup>n</sup> · b<sup>n</sup> = (a·b)<sup>n</sup>',
+    cond: '–',
+    desc: 'Potenzen mit gleichem Exponenten aber verschiedener Basis: Basen werden multipliziert.',
+    examples: [
+      '2³ · 4³ = (2·4)³ = 8³ = 512',
+      '3² · 5² = 15² = 225',
+      'aⁿ · bⁿ = (ab)ⁿ',
+    ],
+    refFormula: 'a<sup>n</sup> · b<sup>n</sup> = (a·b)<sup>n</sup>',
+    refExample: '2³ · 4³ = 8³ = 512',
+  },
+  {
+    id: 'quotbasis',
+    name: 'Quotient als Basis',
+    formula: 'aⁿ : bⁿ = (a/b)ⁿ',
+    formulaHTML: 'a<sup>n</sup> : b<sup>n</sup> = (a/b)<sup>n</sup>',
+    cond: 'b ≠ 0',
+    desc: 'Potenzen mit gleichem Exponenten dividieren: Basen werden dividiert.',
+    examples: [
+      '6³ : 3³ = (6/3)³ = 2³ = 8',
+      '10² : 5² = 2² = 4',
+      'aⁿ : bⁿ = (a/b)ⁿ',
+    ],
+    refFormula: 'a<sup>n</sup> : b<sup>n</sup> = (a/b)<sup>n</sup>',
+    refExample: '6³ : 3³ = 2³ = 8',
+  },
+  {
+    id: 'exp0',
+    name: 'Exponent 0',
+    formula: 'a⁰ = 1',
+    formulaHTML: 'a<sup>0</sup> = 1',
+    cond: 'a ≠ 0',
+    desc: 'Jede Zahl (außer 0) hoch 0 ergibt immer 1.',
+    examples: [
+      '5⁰ = 1',
+      '(-3)⁰ = 1',
+      '1000⁰ = 1',
+    ],
+    refFormula: 'a<sup>0</sup> = 1',
+    refExample: '5⁰ = 1',
+  },
+  {
+    id: 'negexp',
+    name: 'Negativer Exponent',
+    formula: 'a⁻ⁿ = 1 / aⁿ',
+    formulaHTML: 'a<sup>−n</sup> = 1 / a<sup>n</sup>',
+    cond: 'a ≠ 0',
+    desc: 'Ein negativer Exponent bedeutet: Kehrwert bilden, dann positive Potenz.',
+    examples: [
+      '2⁻³ = 1/2³ = 1/8',
+      '5⁻² = 1/25',
+      '10⁻¹ = 1/10 = 0,1',
+    ],
+    refFormula: 'a<sup>−n</sup> = 1 / a<sup>n</sup>',
+    refExample: '2⁻³ = 1/8',
+  },
+  {
+    id: 'fracexp',
+    name: 'Gebrochener Exponent',
+    formula: 'aᵐ/ⁿ = ⁿ√(aᵐ)',
+    formulaHTML: 'a<sup>m/n</sup> = <sup>n</sup>√(a<sup>m</sup>)',
+    cond: 'a ≥ 0',
+    desc: 'Ein gebrochener Exponent ist eine Wurzel. Der Nenner ist der Wurzelindex.',
+    examples: [
+      '4^(1/2) = √4 = 2',
+      '8^(1/3) = ³√8 = 2',
+      '9^(3/2) = (√9)³ = 27',
+    ],
+    refFormula: 'a<sup>m/n</sup> = <sup>n</sup>√(a<sup>m</sup>)',
+    refExample: '4^(1/2) = √4 = 2',
+  },
+];
+
+// ════════════════════════════════════════════
+//  TAB SWITCHING
+// ════════════════════════════════════════════
+function switchTab(id, btn) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  btn.classList.add('active');
+}
+
+// ════════════════════════════════════════════
+//  LAW CARDS
+// ════════════════════════════════════════════
+function buildLawCards() {
+  const grid = document.getElementById('lawsGrid');
+  LAWS.forEach(law => {
+    const card = document.createElement('div');
+    card.className = 'law-card';
+    card.innerHTML = `
+      <div class="law-name">${law.name}</div>
+      <div class="law-formula">${law.formulaHTML}</div>
+      <div class="law-cond">Bedingung: ${law.cond}</div>
+      <div class="law-example">
+        <div class="ex-title">💡 ${law.desc}</div>
+        ${law.examples.map(e => `<div class="ex-line">• ${e}</div>`).join('')}
+      </div>
+    `;
+    card.addEventListener('click', () => card.classList.toggle('expanded'));
+    grid.appendChild(card);
+  });
+}
+
+// ════════════════════════════════════════════
+//  REFERENCE TABLE
+// ════════════════════════════════════════════
+function buildRefTable() {
+  const tbody = document.getElementById('refTableBody');
+  LAWS.forEach(law => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${law.name}</td>
+      <td class="formula-cell">${law.refFormula}</td>
+      <td>${law.cond}</td>
+      <td style="font-family:'Cambria Math',Georgia,serif;">${law.refExample}</td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+// ════════════════════════════════════════════
+//  VISUALIZATION
+// ════════════════════════════════════════════
+function updateViz() {
+  const base = parseInt(document.getElementById('visBase').value) || 2;
+  const exp  = parseInt(document.getElementById('visExp').value);
+  const result = Math.pow(base, exp);
+  const resultBox = document.getElementById('vizResult');
+
+  let steps = '';
+  if (exp > 0 && exp <= 6 && Math.abs(base) <= 10) {
+    const parts = Array.from({length: exp}, () => base).join(' · ');
+    steps = `<div class="step">${base}<sup>${exp}</sup> = ${parts} = <strong>${result}</strong></div>`;
+  } else {
+    steps = `<div class="step">${base}<sup>${exp}</sup> = <strong>${result}</strong></div>`;
+  }
+  resultBox.innerHTML = steps;
+  drawBarChart(base, exp);
+}
+
+function drawBarChart(base, exp) {
+  const canvas = document.getElementById('powerViz');
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+  ctx.clearRect(0, 0, W, H);
+
+  if (base === 0 || exp > 8 || exp < 0) return;
+
+  const max = exp;
+  const values = Array.from({length: max + 1}, (_, i) => Math.pow(base, i));
+  const maxVal = Math.max(...values.map(Math.abs), 1);
+
+  const barW = Math.min(40, (W - 60) / (max + 1) - 6);
+  const startX = 50;
+  const baseY = H - 30;
+  const scaleH = H - 60;
+
+  ctx.strokeStyle = '#d1dbe8';
+  ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.moveTo(40, 10); ctx.lineTo(40, baseY); ctx.lineTo(W - 10, baseY); ctx.stroke();
+
+  const colors = ['#2e7dd1','#1a6bbf','#1258a8','#0d4690','#e8761a','#c9620e','#a84f0b','#8a3f08'];
+
+  values.forEach((v, i) => {
+    const x = startX + i * (barW + 6);
+    const h = Math.min(Math.abs(v) / maxVal * scaleH, scaleH);
+    const y = baseY - h;
+
+    ctx.fillStyle = colors[i % colors.length];
+    ctx.beginPath();
+    ctx.roundRect(x, y, barW, h, [4, 4, 0, 0]);
+    ctx.fill();
+
+    ctx.fillStyle = '#1a2a3a';
+    ctx.font = '11px Segoe UI';
+    ctx.textAlign = 'center';
+    ctx.fillText(`${base}^${i}`, x + barW / 2, baseY + 15);
+
+    ctx.fillStyle = '#555';
+    const label = Math.abs(v) > 9999 ? v.toExponential(1) : v;
+    ctx.fillText(label, x + barW / 2, y - 4);
+  });
+}
+
+// ════════════════════════════════════════════
+//  EXPLORER
+// ════════════════════════════════════════════
+const LAW_INPUTS = {
+  mult:      ['Basis (a)', 'Exponent m', 'Exponent n'],
+  div:       ['Basis (a)', 'Exponent m', 'Exponent n (m > n)'],
+  potpot:    ['Basis (a)', 'Innerer Exponent (m)', 'Äußerer Exponent (n)'],
+  prodbasis: ['Basis a', 'Basis b', 'Exponent n'],
+  quotbasis: ['Basis a', 'Basis b (b ≠ 0)', 'Exponent n'],
+  exp0:      ['Basis (a ≠ 0)'],
+  negexp:    ['Basis (a)', 'Exponent n (positiv eingeben)'],
+  fracexp:   ['Basis (a ≥ 0)', 'Zähler (m)', 'Nenner (n)'],
+};
+const LAW_DEFAULTS = {
+  mult:      [2, 3, 4],
+  div:       [2, 6, 2],
+  potpot:    [2, 3, 2],
+  prodbasis: [2, 3, 2],
+  quotbasis: [6, 3, 2],
+  exp0:      [5],
+  negexp:    [2, 3],
+  fracexp:   [8, 1, 3],
+};
+
+function lawChanged() {
+  const law = document.getElementById('lawSelect').value;
+  const labels = LAW_INPUTS[law];
+  const defaults = LAW_DEFAULTS[law];
+  const wrap = document.getElementById('lawInputs');
+  wrap.innerHTML = '<div class="input-row">' + labels.map((l, i) =>
+    `<div class="input-group">
+      <label>${l}</label>
+      <input type="number" id="li${i}" value="${defaults[i]}" style="width:70px;">
+    </div>`
+  ).join('') + '</div>';
+  document.getElementById('lawResult').style.display = 'none';
+}
+
+function getInput(i) { return parseFloat(document.getElementById('li' + i)?.value) || 0; }
+
+function calculateLaw() {
+  const law = document.getElementById('lawSelect').value;
+  const res = document.getElementById('lawResult');
+  res.style.display = 'block';
+  let html = '';
+
+  switch(law) {
+    case 'mult': {
+      const [a, m, n] = [getInput(0), getInput(1), getInput(2)];
+      const left1 = Math.pow(a, m), left2 = Math.pow(a, n);
+      const result = Math.pow(a, m + n);
+      html = `
+        <div class="step">Gesetz: a<sup>m</sup> · a<sup>n</sup> = a<sup>m+n</sup></div>
+        <div class="step">${a}<sup>${m}</sup> · ${a}<sup>${n}</sup>
+          <span class="arrow">→</span> ${a}<sup>${m}+${n}</sup>
+          <span class="arrow">→</span> ${a}<sup>${m+n}</sup></div>
+        <div class="step">Probe: ${left1} · ${left2} = ${left1 * left2}</div>
+        <div class="final">Ergebnis: ${a}<sup>${m+n}</sup> = <strong>${result}</strong></div>`;
+      break;
+    }
+    case 'div': {
+      const [a, m, n] = [getInput(0), getInput(1), getInput(2)];
+      const left1 = Math.pow(a, m), left2 = Math.pow(a, n);
+      const result = Math.pow(a, m - n);
+      html = `
+        <div class="step">Gesetz: a<sup>m</sup> : a<sup>n</sup> = a<sup>m−n</sup></div>
+        <div class="step">${a}<sup>${m}</sup> : ${a}<sup>${n}</sup>
+          <span class="arrow">→</span> ${a}<sup>${m}−${n}</sup>
+          <span class="arrow">→</span> ${a}<sup>${m-n}</sup></div>
+        <div class="step">Probe: ${left1} : ${left2} = ${left1 / left2}</div>
+        <div class="final">Ergebnis: ${a}<sup>${m-n}</sup> = <strong>${result}</strong></div>`;
+      break;
+    }
+    case 'potpot': {
+      const [a, m, n] = [getInput(0), getInput(1), getInput(2)];
+      const result = Math.pow(a, m * n);
+      html = `
+        <div class="step">Gesetz: (a<sup>m</sup>)<sup>n</sup> = a<sup>m·n</sup></div>
+        <div class="step">(${a}<sup>${m}</sup>)<sup>${n}</sup>
+          <span class="arrow">→</span> ${a}<sup>${m}·${n}</sup>
+          <span class="arrow">→</span> ${a}<sup>${m*n}</sup></div>
+        <div class="final">Ergebnis: <strong>${result}</strong></div>`;
+      break;
+    }
+    case 'prodbasis': {
+      const [a, b, n] = [getInput(0), getInput(1), getInput(2)];
+      const result = Math.pow(a * b, n);
+      html = `
+        <div class="step">Gesetz: a<sup>n</sup> · b<sup>n</sup> = (a·b)<sup>n</sup></div>
+        <div class="step">${a}<sup>${n}</sup> · ${b}<sup>${n}</sup>
+          <span class="arrow">→</span> (${a}·${b})<sup>${n}</sup>
+          <span class="arrow">→</span> ${a*b}<sup>${n}</sup></div>
+        <div class="final">Ergebnis: <strong>${result}</strong></div>`;
+      break;
+    }
+    case 'quotbasis': {
+      const [a, b, n] = [getInput(0), getInput(1), getInput(2)];
+      if (b === 0) { res.innerHTML = '<div style="color:red">Fehler: b darf nicht 0 sein!</div>'; return; }
+      const result = Math.pow(a / b, n);
+      html = `
+        <div class="step">Gesetz: a<sup>n</sup> : b<sup>n</sup> = (a/b)<sup>n</sup></div>
+        <div class="step">${a}<sup>${n}</sup> : ${b}<sup>${n}</sup>
+          <span class="arrow">→</span> (${a}/${b})<sup>${n}</sup></div>
+        <div class="final">Ergebnis: <strong>${result}</strong></div>`;
+      break;
+    }
+    case 'exp0': {
+      const a = getInput(0);
+      html = `
+        <div class="step">Gesetz: a<sup>0</sup> = 1 &nbsp;(für a ≠ 0)</div>
+        <div class="step">${a}<sup>0</sup> = ?</div>
+        <div class="final">Ergebnis: <strong>1</strong></div>
+        <div class="step" style="margin-top:8px;font-size:.82rem;color:var(--muted);">
+          Grund: a<sup>n</sup> : a<sup>n</sup> = a<sup>n−n</sup> = a<sup>0</sup>, aber auch ${a}<sup>${2}</sup> : ${a}<sup>${2}</sup> = 1
+        </div>`;
+      break;
+    }
+    case 'negexp': {
+      const [a, n] = [getInput(0), getInput(1)];
+      const denom = Math.pow(a, n);
+      const result = 1 / denom;
+      html = `
+        <div class="step">Gesetz: a<sup>−n</sup> = 1 / a<sup>n</sup></div>
+        <div class="step">${a}<sup>−${n}</sup>
+          <span class="arrow">→</span> 1 / ${a}<sup>${n}</sup>
+          <span class="arrow">→</span> 1 / ${denom}</div>
+        <div class="final">Ergebnis: <strong>${result.toFixed(6).replace(/\.?0+$/, '')}</strong>
+          ${Number.isInteger(1/result) ? '' : ` ≈ ${result.toFixed(4)}`}</div>`;
+      break;
+    }
+    case 'fracexp': {
+      const [a, m, n] = [getInput(0), getInput(1), getInput(2)];
+      if (a < 0) { res.innerHTML = '<div style="color:red">Fehler: Basis muss ≥ 0 sein!</div>'; return; }
+      const result = Math.pow(a, m / n);
+      const rootSym = n === 2 ? '√' : `${n}√`;
+      html = `
+        <div class="step">Gesetz: a<sup>m/n</sup> = <sup>n</sup>√(a<sup>m</sup>)</div>
+        <div class="step">${a}<sup>${m}/${n}</sup>
+          <span class="arrow">→</span> ${rootSym}(${a}<sup>${m}</sup>)
+          <span class="arrow">→</span> ${rootSym}(${Math.pow(a, m)})</div>
+        <div class="final">Ergebnis: <strong>${+result.toFixed(6)}</strong></div>`;
+      break;
+    }
+  }
+  res.innerHTML = html;
+}
+
+// ════════════════════════════════════════════
+//  QUIZ ENGINE
+// ════════════════════════════════════════════
+let quizQuestions = [];
+let quizAnswered = 0;
+let quizCorrect = 0;
+let quizTotal = 0;
+
+function rnd(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
+
+function generateQuestions(topic, difficulty, count) {
+  const pool = [];
+  const addQ = (type, question, answer, hint, choices = null) =>
+    pool.push({ type, question, answer: String(answer), hint, choices });
+
+  const easy  = difficulty === 'easy';
+  const hard  = difficulty === 'hard';
+
+  const getBases  = () => easy ? [2, 3, 4, 5] : hard ? [2, 3, 4, 5, 6, 7] : [2, 3, 4, 5];
+  const getExps   = (min, max) => rnd(easy ? Math.max(min,1) : min, easy ? Math.min(max,4) : max);
+
+  // ── MULTIPLIKATION / DIVISION
+  if (topic === 'all' || topic === 'mult') {
+    for (let i = 0; i < 6; i++) {
+      const a = getBases()[rnd(0, getBases().length - 1)];
+      const m = getExps(1, hard ? 5 : 4);
+      const n = getExps(1, hard ? 5 : 3);
+      addQ('input',
+        `${a}<sup>${m}</sup> · ${a}<sup>${n}</sup> = ${a}<sup>?</sup>`,
+        m + n,
+        `Gleiche Basis → Exponenten addieren: ${m} + ${n} = ?`
+      );
+    }
+    for (let i = 0; i < 4; i++) {
+      const a = getBases()[rnd(0, getBases().length - 1)];
+      const n = getExps(1, hard ? 4 : 3);
+      const m = n + getExps(1, hard ? 4 : 3);
+      addQ('input',
+        `${a}<sup>${m}</sup> : ${a}<sup>${n}</sup> = ${a}<sup>?</sup>`,
+        m - n,
+        `Gleiche Basis → Exponenten subtrahieren: ${m} − ${n} = ?`
+      );
+    }
+    // Direkte Berechnung
+    for (let i = 0; i < 3; i++) {
+      const a = [2, 3][rnd(0, 1)];
+      const m = rnd(1, easy ? 3 : 4);
+      const n = rnd(1, easy ? 3 : 4);
+      const exp = m + n;
+      if (exp <= 9) {
+        addQ('mc',
+          `Berechne: ${a}<sup>${m}</sup> · ${a}<sup>${n}</sup> = ?`,
+          String(Math.pow(a, exp)),
+          `Erst Exponenten addieren: ${a}<sup>${m+n}</sup>, dann ausrechnen.`,
+          shuffleChoices(Math.pow(a, exp), [Math.pow(a,exp-1), Math.pow(a,exp+1), Math.pow(a,m)*Math.pow(a,n+1)])
+        );
+      }
+    }
+  }
+
+  // ── POTENZ EINER POTENZ
+  if (topic === 'all' || topic === 'potenz') {
+    for (let i = 0; i < 5; i++) {
+      const a = getBases()[rnd(0, getBases().length - 1)];
+      const m = getExps(1, hard ? 4 : 3);
+      const n = getExps(2, hard ? 4 : 3);
+      addQ('input',
+        `(${a}<sup>${m}</sup>)<sup>${n}</sup> = ${a}<sup>?</sup>`,
+        m * n,
+        `Potenz einer Potenz → Exponenten multiplizieren: ${m} · ${n} = ?`
+      );
+    }
+    for (let i = 0; i < 3; i++) {
+      const a = [2, 3][rnd(0,1)];
+      const m = rnd(1, 3), n = rnd(2, 3);
+      addQ('mc',
+        `Berechne: (${a}<sup>${m}</sup>)<sup>${n}</sup> = ?`,
+        String(Math.pow(a, m * n)),
+        `Exponenten multiplizieren: ${a}<sup>${m}·${n}</sup> = ${a}<sup>${m*n}</sup>`,
+        shuffleChoices(Math.pow(a, m*n), [Math.pow(a,m+n), Math.pow(a,m*n-1), Math.pow(a*n,m)])
+      );
+    }
+  }
+
+  // ── EXPONENT 0 & NEGATIV
+  if (topic === 'all' || topic === 'spezial') {
+    const bases0 = [2, 3, 5, 7, 10, 4, 6];
+    for (let i = 0; i < 4; i++) {
+      const a = bases0[rnd(0, bases0.length - 1)];
+      addQ('mc',
+        `Berechne: ${a}<sup>0</sup> = ?`,
+        '1',
+        `Jede Zahl (außer 0) hoch 0 = 1`,
+        ['1', '0', String(a), `${a}⁰ ist nicht definiert`]
+      );
+    }
+    const negBases = [2, 3, 5, 10];
+    for (let i = 0; i < 4; i++) {
+      const a = negBases[rnd(0, negBases.length - 1)];
+      const n = rnd(1, easy ? 2 : 3);
+      const denom = Math.pow(a, n);
+      addQ('mc',
+        `Berechne: ${a}<sup>−${n}</sup> = ?`,
+        `1/${denom}`,
+        `Negativer Exponent: 1 / ${a}<sup>${n}</sup> = 1/${denom}`,
+        shuffleFracChoices(denom)
+      );
+    }
+    if (!easy) {
+      for (let i = 0; i < 2; i++) {
+        const a = [2, 3, 5][rnd(0, 2)];
+        const n = rnd(1, 2);
+        addQ('input',
+          `Schreibe ohne negativen Exponenten: ${a}<sup>−${n}</sup> = 1 / ${a}<sup>?</sup>`,
+          String(n),
+          `a<sup>−n</sup> = 1/a<sup>n</sup> → Exponent wird positiv`
+        );
+      }
+    }
+  }
+
+  // ── WURZELN & GEBROCHENE EXPONENTEN
+  if (topic === 'all' || topic === 'wurzel') {
+    const sqrtPairs = [[4,2],[9,3],[16,4],[25,5],[36,6],[49,7],[64,8],[100,10]];
+    for (let i = 0; i < 4; i++) {
+      const [sq, rt] = sqrtPairs[rnd(0, sqrtPairs.length - 1)];
+      addQ('input',
+        `√${sq} = ?  (d.h. ${sq}<sup>1/2</sup> = ?)`,
+        rt,
+        `Welche Zahl, mit sich selbst multipliziert, ergibt ${sq}?`
+      );
+    }
+    const cbrtPairs = [[8,2],[27,3],[64,4],[125,5]];
+    for (let i = 0; i < 3; i++) {
+      const [cb, rt] = cbrtPairs[rnd(0, cbrtPairs.length - 1)];
+      addQ('input',
+        `³√${cb} = ?  (d.h. ${cb}<sup>1/3</sup> = ?)`,
+        rt,
+        `Welche Zahl, dreimal mit sich selbst mult., ergibt ${cb}?`
+      );
+    }
+    // Gebrochener Exponent → Wert
+    const fracPairs = [
+      [4, '3/2', 8], [9, '3/2', 27], [8, '2/3', 4], [27, '2/3', 9], [4, '5/2', 32]
+    ];
+    for (let i = 0; i < 3; i++) {
+      const [base, frac, ans] = fracPairs[rnd(0, fracPairs.length - 1)];
+      addQ('mc',
+        `Berechne: ${base}<sup>${frac}</sup> = ?`,
+        String(ans),
+        `${base}<sup>${frac}</sup> = (${frac.includes('1/') ? '' : `(√${base})^...`} → erst Wurzel, dann Potenz`,
+        shuffleChoices(ans, [ans-1, ans+1, ans*2])
+      );
+    }
+  }
+
+  // Shuffle and slice
+  const shuffled = pool.sort(() => Math.random() - 0.5);
+  return shuffled.slice(0, count);
+}
+
+function shuffleChoices(correct, wrongs) {
+  const all = [String(correct), ...wrongs.map(String)];
+  const unique = [...new Set(all)].slice(0, 4);
+  while (unique.length < 4) unique.push(String(correct + unique.length));
+  return unique.sort(() => Math.random() - 0.5);
+}
+
+function shuffleFracChoices(denom) {
+  const opts = [`1/${denom}`, `${denom}`, `1/${denom+1}`, `−${denom}`];
+  return opts.sort(() => Math.random() - 0.5);
+}
+
+function generateQuiz() {
+  const diff    = document.getElementById('quizDifficulty').value;
+  const topic   = document.getElementById('quizTopic').value;
+  const count   = parseInt(document.getElementById('quizCount').value);
+
+  quizQuestions = generateQuestions(topic, diff, count);
+  quizAnswered  = 0;
+  quizCorrect   = 0;
+  quizTotal     = quizQuestions.length;
+
+  document.getElementById('quizSummary').classList.remove('show');
+  document.getElementById('quizProgress').style.display = 'flex';
+  updateProgress();
+
+  const container = document.getElementById('quizContainer');
+  container.classList.add('visible');
+  container.innerHTML = '';
+
+  quizQuestions.forEach((q, idx) => {
+    container.appendChild(buildQuestionCard(q, idx));
+  });
+}
+
+function buildQuestionCard(q, idx) {
+  const card = document.createElement('div');
+  card.className = 'question-card';
+  card.id = `qcard-${idx}`;
+
+  let inputHTML = '';
+  if (q.type === 'input') {
+    inputHTML = `
+      <div class="q-input-wrap">
+        <input class="q-input" id="qinput-${idx}" type="text" placeholder="Antwort..." autocomplete="off"
+               onkeydown="if(event.key==='Enter') checkAnswer(${idx})">
+        <button class="check-btn" id="qbtn-${idx}" onclick="checkAnswer(${idx})">Prüfen</button>
+      </div>`;
+  } else {
+    inputHTML = `
+      <div class="choices" id="choices-${idx}">
+        ${q.choices.map((c, ci) =>
+          `<button class="choice-btn" id="choice-${idx}-${ci}" onclick="checkChoice(${idx}, ${ci}, '${c.replace(/'/g,"\\'")}')">
+            ${c}
+          </button>`
+        ).join('')}
+      </div>`;
+  }
+
+  card.innerHTML = `
+    <div class="q-meta">Aufgabe ${idx + 1}</div>
+    <div class="q-text">${q.question}</div>
+    ${inputHTML}
+    <div class="q-feedback" id="qfb-${idx}"></div>
+    <div class="q-hint" id="qhint-${idx}">💡 Tipp: ${q.hint}</div>
+  `;
+  return card;
+}
+
+function checkAnswer(idx) {
+  const input = document.getElementById(`qinput-${idx}`);
+  const btn   = document.getElementById(`qbtn-${idx}`);
+  if (!input || btn.disabled) return;
+
+  const userVal = input.value.trim();
+  const correct = quizQuestions[idx].answer;
+  const isOk = userVal === correct || parseFloat(userVal) === parseFloat(correct);
+
+  markResult(idx, isOk, correct);
+  btn.disabled = true;
+  input.disabled = true;
+  input.classList.add(isOk ? 'correct' : 'wrong');
+}
+
+function checkChoice(idx, ci, val) {
+  const btns = document.querySelectorAll(`[id^="choice-${idx}-"]`);
+  btns.forEach(b => b.disabled = true);
+
+  const correct = quizQuestions[idx].answer;
+  const isOk = val === correct;
+
+  btns.forEach((b, i) => {
+    if (b.textContent.trim() === correct) b.classList.add('reveal-correct');
+  });
+  document.getElementById(`choice-${idx}-${ci}`).classList.add(isOk ? 'selected-ok' : 'selected-err');
+
+  markResult(idx, isOk, correct);
+}
+
+function markResult(idx, isOk, correct) {
+  const card = document.getElementById(`qcard-${idx}`);
+  const fb   = document.getElementById(`qfb-${idx}`);
+  const hint = document.getElementById(`qhint-${idx}`);
+
+  card.classList.add(isOk ? 'correct' : 'wrong');
+  fb.className = `q-feedback show ${isOk ? 'ok' : 'err'}`;
+  fb.textContent = isOk ? '✓ Richtig!' : `✗ Falsch. Richtige Antwort: ${correct}`;
+
+  if (!isOk) hint.classList.add('show');
+
+  quizAnswered++;
+  if (isOk) quizCorrect++;
+  updateProgress();
+
+  if (quizAnswered === quizTotal) {
+    setTimeout(showSummary, 500);
+  }
+}
+
+function updateProgress() {
+  document.getElementById('scoreDisplay').textContent = `${quizCorrect} / ${quizAnswered}`;
+  const pct = quizTotal > 0 ? (quizAnswered / quizTotal) * 100 : 0;
+  document.getElementById('progressFill').style.width = pct + '%';
+  const left = quizTotal - quizAnswered;
+  document.getElementById('questionsLeft').textContent = left > 0 ? `${left} offen` : 'Fertig!';
+}
+
+function showSummary() {
+  const pct = Math.round((quizCorrect / quizTotal) * 100);
+  const emoji = pct === 100 ? '🏆' : pct >= 75 ? '🎉' : pct >= 50 ? '👍' : '📚';
+  const msg   = pct === 100 ? 'Perfekt! Alle richtig!'
+              : pct >= 75  ? 'Super! Fast alles richtig!'
+              : pct >= 50  ? 'Ganz gut – noch etwas üben!'
+                           : 'Weiter üben – du schaffst das!';
+
+  document.getElementById('summaryEmoji').textContent = emoji;
+  document.getElementById('summaryScore').textContent = `${quizCorrect} / ${quizTotal}`;
+  document.getElementById('summaryText').textContent = `${pct}% richtig – ${msg}`;
+  document.getElementById('quizSummary').classList.add('show');
+  document.getElementById('quizSummary').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+// ════════════════════════════════════════════
+//  INIT
+// ════════════════════════════════════════════
+window.addEventListener('DOMContentLoaded', () => {
+  buildLawCards();
+  buildRefTable();
+  lawChanged();
+  updateViz();
+});
+</script>
+
+</body>
+</html>
