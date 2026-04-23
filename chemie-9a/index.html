@@ -1,0 +1,926 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chemie 9a – Interaktive Lernseite</title>
+<style>
+  :root {
+    --bg: #0f172a;
+    --bg-card: #1e293b;
+    --bg-card-2: #334155;
+    --text: #e2e8f0;
+    --text-dim: #94a3b8;
+    --accent: #38bdf8;
+    --accent-2: #a78bfa;
+    --success: #22c55e;
+    --error: #ef4444;
+    --warn: #f59e0b;
+    --border: #334155;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+    color: var(--text);
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+  header {
+    padding: 1.5rem 2rem;
+    background: rgba(15,23,42,0.8);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--border);
+    position: sticky; top: 0; z-index: 10;
+  }
+  header h1 { font-size: 1.4rem; background: linear-gradient(90deg, var(--accent), var(--accent-2)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  header p { font-size: 0.9rem; color: var(--text-dim); }
+  nav {
+    display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1rem;
+  }
+  nav button {
+    background: var(--bg-card); color: var(--text); border: 1px solid var(--border);
+    padding: 0.5rem 1rem; border-radius: 999px; cursor: pointer;
+    font-size: 0.85rem; transition: all 0.2s;
+  }
+  nav button:hover { background: var(--bg-card-2); border-color: var(--accent); }
+  nav button.active { background: var(--accent); color: var(--bg); border-color: var(--accent); font-weight: 600; }
+  main { max-width: 1100px; margin: 0 auto; padding: 2rem; }
+  .view { display: none; animation: fadeIn 0.3s; }
+  .view.active { display: block; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+  h2 { color: var(--accent); margin-bottom: 1rem; font-size: 1.6rem; }
+  h3 { color: var(--accent-2); margin: 1.5rem 0 0.5rem; }
+  p { margin-bottom: 0.8rem; }
+  .card {
+    background: var(--bg-card); border-radius: 12px; padding: 1.5rem;
+    border: 1px solid var(--border); margin-bottom: 1rem;
+  }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1rem; }
+
+  /* Topic cards */
+  .topic-card { cursor: pointer; transition: transform 0.2s, border-color 0.2s; }
+  .topic-card:hover { transform: translateY(-4px); border-color: var(--accent); }
+  .topic-card h3 { color: var(--accent); margin-top: 0; }
+  .topic-number { display: inline-block; background: var(--accent); color: var(--bg); font-weight: 700; padding: 0.2rem 0.6rem; border-radius: 6px; font-size: 0.75rem; margin-bottom: 0.5rem; }
+
+  /* Flashcard */
+  .flashcard {
+    perspective: 1000px; min-height: 260px; margin: 2rem auto; max-width: 640px;
+  }
+  .flashcard-inner {
+    position: relative; width: 100%; min-height: 260px; transition: transform 0.6s; transform-style: preserve-3d;
+  }
+  .flashcard.flipped .flashcard-inner { transform: rotateY(180deg); }
+  .flashcard-front, .flashcard-back {
+    position: absolute; inset: 0; backface-visibility: hidden;
+    background: var(--bg-card); border-radius: 12px; padding: 2rem;
+    display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;
+    border: 1px solid var(--border);
+  }
+  .flashcard-back { transform: rotateY(180deg); background: linear-gradient(135deg, #1e3a8a, #4c1d95); }
+  .flashcard-front .label { color: var(--text-dim); font-size: 0.8rem; letter-spacing: 0.1em; }
+  .flashcard-front .question { font-size: 1.4rem; margin-top: 1rem; font-weight: 600; }
+  .flashcard-back .answer { font-size: 1.1rem; }
+
+  button.btn {
+    background: var(--accent); color: var(--bg); border: none;
+    padding: 0.6rem 1.2rem; border-radius: 8px; font-weight: 600; cursor: pointer;
+    transition: transform 0.1s, box-shadow 0.2s; font-size: 0.95rem;
+  }
+  button.btn:hover { box-shadow: 0 4px 20px rgba(56,189,248,0.4); transform: translateY(-2px); }
+  button.btn:active { transform: translateY(0); }
+  button.btn.secondary { background: var(--bg-card-2); color: var(--text); }
+  button.btn.success { background: var(--success); }
+  button.btn.danger { background: var(--error); }
+  .btn-row { display: flex; gap: 0.6rem; margin-top: 1rem; flex-wrap: wrap; justify-content: center; }
+
+  /* Quiz */
+  .quiz-container { max-width: 720px; margin: 0 auto; }
+  .progress { height: 8px; background: var(--bg-card); border-radius: 999px; overflow: hidden; margin-bottom: 1.5rem; }
+  .progress-bar { height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent-2)); transition: width 0.3s; }
+  .question-box { background: var(--bg-card); padding: 1.5rem; border-radius: 12px; border: 1px solid var(--border); }
+  .question-text { font-size: 1.15rem; margin-bottom: 1rem; font-weight: 500; }
+  .answer-option {
+    display: block; width: 100%; text-align: left; background: var(--bg-card-2);
+    border: 2px solid transparent; padding: 0.8rem 1rem; margin-bottom: 0.5rem;
+    border-radius: 8px; cursor: pointer; color: var(--text); font-size: 0.95rem;
+    transition: all 0.15s;
+  }
+  .answer-option:hover:not(.locked) { border-color: var(--accent); transform: translateX(4px); }
+  .answer-option.correct { border-color: var(--success); background: rgba(34,197,94,0.18); }
+  .answer-option.incorrect { border-color: var(--error); background: rgba(239,68,68,0.18); }
+  .answer-option.locked { cursor: default; }
+  .explanation { margin-top: 1rem; padding: 1rem; background: rgba(56,189,248,0.08); border-left: 3px solid var(--accent); border-radius: 4px; font-size: 0.95rem; }
+
+  .score-display { text-align: center; padding: 2rem; }
+  .score-display .big { font-size: 3rem; font-weight: 700; background: linear-gradient(90deg, var(--accent), var(--accent-2)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+
+  /* Molekül 3D */
+  .molecule-viewer { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; }
+  .mol-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 1rem; text-align: center; }
+  .mol-card svg { width: 100%; height: 200px; display: block; margin: 0 auto; }
+  .mol-name { font-weight: 700; color: var(--accent); margin-top: 0.6rem; }
+  .mol-geo { font-size: 0.85rem; color: var(--text-dim); }
+  .mol-angle { display: inline-block; background: var(--bg-card-2); padding: 0.1rem 0.5rem; border-radius: 4px; margin-top: 0.4rem; font-size: 0.8rem; }
+
+  /* EN-Rechner */
+  .en-calc { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; }
+  .en-calc .row { display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; margin-bottom: 1rem; }
+  .en-calc select, .en-calc input {
+    background: var(--bg-card-2); color: var(--text); border: 1px solid var(--border);
+    padding: 0.5rem 0.8rem; border-radius: 6px; font-size: 1rem;
+  }
+  .en-result { padding: 1rem; border-radius: 8px; margin-top: 1rem; border-left: 4px solid var(--accent); background: rgba(56,189,248,0.08); }
+  .en-result.unpolar { border-left-color: #64748b; }
+  .en-result.polar { border-left-color: var(--warn); }
+  .en-result.ion { border-left-color: var(--error); }
+
+  /* Scoreboard */
+  .stats { display: flex; gap: 1rem; margin-bottom: 1rem; flex-wrap: wrap; }
+  .stat { background: var(--bg-card); padding: 0.8rem 1.2rem; border-radius: 8px; border: 1px solid var(--border); }
+  .stat .val { font-size: 1.5rem; font-weight: 700; color: var(--accent); }
+  .stat .lbl { font-size: 0.75rem; color: var(--text-dim); text-transform: uppercase; }
+
+  /* Mol animation hover */
+  .mol-card svg .atom { transition: r 0.3s; }
+  .mol-card:hover svg .atom { r: 18; }
+
+  /* Theory expand */
+  details { background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 0.8rem 1rem; margin: 0.5rem 0; }
+  details summary { cursor: pointer; font-weight: 600; color: var(--accent); }
+  details[open] summary { margin-bottom: 0.8rem; }
+
+  ul { padding-left: 1.2rem; margin-bottom: 0.8rem; }
+  li { margin-bottom: 0.3rem; }
+  table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.9rem; }
+  th, td { border: 1px solid var(--border); padding: 0.5rem; text-align: left; }
+  th { background: var(--bg-card-2); }
+  code { background: var(--bg-card-2); padding: 0.1rem 0.4rem; border-radius: 4px; font-size: 0.9em; }
+
+  .hint { font-size: 0.85rem; color: var(--text-dim); font-style: italic; }
+
+  @media (max-width: 600px) {
+    main { padding: 1rem; }
+    header { padding: 1rem; }
+    h2 { font-size: 1.3rem; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>⚗️ Chemie 9a – Interaktive Lernseite</h1>
+  <p>Chemische Bindungen · Klausurvorbereitung Gymnasium</p>
+  <nav>
+    <button class="active" data-view="home">🏠 Start</button>
+    <button data-view="themes">📚 Themen</button>
+    <button data-view="flashcards">🎴 Flashcards</button>
+    <button data-view="molecules">🧬 Moleküle 3D</button>
+    <button data-view="en-calc">📏 EN-Rechner</button>
+    <button data-view="quiz">🎯 Quiz</button>
+  </nav>
+</header>
+
+<main>
+
+<!-- HOME -->
+<section class="view active" id="view-home">
+  <h2>Willkommen</h2>
+  <div class="card">
+    <p>Hier lernst du alle Themen für deine Chemie-Klausur der 9. Klasse interaktiv – mit Flashcards, 3D-Molekülen, einem EN-Rechner und einem Quiz, das bei jedem Durchgang variiert.</p>
+    <p><strong>Die 8 Themen:</strong></p>
+    <div class="grid">
+      <div class="topic-card card" onclick="showTopic(1)"><span class="topic-number">1.1</span><h3>Edelgaskonfiguration & Oktettregel</h3><p class="hint">Warum Atome Bindungen eingehen.</p></div>
+      <div class="topic-card card" onclick="showTopic(2)"><span class="topic-number">1.2</span><h3>Kugelwolkenmodell</h3><p class="hint">Wie Elektronen räumlich verteilt sind.</p></div>
+      <div class="topic-card card" onclick="showTopic(3)"><span class="topic-number">1.3</span><h3>Elektronenpaarbindung</h3><p class="hint">Atome teilen sich Elektronen.</p></div>
+      <div class="topic-card card" onclick="showTopic(4)"><span class="topic-number">1.4</span><h3>Bindungstypen</h3><p class="hint">Ionen-, Atom- und Metallbindung im Vergleich.</p></div>
+      <div class="topic-card card" onclick="showTopic(5)"><span class="topic-number">1.5</span><h3>Elektronegativität</h3><p class="hint">Wer zieht am stärksten an den Elektronen?</p></div>
+      <div class="topic-card card" onclick="showTopic(6)"><span class="topic-number">1.6</span><h3>Valenzstrichformeln</h3><p class="hint">Lewis-Formeln aufstellen – 8 Schritte.</p></div>
+      <div class="topic-card card" onclick="showTopic(7)"><span class="topic-number">1.7</span><h3>Polare Bindungen & Dipole</h3><p class="hint">Warum Wasser ein Dipol ist.</p></div>
+      <div class="topic-card card" onclick="showTopic(8)"><span class="topic-number">1.8</span><h3>EPA-Modell</h3><p class="hint">Die räumliche Form von Molekülen.</p></div>
+    </div>
+  </div>
+  <div class="card">
+    <h3>🎯 Empfohlener Lernpfad</h3>
+    <p>1. Alle <strong>Themen</strong> einmal durchlesen → 2. <strong>Flashcards</strong> zum Festigen → 3. <strong>Moleküle 3D</strong> ansehen → 4. <strong>EN-Rechner</strong> üben → 5. <strong>Quiz</strong> mehrfach machen (Fragen variieren!).</p>
+  </div>
+</section>
+
+<!-- THEMES -->
+<section class="view" id="view-themes">
+  <h2>📚 Themen-Übersicht</h2>
+  <div id="themes-content"></div>
+</section>
+
+<!-- FLASHCARDS -->
+<section class="view" id="view-flashcards">
+  <h2>🎴 Flashcards</h2>
+  <div class="card">
+    <div class="stats">
+      <div class="stat"><div class="val" id="fc-count">1 / 20</div><div class="lbl">Karte</div></div>
+      <div class="stat"><div class="val" id="fc-known">0</div><div class="lbl">Gewusst</div></div>
+      <div class="stat"><div class="val" id="fc-review">0</div><div class="lbl">Wiederholen</div></div>
+    </div>
+    <div class="flashcard" id="flashcard" onclick="flipCard()">
+      <div class="flashcard-inner">
+        <div class="flashcard-front">
+          <div class="label">FRAGE</div>
+          <div class="question" id="fc-question"></div>
+          <p class="hint" style="margin-top:1.5rem;">Klick auf die Karte zum Umdrehen</p>
+        </div>
+        <div class="flashcard-back">
+          <div class="label">ANTWORT</div>
+          <div class="answer" id="fc-answer"></div>
+        </div>
+      </div>
+    </div>
+    <div class="btn-row">
+      <button class="btn danger" onclick="markCard(false)">❌ Nochmal üben</button>
+      <button class="btn success" onclick="markCard(true)">✅ Gewusst</button>
+    </div>
+    <div class="btn-row">
+      <button class="btn secondary" onclick="shuffleCards()">🔀 Karten mischen</button>
+      <button class="btn secondary" onclick="resetCards()">🔄 Zurücksetzen</button>
+    </div>
+  </div>
+</section>
+
+<!-- MOLECULES -->
+<section class="view" id="view-molecules">
+  <h2>🧬 Moleküle in 3D</h2>
+  <div class="card">
+    <p>Die wichtigsten Molekülformen nach dem <strong>EPA-Modell</strong>. Hover über ein Molekül für einen Vergrößerungseffekt.</p>
+    <div class="molecule-viewer" id="molecule-viewer"></div>
+  </div>
+</section>
+
+<!-- EN-RECHNER -->
+<section class="view" id="view-en-calc">
+  <h2>📏 Elektronegativitäts-Rechner</h2>
+  <div class="card">
+    <p>Wähle zwei Elemente aus, um die <strong>EN-Differenz</strong> zu berechnen und die Bindungsart zu bestimmen.</p>
+    <div class="en-calc">
+      <div class="row">
+        <label>Atom 1:
+          <select id="en-a"></select>
+        </label>
+        <label>Atom 2:
+          <select id="en-b"></select>
+        </label>
+      </div>
+      <div class="en-result" id="en-result">Wähle zwei Elemente aus.</div>
+    </div>
+    <h3>🎲 Zufällige Übung</h3>
+    <p>Drücke den Knopf, um eine zufällige Bindung zu bekommen – rate die Bindungsart, bevor du klickst!</p>
+    <div class="btn-row" style="justify-content: flex-start;"><button class="btn" onclick="randomEN()">🎲 Zufallspaar</button></div>
+    <div id="en-random"></div>
+  </div>
+</section>
+
+<!-- QUIZ -->
+<section class="view" id="view-quiz">
+  <h2>🎯 Quiz</h2>
+  <div class="quiz-container" id="quiz-container">
+    <div class="card" id="quiz-start">
+      <h3>Teste dein Wissen!</h3>
+      <p>Das Quiz wählt <strong>10 Fragen zufällig</strong> aus einem Pool von über 40 Fragen. Du kannst es <strong>beliebig oft</strong> machen – jedes Mal andere Reihenfolge und andere Fragen.</p>
+      <div class="btn-row" style="justify-content: flex-start;">
+        <button class="btn" onclick="startQuiz(10)">▶ Quiz mit 10 Fragen starten</button>
+        <button class="btn secondary" onclick="startQuiz(20)">Quiz mit 20 Fragen</button>
+      </div>
+    </div>
+    <div id="quiz-game" style="display:none;">
+      <div class="progress"><div class="progress-bar" id="quiz-progress"></div></div>
+      <div class="stats">
+        <div class="stat"><div class="val" id="quiz-num">1/10</div><div class="lbl">Frage</div></div>
+        <div class="stat"><div class="val" id="quiz-score">0</div><div class="lbl">Punkte</div></div>
+      </div>
+      <div class="question-box">
+        <div class="question-text" id="quiz-question"></div>
+        <div id="quiz-options"></div>
+        <div class="explanation" id="quiz-explanation" style="display:none;"></div>
+        <div class="btn-row">
+          <button class="btn" id="quiz-next" onclick="nextQuestion()" style="display:none;">Weiter ▶</button>
+        </div>
+      </div>
+    </div>
+    <div id="quiz-end" style="display:none;"></div>
+  </div>
+</section>
+
+</main>
+
+<script>
+// =================== NAVIGATION ===================
+document.querySelectorAll('nav button').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+    document.getElementById('view-' + btn.dataset.view).classList.add('active');
+    window.scrollTo({top: 0, behavior: 'smooth'});
+  });
+});
+function showTopic(n) {
+  document.querySelector('nav button[data-view="themes"]').click();
+  setTimeout(() => {
+    const el = document.getElementById('topic-' + n);
+    if (el) el.open = true, el.scrollIntoView({behavior:'smooth', block:'start'});
+  }, 100);
+}
+
+// =================== THEMES CONTENT ===================
+const themes = [
+  {
+    n: "1.1", title: "Edelgaskonfiguration und Oktettregel",
+    body: `<p><strong>Edelgaskonfiguration:</strong> Elektronenanordnung mit voller Außenschale (meist 8 Elektronen, bei He: 2). Diese ist besonders <em>stabil</em>.</p>
+    <p><strong>Oktettregel:</strong> Atome streben danach, 8 Außenelektronen zu haben – sie geben Elektronen ab, nehmen auf oder teilen sie.</p>
+    <ul><li>Metalle → geben Elektronen ab → Kationen (Na⁺, Mg²⁺)</li><li>Nichtmetalle → nehmen auf → Anionen (Cl⁻, O²⁻)</li><li>Nichtmetall + Nichtmetall → teilen sich (Elektronenpaarbindung)</li></ul>
+    <p><strong>Sonderfall H und He:</strong> nur 2 Außenelektronen (Duett).</p>`
+  },
+  {
+    n: "1.2", title: "Kugelwolkenmodell",
+    body: `<p>Elektronen liegen nicht auf Kreisbahnen, sondern in <strong>Kugelwolken</strong> (Räumen mit hoher Aufenthaltswahrscheinlichkeit).</p>
+    <ul><li>Maximal 4 Kugelwolken um den Atomrumpf</li><li>Jede Kugelwolke: max. 2 Elektronen</li><li>Erst einfach füllen, dann doppelt</li><li>Leere Kugelwolken werden nicht gezeichnet</li></ul>
+    <p><strong>Räumliche Anordnung</strong> (größtmöglicher Abstand):</p>
+    <ul><li>2 Wolken → linear (180°)</li><li>3 Wolken → trigonal (120°)</li><li>4 Wolken → tetraedrisch (109,5°)</li></ul>`
+  },
+  {
+    n: "1.3", title: "Elektronenpaarbindung (Atombindung)",
+    body: `<p>Zwei <strong>Nichtmetall-Atome</strong> teilen sich ein oder mehrere Elektronenpaare, um Edelgaskonfiguration zu erreichen.</p>
+    <ul><li>Einfachbindung: 1 geteiltes Paar (z. B. H–H)</li><li>Doppelbindung: 2 Paare (z. B. O=O)</li><li>Dreifachbindung: 3 Paare (z. B. N≡N)</li></ul>
+    <p><strong>Molekulare Stoffe</strong>: niedrige Schmelzpunkte, leiten keinen Strom, oft Gase oder Flüssigkeiten.</p>`
+  },
+  {
+    n: "1.4", title: "Bindungstypen im Überblick",
+    body: `<table><tr><th>Bindung</th><th>Partner</th><th>Prinzip</th></tr>
+    <tr><td>Ionenbindung</td><td>Metall + Nichtmetall</td><td>Elektronen werden übertragen → Ionen ziehen sich an</td></tr>
+    <tr><td>Elektronenpaarbindung</td><td>Nichtmetall + Nichtmetall</td><td>Elektronen werden geteilt</td></tr>
+    <tr><td>Metallbindung</td><td>Metall + Metall</td><td>Elektronengas + positive Atomrümpfe</td></tr></table>
+    <p><strong>Faustregel mit ΔEN:</strong> < 0,5 unpolar · 0,5–1,7 polar · > 1,7 ionisch.</p>`
+  },
+  {
+    n: "1.5", title: "Elektronegativität (EN)",
+    body: `<p>Ein Zahlenwert, der angibt, wie stark ein Atom in einer Bindung <strong>Elektronen zu sich zieht</strong>.</p>
+    <ul><li>Fluor (F): 4,0 → höchster Wert</li><li>Francium (Fr): ~0,7 → niedrigster</li><li>Im PSE: von <strong>links nach rechts</strong> zu + von <strong>unten nach oben</strong> zu</li></ul>
+    <p><strong>ΔEN-Interpretation:</strong></p>
+    <ul><li>0 → unpolar (gleiches Element)</li><li>< 0,5 → (fast) unpolar</li><li>0,5–1,7 → polare Atombindung (Dipol möglich)</li><li>> 1,7 → Ionenbindung</li></ul>`
+  },
+  {
+    n: "1.6", title: "Valenzstrichformeln",
+    body: `<p>Die <strong>Lewis-Formel</strong> zeigt die Verknüpfung der Atome.</p>
+    <ol><li>VE vorhanden zählen (÷ 2 = VEP)</li><li>VE benötigt (8 pro Atom, 2 für H)</li><li>BEP = benötigt − vorhanden</li><li>NEP = vorhanden − BEP</li><li>Zentralatom mittig (viele Bindungen), H außen</li><li>BEP als Striche einzeichnen</li><li>NEP verteilen (Oktett!)</li><li>Formalladung prüfen</li></ol>`
+  },
+  {
+    n: "1.7", title: "Polare Bindungen und Dipole",
+    body: `<p>Wenn ΔEN ≥ 0,5: <strong>polare Atombindung</strong>. Das elektronegativere Atom bekommt δ⁻, das andere δ⁺.</p>
+    <p><strong>Dipol-Molekül:</strong> hat zwei unterschiedlich geladene Pole. Bedingungen:</p>
+    <ul><li>Mindestens eine polare Bindung</li><li>Asymmetrische Molekülform (Pole heben sich nicht auf)</li></ul>
+    <p>✅ Dipol: H₂O, NH₃, HCl &nbsp; ❌ Kein Dipol: CO₂ (linear!), CH₄ (symmetrisch), CCl₄</p>`
+  },
+  {
+    n: "1.8", title: "EPA-Modell (Molekülgeometrie)",
+    body: `<p>Elektronenpaare stoßen sich ab → Anordnung mit <strong>größtem Abstand</strong>.</p>
+    <table><tr><th>BP</th><th>NEP</th><th>Molekülform</th><th>Winkel</th><th>Beispiel</th></tr>
+    <tr><td>2</td><td>0</td><td>linear</td><td>180°</td><td>CO₂</td></tr>
+    <tr><td>3</td><td>0</td><td>trigonal planar</td><td>120°</td><td>BF₃</td></tr>
+    <tr><td>4</td><td>0</td><td>tetraedrisch</td><td>109,5°</td><td>CH₄</td></tr>
+    <tr><td>3</td><td>1</td><td>trigonal pyramidal</td><td>~107°</td><td>NH₃</td></tr>
+    <tr><td>2</td><td>2</td><td>gewinkelt</td><td>~104,5°</td><td>H₂O</td></tr>
+    <tr><td>1</td><td>3</td><td>linear/gestreckt</td><td>—</td><td>HF</td></tr></table>
+    <p>Doppel-/Dreifachbindungen zählen als <strong>ein</strong> BP. NEP brauchen mehr Platz → Winkel werden kleiner.</p>`
+  }
+];
+document.getElementById('themes-content').innerHTML = themes.map(t => `
+  <details id="topic-${t.n.replace('.','')}"><summary>${t.n} – ${t.title}</summary>${t.body}</details>
+`).join('');
+
+// =================== FLASHCARDS ===================
+const flashcards = [
+  {q: "Was ist die Oktettregel?", a: "Atome streben danach, 8 Außenelektronen zu erreichen – durch Abgeben, Aufnehmen oder Teilen von Elektronen."},
+  {q: "Wie viele Außenelektronen haben Edelgase (außer He)?", a: "Acht (8)."},
+  {q: "Wie viele Außenelektronen hat Helium?", a: "Zwei (2) – Sonderfall (Duett)."},
+  {q: "Was bedeutet Edelgaskonfiguration?", a: "Elektronenanordnung wie bei einem Edelgas – besonders stabil."},
+  {q: "Wie viele Kugelwolken gibt es maximal pro Atom?", a: "Vier (4) – für die Valenzelektronen."},
+  {q: "Wie viele Elektronen passen in eine Kugelwolke?", a: "Maximal 2."},
+  {q: "Warum ordnen sich Kugelwolken mit größtem Abstand an?", a: "Weil sich die negativen Elektronen gegenseitig abstoßen."},
+  {q: "Welche drei Bindungstypen gibt es?", a: "Ionenbindung, Elektronenpaarbindung (Atombindung), Metallbindung."},
+  {q: "Welche Bindung entsteht zwischen Nichtmetall und Nichtmetall?", a: "Elektronenpaarbindung (Atombindung)."},
+  {q: "Welche Bindung entsteht zwischen Metall und Nichtmetall?", a: "Ionenbindung."},
+  {q: "Welche Bindung entsteht zwischen zwei Metallen?", a: "Metallbindung."},
+  {q: "Was bedeutet Elektronegativität?", a: "Zahlenwert, der angibt, wie stark ein Atom in einer Bindung Elektronen zu sich zieht."},
+  {q: "Welches Element hat die höchste Elektronegativität?", a: "Fluor (F) mit EN = 4,0."},
+  {q: "Ab welcher ΔEN spricht man von einer Ionenbindung?", a: "Ab ca. ΔEN > 1,7."},
+  {q: "In welchem ΔEN-Bereich liegt eine polare Atombindung?", a: "0,5 bis 1,7."},
+  {q: "Was sind bindende Elektronenpaare (BEP)?", a: "Elektronenpaare, die zwischen zwei Atomen geteilt werden (= Bindungsstrich)."},
+  {q: "Was sind nichtbindende Elektronenpaare (NEP)?", a: "Freie Elektronenpaare, die nur zu einem Atom gehören."},
+  {q: "Wie nennt man die Bindung im Sauerstoffmolekül O₂?", a: "Doppelbindung (2 geteilte Elektronenpaare)."},
+  {q: "Wie nennt man die Bindung im Stickstoffmolekül N₂?", a: "Dreifachbindung (3 geteilte Elektronenpaare)."},
+  {q: "Ist Wasser (H₂O) ein Dipol? Warum?", a: "Ja – O–H ist polar (ΔEN = 1,24) und das Molekül ist gewinkelt."},
+  {q: "Ist CO₂ ein Dipol?", a: "Nein – obwohl C=O polar ist, ist CO₂ linear, die Dipolmomente heben sich auf."},
+  {q: "Welche Geometrie hat Methan CH₄?", a: "Tetraedrisch (Winkel 109,5°)."},
+  {q: "Welche Geometrie hat Ammoniak NH₃?", a: "Trigonal pyramidal (Winkel ~107°)."},
+  {q: "Welche Geometrie hat Wasser H₂O?", a: "Gewinkelt (Winkel ~104,5°)."},
+  {q: "Welche Geometrie hat HF?", a: "Linear / gestreckt – es gibt nur 2 Atome."},
+  {q: "Warum ist der H–O–H-Winkel kleiner als 109,5°?", a: "Die zwei freien Elektronenpaare am O brauchen mehr Platz und drücken die Bindungen zusammen (auf ~104,5°)."},
+  {q: "Was heißt δ⁺ / δ⁻?", a: "Teilladungen (Partialladungen) an Atomen einer polaren Bindung."},
+  {q: "Wie erkennst du ein Zentralatom in einer Valenzstrichformel?", a: "Es kann die meisten Bindungen eingehen (steht meist weiter links im PSE). H ist nie Zentralatom."},
+  {q: "Wie viele Valenzelektronen hat Stickstoff (N)?", a: "Fünf (5) – 5. Hauptgruppe."},
+  {q: "Wie viele Valenzelektronen hat Schwefel (S)?", a: "Sechs (6) – 6. Hauptgruppe."},
+  {q: "BEP-Formel?", a: "BEP = benötigte VEP − vorhandene VEP."},
+  {q: "Welcher Bindungstyp in Kochsalz (NaCl)?", a: "Ionenbindung (ΔEN ≈ 2,23)."},
+  {q: "Was ist ein Elektronengas?", a: "Frei bewegliche Elektronen in einem Metallgitter; verantwortlich für Stromleitung."},
+  {q: "Warum leiten Salze im festen Zustand keinen Strom?", a: "Die Ionen sitzen fest im Gitter – nicht beweglich."}
+];
+
+let fcOrder = [...Array(flashcards.length).keys()];
+let fcIndex = 0;
+let fcStats = { known: 0, review: 0 };
+
+function shuffleArray(arr) {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+function renderCard() {
+  const card = flashcards[fcOrder[fcIndex]];
+  document.getElementById('fc-question').textContent = card.q;
+  document.getElementById('fc-answer').textContent = card.a;
+  document.getElementById('flashcard').classList.remove('flipped');
+  document.getElementById('fc-count').textContent = `${fcIndex+1} / ${flashcards.length}`;
+  document.getElementById('fc-known').textContent = fcStats.known;
+  document.getElementById('fc-review').textContent = fcStats.review;
+}
+function flipCard() { document.getElementById('flashcard').classList.toggle('flipped'); }
+function markCard(known) {
+  if (known) fcStats.known++; else fcStats.review++;
+  fcIndex = (fcIndex + 1) % flashcards.length;
+  if (fcIndex === 0) shuffleArray(fcOrder);
+  renderCard();
+}
+function shuffleCards() { shuffleArray(fcOrder); fcIndex = 0; renderCard(); }
+function resetCards() { fcOrder = [...Array(flashcards.length).keys()]; shuffleArray(fcOrder); fcIndex = 0; fcStats = {known:0, review:0}; renderCard(); }
+shuffleArray(fcOrder); renderCard();
+
+// =================== MOLECULES (SVG 3D-Effekt) ===================
+const molecules = [
+  {
+    name: "H₂ – Wasserstoff", geo: "linear (unpolar)", angle: "180°",
+    svg: `<svg viewBox="0 0 200 120">
+      <line x1="60" y1="60" x2="140" y2="60" stroke="#94a3b8" stroke-width="3"/>
+      <circle class="atom" cx="60" cy="60" r="15" fill="#38bdf8"/>
+      <circle class="atom" cx="140" cy="60" r="15" fill="#38bdf8"/>
+      <text x="60" y="65" text-anchor="middle" fill="#0f172a" font-weight="700" font-size="14">H</text>
+      <text x="140" y="65" text-anchor="middle" fill="#0f172a" font-weight="700" font-size="14">H</text>
+    </svg>`
+  },
+  {
+    name: "HF – Fluorwasserstoff", geo: "linear, polar → Dipol", angle: "—",
+    svg: `<svg viewBox="0 0 200 120">
+      <line x1="60" y1="60" x2="140" y2="60" stroke="#94a3b8" stroke-width="3"/>
+      <circle class="atom" cx="60" cy="60" r="13" fill="#38bdf8"/>
+      <circle class="atom" cx="140" cy="60" r="18" fill="#a78bfa"/>
+      <text x="60" y="65" text-anchor="middle" fill="#0f172a" font-weight="700" font-size="13">H</text>
+      <text x="140" y="65" text-anchor="middle" fill="#0f172a" font-weight="700" font-size="14">F</text>
+      <text x="60" y="40" text-anchor="middle" fill="#ef4444" font-size="12">δ+</text>
+      <text x="140" y="40" text-anchor="middle" fill="#22c55e" font-size="12">δ−</text>
+    </svg>`
+  },
+  {
+    name: "CO₂ – Kohlenstoffdioxid", geo: "linear (kein Dipol)", angle: "180°",
+    svg: `<svg viewBox="0 0 240 120">
+      <line x1="50" y1="55" x2="110" y2="55" stroke="#94a3b8" stroke-width="2"/>
+      <line x1="50" y1="65" x2="110" y2="65" stroke="#94a3b8" stroke-width="2"/>
+      <line x1="130" y1="55" x2="190" y2="55" stroke="#94a3b8" stroke-width="2"/>
+      <line x1="130" y1="65" x2="190" y2="65" stroke="#94a3b8" stroke-width="2"/>
+      <circle class="atom" cx="50" cy="60" r="17" fill="#ef4444"/>
+      <circle class="atom" cx="120" cy="60" r="15" fill="#334155"/>
+      <circle class="atom" cx="190" cy="60" r="17" fill="#ef4444"/>
+      <text x="50" y="65" text-anchor="middle" fill="white" font-weight="700" font-size="13">O</text>
+      <text x="120" y="65" text-anchor="middle" fill="white" font-weight="700" font-size="13">C</text>
+      <text x="190" y="65" text-anchor="middle" fill="white" font-weight="700" font-size="13">O</text>
+    </svg>`
+  },
+  {
+    name: "H₂O – Wasser", geo: "gewinkelt → Dipol", angle: "~104,5°",
+    svg: `<svg viewBox="0 0 200 160">
+      <line x1="45" y1="110" x2="100" y2="60" stroke="#94a3b8" stroke-width="3"/>
+      <line x1="155" y1="110" x2="100" y2="60" stroke="#94a3b8" stroke-width="3"/>
+      <circle class="atom" cx="100" cy="60" r="20" fill="#ef4444"/>
+      <circle class="atom" cx="45" cy="110" r="14" fill="#38bdf8"/>
+      <circle class="atom" cx="155" cy="110" r="14" fill="#38bdf8"/>
+      <text x="100" y="65" text-anchor="middle" fill="white" font-weight="700" font-size="15">O</text>
+      <text x="45" y="115" text-anchor="middle" fill="#0f172a" font-weight="700" font-size="12">H</text>
+      <text x="155" y="115" text-anchor="middle" fill="#0f172a" font-weight="700" font-size="12">H</text>
+      <!-- NEP -->
+      <circle cx="82" cy="42" r="3" fill="#fbbf24"/><circle cx="90" cy="38" r="3" fill="#fbbf24"/>
+      <circle cx="118" cy="42" r="3" fill="#fbbf24"/><circle cx="110" cy="38" r="3" fill="#fbbf24"/>
+      <text x="100" y="145" text-anchor="middle" fill="#94a3b8" font-size="11">~104,5°</text>
+    </svg>`
+  },
+  {
+    name: "NH₃ – Ammoniak", geo: "trigonal pyramidal → Dipol", angle: "~107°",
+    svg: `<svg viewBox="0 0 200 180">
+      <line x1="100" y1="60" x2="50" y2="130" stroke="#94a3b8" stroke-width="3"/>
+      <line x1="100" y1="60" x2="150" y2="130" stroke="#94a3b8" stroke-width="3"/>
+      <line x1="100" y1="60" x2="100" y2="130" stroke="#94a3b8" stroke-width="3" stroke-dasharray="6 3"/>
+      <circle class="atom" cx="100" cy="60" r="18" fill="#8b5cf6"/>
+      <circle class="atom" cx="50" cy="130" r="13" fill="#38bdf8"/>
+      <circle class="atom" cx="150" cy="130" r="13" fill="#38bdf8"/>
+      <circle class="atom" cx="100" cy="130" r="13" fill="#38bdf8"/>
+      <text x="100" y="65" text-anchor="middle" fill="white" font-weight="700" font-size="14">N</text>
+      <text x="50" y="135" text-anchor="middle" fill="#0f172a" font-weight="700" font-size="11">H</text>
+      <text x="150" y="135" text-anchor="middle" fill="#0f172a" font-weight="700" font-size="11">H</text>
+      <text x="100" y="135" text-anchor="middle" fill="#0f172a" font-weight="700" font-size="11">H</text>
+      <!-- NEP am N -->
+      <circle cx="92" cy="42" r="3" fill="#fbbf24"/><circle cx="108" cy="42" r="3" fill="#fbbf24"/>
+      <text x="100" y="168" text-anchor="middle" fill="#94a3b8" font-size="11">~107°</text>
+    </svg>`
+  },
+  {
+    name: "CH₄ – Methan", geo: "tetraedrisch (kein Dipol)", angle: "109,5°",
+    svg: `<svg viewBox="0 0 200 180">
+      <line x1="100" y1="90" x2="40" y2="50" stroke="#94a3b8" stroke-width="3"/>
+      <line x1="100" y1="90" x2="160" y2="50" stroke="#94a3b8" stroke-width="3"/>
+      <line x1="100" y1="90" x2="50" y2="150" stroke="#94a3b8" stroke-width="3"/>
+      <line x1="100" y1="90" x2="150" y2="150" stroke="#94a3b8" stroke-width="3" stroke-dasharray="6 3"/>
+      <circle class="atom" cx="100" cy="90" r="18" fill="#334155"/>
+      <circle class="atom" cx="40" cy="50" r="12" fill="#38bdf8"/>
+      <circle class="atom" cx="160" cy="50" r="12" fill="#38bdf8"/>
+      <circle class="atom" cx="50" cy="150" r="12" fill="#38bdf8"/>
+      <circle class="atom" cx="150" cy="150" r="12" fill="#38bdf8"/>
+      <text x="100" y="95" text-anchor="middle" fill="white" font-weight="700" font-size="14">C</text>
+      <text x="40" y="54" text-anchor="middle" fill="#0f172a" font-weight="700" font-size="10">H</text>
+      <text x="160" y="54" text-anchor="middle" fill="#0f172a" font-weight="700" font-size="10">H</text>
+      <text x="50" y="154" text-anchor="middle" fill="#0f172a" font-weight="700" font-size="10">H</text>
+      <text x="150" y="154" text-anchor="middle" fill="#0f172a" font-weight="700" font-size="10">H</text>
+      <text x="100" y="178" text-anchor="middle" fill="#94a3b8" font-size="11">109,5°</text>
+    </svg>`
+  },
+  {
+    name: "N₂ – Stickstoff", geo: "linear, Dreifachbindung", angle: "180°",
+    svg: `<svg viewBox="0 0 200 120">
+      <line x1="60" y1="54" x2="140" y2="54" stroke="#94a3b8" stroke-width="2"/>
+      <line x1="60" y1="60" x2="140" y2="60" stroke="#94a3b8" stroke-width="2"/>
+      <line x1="60" y1="66" x2="140" y2="66" stroke="#94a3b8" stroke-width="2"/>
+      <circle class="atom" cx="60" cy="60" r="16" fill="#8b5cf6"/>
+      <circle class="atom" cx="140" cy="60" r="16" fill="#8b5cf6"/>
+      <text x="60" y="65" text-anchor="middle" fill="white" font-weight="700" font-size="14">N</text>
+      <text x="140" y="65" text-anchor="middle" fill="white" font-weight="700" font-size="14">N</text>
+    </svg>`
+  },
+  {
+    name: "O₂ – Sauerstoff", geo: "linear, Doppelbindung", angle: "180°",
+    svg: `<svg viewBox="0 0 200 120">
+      <line x1="60" y1="56" x2="140" y2="56" stroke="#94a3b8" stroke-width="2"/>
+      <line x1="60" y1="64" x2="140" y2="64" stroke="#94a3b8" stroke-width="2"/>
+      <circle class="atom" cx="60" cy="60" r="17" fill="#ef4444"/>
+      <circle class="atom" cx="140" cy="60" r="17" fill="#ef4444"/>
+      <text x="60" y="65" text-anchor="middle" fill="white" font-weight="700" font-size="14">O</text>
+      <text x="140" y="65" text-anchor="middle" fill="white" font-weight="700" font-size="14">O</text>
+    </svg>`
+  }
+];
+document.getElementById('molecule-viewer').innerHTML = molecules.map(m => `
+  <div class="mol-card">
+    ${m.svg}
+    <div class="mol-name">${m.name}</div>
+    <div class="mol-geo">${m.geo}</div>
+    <span class="mol-angle">Winkel: ${m.angle}</span>
+  </div>
+`).join('');
+
+// =================== EN-RECHNER ===================
+const elements = [
+  {s: "H", name: "Wasserstoff", en: 2.20},
+  {s: "Li", name: "Lithium", en: 0.98},
+  {s: "Be", name: "Beryllium", en: 1.57},
+  {s: "B", name: "Bor", en: 2.04},
+  {s: "C", name: "Kohlenstoff", en: 2.55},
+  {s: "N", name: "Stickstoff", en: 3.04},
+  {s: "O", name: "Sauerstoff", en: 3.44},
+  {s: "F", name: "Fluor", en: 3.98},
+  {s: "Na", name: "Natrium", en: 0.93},
+  {s: "Mg", name: "Magnesium", en: 1.31},
+  {s: "Al", name: "Aluminium", en: 1.61},
+  {s: "Si", name: "Silicium", en: 1.90},
+  {s: "P", name: "Phosphor", en: 2.19},
+  {s: "S", name: "Schwefel", en: 2.58},
+  {s: "Cl", name: "Chlor", en: 3.16},
+  {s: "K", name: "Kalium", en: 0.82},
+  {s: "Ca", name: "Calcium", en: 1.00},
+  {s: "Fe", name: "Eisen", en: 1.83},
+  {s: "Cu", name: "Kupfer", en: 1.90},
+  {s: "Br", name: "Brom", en: 2.96},
+  {s: "I", name: "Iod", en: 2.66}
+];
+const elOpts = elements.map(e => `<option value="${e.s}">${e.s} – ${e.name} (EN ${e.en})</option>`).join('');
+document.getElementById('en-a').innerHTML = elOpts;
+document.getElementById('en-b').innerHTML = elOpts;
+document.getElementById('en-a').value = "H";
+document.getElementById('en-b').value = "O";
+function updateEN() {
+  const a = elements.find(e => e.s === document.getElementById('en-a').value);
+  const b = elements.find(e => e.s === document.getElementById('en-b').value);
+  const d = Math.abs(a.en - b.en).toFixed(2);
+  let type = "", cls = "", explanation = "";
+  const metals = ["Li","Be","Na","Mg","Al","K","Ca","Fe","Cu"];
+  const aIsMetal = metals.includes(a.s), bIsMetal = metals.includes(b.s);
+  if (d == 0) { type = "unpolare Atombindung (gleiches Element)"; cls = "unpolar"; explanation = "Beide Atome ziehen gleich stark – Elektronen perfekt geteilt."; }
+  else if (d < 0.5) { type = "fast unpolare Atombindung"; cls = "unpolar"; explanation = "ΔEN < 0,5: Elektronen sind nahezu gleich verteilt."; }
+  else if (d <= 1.7) { type = "polare Atombindung"; cls = "polar"; explanation = `ΔEN zwischen 0,5 und 1,7: die Elektronen sind zu ${(a.en>b.en?a.s:b.s)} verschoben (δ−). Bei asymmetrischer Molekülform entsteht ein Dipol.`; }
+  else { type = "Ionenbindung"; cls = "ion"; explanation = "ΔEN > 1,7: Die Elektronen gehen komplett zum elektronegativeren Atom über."; }
+  if (aIsMetal && bIsMetal) { type = "Metallbindung"; cls = "unpolar"; explanation = "Zwei Metalle → Elektronengas, Metallbindung."; }
+  document.getElementById('en-result').className = "en-result " + cls;
+  document.getElementById('en-result').innerHTML = `
+    <div><strong>${a.s}–${b.s}:</strong> ΔEN = |${a.en} − ${b.en}| = <strong>${d}</strong></div>
+    <div style="margin-top:0.4rem;">→ <strong>${type}</strong></div>
+    <div style="margin-top:0.4rem; font-size:0.9rem; color:var(--text-dim);">${explanation}</div>`;
+}
+document.getElementById('en-a').addEventListener('change', updateEN);
+document.getElementById('en-b').addEventListener('change', updateEN);
+updateEN();
+
+function randomEN() {
+  const a = elements[Math.floor(Math.random()*elements.length)];
+  let b;
+  do { b = elements[Math.floor(Math.random()*elements.length)]; } while (b.s === a.s);
+  document.getElementById('en-random').innerHTML = `
+    <div class="card" style="margin-top:1rem;">
+      <p><strong>Zufallspaar:</strong> ${a.s} (${a.name}, EN ${a.en}) &nbsp;+&nbsp; ${b.s} (${b.name}, EN ${b.en})</p>
+      <p class="hint">Rate zuerst selbst – dann stelle die Elemente oben ein und klicke, um das Ergebnis zu sehen.</p>
+    </div>`;
+}
+
+// =================== QUIZ POOL ===================
+const quizPool = [
+  {
+    q: "Welche Aussage zur Oktettregel ist richtig?",
+    opts: ["Atome streben 8 Außenelektronen an.", "Atome streben 4 Elektronen an.", "Alle Atome erreichen Edelgaskonfiguration durch Abgabe.", "Atome streben 2 Elektronen an."],
+    correct: 0, expl: "Atome streben generell 8 Außenelektronen an. Ausnahme: H und He (nur 2)."
+  },
+  {
+    q: "Wie viele Elektronen gibt ein Natrium-Atom ab, um Edelgaskonfiguration zu erreichen?",
+    opts: ["1", "2", "7", "8"], correct: 0, expl: "Na hat 1 Valenzelektron → gibt es ab → wird Na⁺ (Neon-Konfiguration)."
+  },
+  {
+    q: "Welches Element hat die höchste Elektronegativität?",
+    opts: ["Chlor", "Sauerstoff", "Fluor", "Stickstoff"], correct: 2, expl: "Fluor mit EN = 4,0 steht rechts oben im PSE (vor den Edelgasen)."
+  },
+  {
+    q: "Welcher Bindungstyp liegt in Kochsalz (NaCl) vor?",
+    opts: ["Atombindung", "Metallbindung", "Ionenbindung", "Wasserstoffbrückenbindung"], correct: 2, expl: "Metall + Nichtmetall mit ΔEN > 1,7 → Ionenbindung."
+  },
+  {
+    q: "Welche Molekülgeometrie hat Methan (CH₄)?",
+    opts: ["linear", "gewinkelt", "tetraedrisch", "trigonal pyramidal"], correct: 2, expl: "4 Bindungspartner, 0 NEP → Tetraeder (109,5°)."
+  },
+  {
+    q: "Welche Molekülgeometrie hat Wasser (H₂O)?",
+    opts: ["linear", "gewinkelt", "tetraedrisch", "trigonal pyramidal"], correct: 1, expl: "2 Bindungspartner + 2 NEP → gewinkelt (~104,5°)."
+  },
+  {
+    q: "Welche Molekülgeometrie hat Ammoniak (NH₃)?",
+    opts: ["linear", "gewinkelt", "tetraedrisch", "trigonal pyramidal"], correct: 3, expl: "3 Bindungspartner + 1 NEP → trigonal pyramidal (~107°)."
+  },
+  {
+    q: "Welches Molekül ist KEIN Dipol?",
+    opts: ["H₂O", "CO₂", "NH₃", "HCl"], correct: 1, expl: "CO₂ ist linear – die polaren C=O-Dipolmomente heben sich auf."
+  },
+  {
+    q: "Wie viele Valenzelektronen hat Schwefel (S)?",
+    opts: ["4", "5", "6", "7"], correct: 2, expl: "S steht in der 6. Hauptgruppe → 6 Valenzelektronen."
+  },
+  {
+    q: "Was ist ein bindendes Elektronenpaar (BEP)?",
+    opts: ["Ein Elektronenpaar nur an einem Atom", "Ein Elektronenpaar zwischen zwei Atomen (geteilt)", "Ein einzelnes Elektron", "Ein Elektron im Atomkern"], correct: 1, expl: "BEP = geteiltes Elektronenpaar zwischen zwei Atomen (= Bindungsstrich)."
+  },
+  {
+    q: "Welche Bindung liegt zwischen Nichtmetall und Nichtmetall vor?",
+    opts: ["Ionenbindung", "Metallbindung", "Atombindung (Elektronenpaarbindung)", "Wasserstoffbrücken"], correct: 2, expl: "Zwei Nichtmetalle teilen Elektronen → Atombindung."
+  },
+  {
+    q: "Wie viele Kugelwolken hat ein Atom maximal?",
+    opts: ["2", "4", "6", "8"], correct: 1, expl: "Maximal 4 Kugelwolken mit jeweils bis zu 2 Elektronen = 8 VE (Oktett)."
+  },
+  {
+    q: "Warum stoßen sich Elektronenpaare gegenseitig ab?",
+    opts: ["Wegen der positiven Ladung", "Weil sie alle negativ geladen sind", "Wegen des Atomkerns", "Wegen der Neutronen"], correct: 1, expl: "Elektronen sind negativ – gleiche Ladungen stoßen sich ab."
+  },
+  {
+    q: "Welche Bindung entsteht im Sauerstoffmolekül O₂?",
+    opts: ["Einfachbindung", "Doppelbindung", "Dreifachbindung", "Ionenbindung"], correct: 1, expl: "O braucht 2 Elektronen zur Edelgaskonfiguration → 2 Paare geteilt → Doppelbindung."
+  },
+  {
+    q: "Welche Bindung entsteht im Stickstoffmolekül N₂?",
+    opts: ["Einfachbindung", "Doppelbindung", "Dreifachbindung", "Ionenbindung"], correct: 2, expl: "N braucht 3 Elektronen → 3 Paare geteilt → Dreifachbindung (sehr stabil)."
+  },
+  {
+    q: "Was bedeutet δ⁻ in einer polaren Bindung?",
+    opts: ["Ganze negative Ladung", "Positive Teilladung", "Negative Teilladung (Partialladung)", "Elektronenpaar"], correct: 2, expl: "δ⁻ = negative Teilladung am stärker elektronegativen Atom."
+  },
+  {
+    q: "Ab welcher EN-Differenz spricht man von einer Ionenbindung?",
+    opts: ["> 0,5", "> 1,0", "> 1,7", "> 2,5"], correct: 2, expl: "Faustregel: ΔEN > 1,7 → Ionenbindung (fließender Übergang!)."
+  },
+  {
+    q: "Welches Molekül ist ein Dipol?",
+    opts: ["CO₂", "CH₄", "H₂O", "N₂"], correct: 2, expl: "Wasser ist gewinkelt und hat polare O–H-Bindungen → klassischer Dipol."
+  },
+  {
+    q: "Warum ist der H–O–H-Winkel kleiner als 109,5°?",
+    opts: ["Wegen der Atommasse", "Die 2 freien Elektronenpaare am O brauchen mehr Platz", "Wegen der Doppelbindung", "Wegen der Ionenladung"], correct: 1, expl: "NEP beanspruchen mehr Raum als BEP und drücken die Bindungen zusammen."
+  },
+  {
+    q: "Welche Formel berechnet die bindenden Elektronenpaare (BEP)?",
+    opts: ["BEP = vorhandene VEP + benötigte VEP", "BEP = benötigte VEP − vorhandene VEP", "BEP = Valenzelektronen ÷ 2", "BEP = Ordnungszahl"], correct: 1, expl: "BEP = benötigte VEP minus vorhandene VEP."
+  },
+  {
+    q: "Welche Eigenschaft haben molekular gebaute Stoffe?",
+    opts: ["Leiten im festen Zustand Strom", "Haben meist niedrige Schmelzpunkte", "Sind immer Feststoffe", "Glänzen metallisch"], correct: 1, expl: "Molekulare Stoffe haben schwache Kräfte zwischen Molekülen → niedrige Schmelzpunkte."
+  },
+  {
+    q: "Wie viele nichtbindende Elektronenpaare hat das O-Atom in H₂O?",
+    opts: ["0", "1", "2", "3"], correct: 2, expl: "O hat 6 VE, davon 2 in BEP → 4 Elektronen übrig → 2 NEP."
+  },
+  {
+    q: "Welche Bindung liegt in Eisen (Fe) vor?",
+    opts: ["Ionenbindung", "Metallbindung", "Atombindung", "Wasserstoffbrückenbindung"], correct: 1, expl: "Reines Metall → Metallbindung (Elektronengas)."
+  },
+  {
+    q: "Welches Molekül hat eine Dreifachbindung?",
+    opts: ["O₂", "H₂O", "N₂", "CO₂"], correct: 2, expl: "N₂ hat eine Dreifachbindung (jedes N braucht 3 weitere Elektronen)."
+  },
+  {
+    q: "Die EN-Differenz zwischen H und Cl (EN 2,2 und 3,16) beträgt:",
+    opts: ["0,5", "0,96", "1,24", "2,2"], correct: 1, expl: "3,16 − 2,2 = 0,96 → polare Atombindung."
+  },
+  {
+    q: "Welche räumliche Anordnung haben 3 Kugelwolken?",
+    opts: ["linear (180°)", "trigonal (120°)", "tetraedrisch (109,5°)", "oktaedrisch (90°)"], correct: 1, expl: "3 Kugelwolken → trigonal planar, Winkel 120°."
+  },
+  {
+    q: "Wer hat die Elektronegativitätsskala eingeführt?",
+    opts: ["Bohr", "Pauling", "Einstein", "Dalton"], correct: 1, expl: "Linus Pauling führte die nach ihm benannte Elektronegativitätsskala ein."
+  },
+  {
+    q: "Welche Molekülform hat HF?",
+    opts: ["gewinkelt", "tetraedrisch", "linear/gestreckt", "trigonal pyramidal"], correct: 2, expl: "Bei nur 2 Atomen ist das Molekül zwangsläufig linear/gestreckt."
+  },
+  {
+    q: "Was hat Wasserstoff als Besonderheit bei der Oktettregel?",
+    opts: ["Es braucht 8 Elektronen", "Es braucht 4 Elektronen", "Es braucht nur 2 Elektronen (Duett)", "Es braucht keine"], correct: 2, expl: "H und He erreichen die Edelgaskonfiguration mit 2 VE (Duett)."
+  },
+  {
+    q: "Welches der folgenden Moleküle ist LINEAR gebaut?",
+    opts: ["H₂O", "NH₃", "CO₂", "CH₄"], correct: 2, expl: "CO₂ hat 2 BP, 0 NEP am C → linear (180°)."
+  },
+  {
+    q: "Wieviele Valenzelektronen hat Kohlenstoff (C)?",
+    opts: ["2", "4", "6", "8"], correct: 1, expl: "C steht in der 4. Hauptgruppe → 4 Valenzelektronen."
+  },
+  {
+    q: "Warum leitet festes Kochsalz keinen Strom, gelöst aber schon?",
+    opts: ["Wasser leitet selbst Strom", "Im Feststoff sind die Ionen fest, im Wasser frei beweglich", "Salz ist immer ein Isolator", "Strom geht nur durch Metalle"], correct: 1, expl: "Im Salzgitter sitzen die Ionen fest; in Lösung sind sie beweglich → Stromleitung möglich."
+  },
+  {
+    q: "Was bedeutet der Begriff 'Zentralatom'?",
+    opts: ["Das schwerste Atom im Molekül", "Das Atom in der Mitte einer Valenzstrichformel, das die meisten Bindungen eingeht", "Der Atomkern", "Ein einzelnes Elektron"], correct: 1, expl: "Zentralatom = mittiges Atom, das mit mehreren anderen Atomen verbunden ist."
+  },
+  {
+    q: "Warum ist CO₂ kein Dipol, obwohl die C=O-Bindung polar ist?",
+    opts: ["C=O ist gar nicht polar", "Das Molekül ist symmetrisch (linear), die Dipolmomente heben sich auf", "C hat keine Elektronegativität", "CO₂ ist ein Ion"], correct: 1, expl: "Lineare Struktur → die entgegengesetzten Dipolmomente heben sich gegenseitig auf."
+  },
+  {
+    q: "Welches ist KEINE Bindungsart?",
+    opts: ["Ionenbindung", "Metallbindung", "Elektronenpaarbindung", "Atomkernbindung"], correct: 3, expl: "'Atomkernbindung' gibt es nicht als Begriff für die 9. Klasse."
+  },
+  {
+    q: "Die EN-Differenz zwischen F–F beträgt:",
+    opts: ["0", "1,0", "4,0", "8,0"], correct: 0, expl: "Zwei gleiche Atome → ΔEN = 0 → unpolar."
+  },
+  {
+    q: "Welche Aussage zum Kugelwolkenmodell ist FALSCH?",
+    opts: ["Kugelwolken enthalten maximal 2 Elektronen", "Die inneren Elektronen werden im Atomrumpf zusammengefasst", "Leere Kugelwolken werden immer gezeichnet", "Kugelwolken werden zuerst einfach, dann doppelt besetzt"], correct: 2, expl: "Leere Kugelwolken werden NICHT gezeichnet."
+  },
+  {
+    q: "Was passiert bei der Ionenbindung?",
+    opts: ["Elektronen werden geteilt", "Elektronen werden vom Metall zum Nichtmetall übertragen", "Beide Atome werden positiv", "Atome verschmelzen"], correct: 1, expl: "Metall gibt Elektron(en) ab → Kation; Nichtmetall nimmt auf → Anion."
+  },
+  {
+    q: "Welche Elemente haben ungefähr gleich hohe EN-Werte (Differenz < 0,5)?",
+    opts: ["Na und Cl", "H und F", "C und H", "K und O"], correct: 2, expl: "C (2,55) und H (2,2) → ΔEN = 0,35 → (fast) unpolar."
+  },
+  {
+    q: "Welcher Winkel herrscht in einem perfekten Tetraeder?",
+    opts: ["90°", "107°", "109,5°", "120°"], correct: 2, expl: "Tetraeder → 109,5° (Methan-Winkel)."
+  },
+  {
+    q: "Was ist eine Formalladung?",
+    opts: ["Die tatsächliche Ladung eines Ions", "Die gedachte Ladung eines Atoms in einer Lewis-Formel nach Aufteilung der BEP", "Die Masse eines Atoms", "Die Elektronegativität"], correct: 1, expl: "Formalladung hilft zu prüfen, ob die Valenzstrichformel optimal ist."
+  },
+  {
+    q: "Welches Atom eignet sich NICHT als Zentralatom in einer Valenzstrichformel?",
+    opts: ["C", "N", "O", "H"], correct: 3, expl: "Wasserstoff kann nur eine Bindung eingehen – steht immer außen."
+  }
+];
+
+let quizState = null;
+
+function startQuiz(numQ) {
+  const pool = [...quizPool];
+  shuffleArray(pool);
+  const questions = pool.slice(0, numQ).map(q => {
+    // Shuffle options too, keeping track of correct index
+    const correctText = q.opts[q.correct];
+    const shuffled = [...q.opts];
+    shuffleArray(shuffled);
+    return {
+      q: q.q,
+      opts: shuffled,
+      correct: shuffled.indexOf(correctText),
+      expl: q.expl
+    };
+  });
+  quizState = { questions, index: 0, score: 0, answered: false };
+  document.getElementById('quiz-start').style.display = 'none';
+  document.getElementById('quiz-end').style.display = 'none';
+  document.getElementById('quiz-game').style.display = 'block';
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const { questions, index, score } = quizState;
+  const q = questions[index];
+  document.getElementById('quiz-num').textContent = `${index+1}/${questions.length}`;
+  document.getElementById('quiz-score').textContent = score;
+  document.getElementById('quiz-progress').style.width = `${(index / questions.length) * 100}%`;
+  document.getElementById('quiz-question').textContent = q.q;
+  document.getElementById('quiz-options').innerHTML = q.opts.map((opt, i) =>
+    `<button class="answer-option" data-i="${i}" onclick="answerQuestion(${i})">${String.fromCharCode(65+i)}) ${opt}</button>`
+  ).join('');
+  document.getElementById('quiz-explanation').style.display = 'none';
+  document.getElementById('quiz-next').style.display = 'none';
+  quizState.answered = false;
+}
+
+function answerQuestion(i) {
+  if (quizState.answered) return;
+  const q = quizState.questions[quizState.index];
+  const opts = document.querySelectorAll('.answer-option');
+  opts.forEach(o => o.classList.add('locked'));
+  opts[q.correct].classList.add('correct');
+  if (i !== q.correct) {
+    opts[i].classList.add('incorrect');
+  } else {
+    quizState.score++;
+    document.getElementById('quiz-score').textContent = quizState.score;
+  }
+  document.getElementById('quiz-explanation').style.display = 'block';
+  document.getElementById('quiz-explanation').innerHTML = `<strong>${i === q.correct ? '✅ Richtig!' : '❌ Falsch.'}</strong> ${q.expl}`;
+  document.getElementById('quiz-next').style.display = 'inline-block';
+  quizState.answered = true;
+}
+
+function nextQuestion() {
+  quizState.index++;
+  if (quizState.index >= quizState.questions.length) {
+    endQuiz();
+  } else {
+    renderQuestion();
+  }
+}
+
+function endQuiz() {
+  const { score, questions } = quizState;
+  const pct = Math.round((score / questions.length) * 100);
+  let msg, grade;
+  if (pct >= 90) { msg = "🏆 Hervorragend! Du bist bereit für die Klausur."; grade = "1"; }
+  else if (pct >= 75) { msg = "👏 Sehr gut! Wiederhole noch die unsicheren Themen."; grade = "2"; }
+  else if (pct >= 60) { msg = "👍 Solide. Schau dir die Erklärungen nochmal an."; grade = "3"; }
+  else if (pct >= 40) { msg = "📚 Noch Luft nach oben – geh die Themen-Notizen nochmal durch."; grade = "4"; }
+  else { msg = "💪 Nicht aufgeben! Fang mit den Flashcards an."; grade = "5–6"; }
+
+  document.getElementById('quiz-game').style.display = 'none';
+  document.getElementById('quiz-end').style.display = 'block';
+  document.getElementById('quiz-end').innerHTML = `
+    <div class="card score-display">
+      <div class="big">${score} / ${questions.length}</div>
+      <p style="font-size:1.2rem; margin-top: 0.5rem;">${pct}% · Ungefähre Note: <strong>${grade}</strong></p>
+      <p style="margin-top:1rem;">${msg}</p>
+      <div class="btn-row">
+        <button class="btn" onclick="startQuiz(10)">🔄 Nochmal (10 Fragen)</button>
+        <button class="btn secondary" onclick="startQuiz(20)">📚 Großes Quiz (20)</button>
+        <button class="btn secondary" onclick="document.getElementById('quiz-start').style.display='block'; document.getElementById('quiz-end').style.display='none';">Zurück</button>
+      </div>
+    </div>`;
+}
+
+</script>
+</body>
+</html>
