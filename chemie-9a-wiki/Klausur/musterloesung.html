@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>✅ Musterlösung – Test-Klausur Chemie 9a · Chemie 9a Wiki</title>
+<style>
+:root {
+  --bg: #0f172a;
+  --bg-card: #1e293b;
+  --bg-card-2: #334155;
+  --text: #e2e8f0;
+  --text-dim: #94a3b8;
+  --accent: #38bdf8;
+  --accent-2: #a78bfa;
+  --success: #22c55e;
+  --warn: #f59e0b;
+  --border: #334155;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+  color: var(--text);
+  line-height: 1.65;
+  min-height: 100vh;
+}
+a { color: var(--accent); text-decoration: none; border-bottom: 1px dashed transparent; transition: border-color 0.15s; }
+a:hover { border-bottom-color: var(--accent); }
+a.wikilink {
+  background: rgba(56,189,248,0.12);
+  padding: 0.05rem 0.4rem;
+  border-radius: 4px;
+  border-bottom: none;
+}
+a.wikilink:hover { background: rgba(56,189,248,0.25); }
+a.external::after { content: " ↗"; font-size: 0.8em; color: var(--text-dim); }
+
+header {
+  padding: 1.2rem 2rem;
+  background: rgba(15,23,42,0.85);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--border);
+  position: sticky; top: 0; z-index: 10;
+  display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;
+}
+header .brand { font-weight: 700; font-size: 1.1rem; background: linear-gradient(90deg, var(--accent), var(--accent-2)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+header nav { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+header nav a {
+  background: var(--bg-card); color: var(--text); border: 1px solid var(--border);
+  padding: 0.4rem 0.8rem; border-radius: 999px; font-size: 0.8rem;
+}
+header nav a:hover { border-color: var(--accent); }
+header nav a.current { background: var(--accent); color: var(--bg); border-color: var(--accent); font-weight: 600; }
+
+.layout { display: flex; max-width: 1200px; margin: 0 auto; }
+.sidebar {
+  width: 260px; flex-shrink: 0;
+  padding: 2rem 1rem 2rem 2rem;
+  border-right: 1px solid var(--border);
+  position: sticky; top: 80px;
+  max-height: calc(100vh - 80px); overflow-y: auto;
+}
+.sidebar h3 { color: var(--accent); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.6rem; margin-top: 1rem; }
+.sidebar h3:first-child { margin-top: 0; }
+.sidebar ul { list-style: none; padding: 0; }
+.sidebar li { margin-bottom: 0.3rem; }
+.sidebar a { display: block; padding: 0.4rem 0.6rem; border-radius: 6px; color: var(--text-dim); font-size: 0.9rem; border-bottom: none; }
+.sidebar a:hover { background: var(--bg-card); color: var(--text); }
+.sidebar a.current { background: var(--bg-card-2); color: var(--accent); font-weight: 600; }
+
+main { flex: 1; padding: 2rem 2.5rem; max-width: 820px; min-width: 0; }
+
+h1, h2, h3, h4 { margin-top: 1.6rem; margin-bottom: 0.8rem; line-height: 1.3; }
+h1 { font-size: 1.9rem; color: transparent; background: linear-gradient(90deg, var(--accent), var(--accent-2)); -webkit-background-clip: text; background-clip: text; margin-top: 0; }
+h2 { font-size: 1.4rem; color: var(--accent); border-bottom: 1px solid var(--border); padding-bottom: 0.4rem; }
+h3 { font-size: 1.1rem; color: var(--accent-2); }
+h4 { font-size: 1rem; color: var(--text); }
+
+p, ul, ol { margin-bottom: 1rem; }
+ul, ol { padding-left: 1.5rem; }
+li { margin-bottom: 0.3rem; }
+strong { color: #fbbf24; font-weight: 600; }
+em { color: var(--text-dim); }
+code {
+  background: var(--bg-card-2);
+  padding: 0.1rem 0.4rem;
+  border-radius: 4px;
+  font-size: 0.9em;
+  font-family: "SF Mono", Consolas, Monaco, monospace;
+}
+pre {
+  background: var(--bg-card);
+  padding: 1rem;
+  border-radius: 8px;
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  margin-bottom: 1rem;
+}
+pre code { background: transparent; padding: 0; font-size: 0.85rem; }
+.mermaid { background: var(--bg-card); padding: 1rem; border-radius: 8px; border: 1px solid var(--border); margin: 1rem 0; text-align: center; }
+blockquote {
+  border-left: 4px solid var(--accent);
+  padding: 0.8rem 1rem;
+  background: rgba(56,189,248,0.08);
+  margin: 1rem 0;
+  border-radius: 0 6px 6px 0;
+}
+blockquote p:last-child { margin-bottom: 0; }
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1rem 0;
+  font-size: 0.92rem;
+  background: var(--bg-card);
+  border-radius: 6px;
+  overflow: hidden;
+}
+th, td { border: 1px solid var(--border); padding: 0.55rem 0.75rem; text-align: left; vertical-align: top; }
+th { background: var(--bg-card-2); color: var(--accent); font-weight: 600; }
+tr:nth-child(even) td { background: rgba(255,255,255,0.02); }
+
+hr { border: 0; border-top: 1px solid var(--border); margin: 2rem 0; }
+
+.breadcrumb { color: var(--text-dim); font-size: 0.85rem; margin-bottom: 1.5rem; }
+.breadcrumb a { color: var(--text-dim); }
+
+footer {
+  margin-top: 3rem; padding-top: 1.5rem; border-top: 1px solid var(--border);
+  color: var(--text-dim); font-size: 0.85rem;
+}
+footer .nav-prev-next { display: flex; justify-content: space-between; gap: 1rem; margin-top: 1rem; }
+footer .nav-prev-next a {
+  background: var(--bg-card); padding: 0.8rem 1rem; border-radius: 8px;
+  border: 1px solid var(--border); border-bottom: 1px solid var(--border);
+  flex: 1; max-width: 48%;
+}
+footer .nav-prev-next a:hover { border-color: var(--accent); background: var(--bg-card-2); }
+footer .nav-prev-next .label { display: block; color: var(--text-dim); font-size: 0.75rem; margin-bottom: 0.2rem; }
+footer .nav-prev-next .title { color: var(--accent); font-weight: 600; }
+footer .nav-prev-next .next { text-align: right; }
+
+@media (max-width: 860px) {
+  .sidebar { display: none; }
+  main { padding: 1.2rem; max-width: 100%; }
+  header { padding: 1rem; }
+  h1 { font-size: 1.5rem; }
+}
+</style>
+<script type="module">
+  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+  mermaid.initialize({ startOnLoad: false, theme: 'dark', themeVariables: { background: '#1e293b', primaryColor: '#334155', primaryTextColor: '#e2e8f0', primaryBorderColor: '#38bdf8', lineColor: '#94a3b8' } });
+  document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('pre > code.language-mermaid, pre > code').forEach(el => {
+      const code = el.textContent.trim();
+      if (code.startsWith('flowchart') || code.startsWith('graph') || code.startsWith('sequenceDiagram')) {
+        const div = document.createElement('div');
+        div.className = 'mermaid';
+        div.textContent = code;
+        el.parentElement.replaceWith(div);
+      }
+    });
+    mermaid.run();
+  });
+</script>
+</head>
+<body>
+<header>
+  <div class="brand">⚗️ Chemie 9a Wiki</div>
+  <nav><a href="../index.html">🏠 Start</a>
+<a href="https://n-ms.github.io/sandbox/chemie-9a/" target="_blank" rel="noopener">🎯 Lernseite</a></nav>
+</header>
+<div class="layout">
+  <aside class="sidebar"><h3>Start</h3><ul>
+<li><a class="" href="../index.html">🏠 Übersicht</a></li>
+</ul>
+<h3>Themen</h3><ul>
+<li><a class="" href="../Themen/1-1-edelgaskonfiguration-und-oktettregel.html">1.1 Oktettregel</a></li>
+<li><a class="" href="../Themen/1-2-kugelwolkenmodell.html">1.2 Kugelwolkenmodell</a></li>
+<li><a class="" href="../Themen/1-3-elektronenpaarbindung-atombindung.html">1.3 Elektronenpaarbindung</a></li>
+<li><a class="" href="../Themen/1-4-bindungstypen-im-ueberblick.html">1.4 Bindungstypen</a></li>
+<li><a class="" href="../Themen/1-5-elektronegativitaet-und-en-differenz.html">1.5 Elektronegativität</a></li>
+<li><a class="" href="../Themen/1-6-strukturformeln-lewis-formeln-valenzstrichformeln.html">1.6 Valenzstrichformeln</a></li>
+<li><a class="" href="../Themen/1-7-polare-atombindungen-und-dipole.html">1.7 Dipole</a></li>
+<li><a class="" href="../Themen/1-8-epa-modell-molekuelgeometrie.html">1.8 EPA-Modell</a></li>
+</ul>
+<h3>Klausur</h3><ul>
+<li><a class="" href="../Klausur/testklausur.html">📝 Testklausur</a></li>
+<li><a class="current" href="../Klausur/musterloesung.html">✅ Musterlösung</a></li>
+</ul></aside>
+  <main>
+    <h1>✅ Musterlösung – Test-Klausur Chemie 9a</h1>
+<blockquote>
+<p>Lösungen mit Erklärung und Punktevergabe. Nutze diese Musterlösung zum <strong>Selbstkorrigieren</strong> und Verstehen.</p>
+</blockquote>
+<hr />
+<h2>Aufgabe 1 – Edelgaskonfiguration und Oktettregel (5 P.)</h2>
+<p><strong>a)</strong> (2 P.)
+Die <strong>Edelgaskonfiguration</strong> bezeichnet die Elektronenanordnung, bei der ein Atom genauso viele Außenelektronen hat wie ein Edelgas – also <strong>8 Außenelektronen</strong> (Ausnahme: He mit 2). Diese Konfiguration ist energetisch besonders günstig und deshalb <strong>stabil</strong>.</p>
+<p><strong>b)</strong> (1 P.)
+<strong>Oktettregel:</strong> Atome streben danach, <strong>acht Außenelektronen</strong> (bzw. eine volle äußere Schale) zu erreichen, indem sie Elektronen abgeben, aufnehmen oder teilen.</p>
+<p><strong>c)</strong> (2 P.)
+Magnesium hat <strong>2 Valenzelektronen</strong> (2. Hauptgruppe). Es ist <strong>einfacher, 2 Elektronen abzugeben</strong>, als 6 neue aufzunehmen. Mg gibt also <strong>2 Elektronen ab</strong> und erreicht so die Neon-Konfiguration → wird zu Mg²⁺.</p>
+<hr />
+<h2>Aufgabe 2 – Kugelwolkenmodell (4 P.)</h2>
+<p><strong>a)</strong> (2 P.)
+Stickstoff (N) hat <strong>5 Valenzelektronen</strong>. Im Kugelwolkenmodell:
+- Zentraler Kreis mit „N"
+- <strong>4 Kugelwolken</strong> drumherum
+- Verteilung: <strong>1 doppelt besetzt, 3 einfach besetzt</strong>
+  (Erst werden alle 4 einfach gefüllt, dann beim 5. Elektron wird eine verdoppelt.)</p>
+<pre><code>        ·
+       (N)
+      / | \
+     ·  ··  ·
+</code></pre>
+<p>(Einfach besetzte Kreise z. B. blau, doppelt besetzte z. B. lila.)</p>
+<p><strong>b)</strong> (2 P.)
+Kugelwolken bestehen aus <strong>negativ geladenen Elektronen</strong>, die sich <strong>gegenseitig abstoßen</strong>. Damit die Abstoßung minimal ist, ordnen sie sich so an, dass sie <strong>den größtmöglichen Abstand</strong> voneinander haben. So entstehen die typischen Winkel (180°, 120°, 109,5°).</p>
+<hr />
+<h2>Aufgabe 3 – Bindungstypen (6 P., je 1 P.)</h2>
+<table>
+<thead>
+<tr>
+<th>Stoff</th>
+<th>Bindungstyp</th>
+<th>Begründung</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Kupfer (Cu)</td>
+<td><strong>Metallbindung</strong></td>
+<td>Metall + Metall; Elektronengas</td>
+</tr>
+<tr>
+<td>Kaliumchlorid (KCl)</td>
+<td><strong>Ionenbindung</strong></td>
+<td>Metall + Nichtmetall, großer EN-Unterschied</td>
+</tr>
+<tr>
+<td>Sauerstoff (O₂)</td>
+<td><strong>Elektronenpaarbindung</strong></td>
+<td>Nichtmetall + Nichtmetall (gleiches Element → unpolar)</td>
+</tr>
+<tr>
+<td>Magnesiumoxid (MgO)</td>
+<td><strong>Ionenbindung</strong></td>
+<td>Metall + Nichtmetall, ΔEN &gt; 1,7</td>
+</tr>
+<tr>
+<td>Methan (CH₄)</td>
+<td><strong>Elektronenpaarbindung</strong></td>
+<td>Nichtmetall + Nichtmetall (C und H)</td>
+</tr>
+<tr>
+<td>Eisen (Fe)</td>
+<td><strong>Metallbindung</strong></td>
+<td>reines Metall</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>Aufgabe 4 – Elektronegativität (6 P.)</h2>
+<p><strong>a)</strong> (1 P.)
+<strong>Elektronegativität</strong> ist ein Zahlenwert, der angibt, wie stark ein Atom in einer Bindung <strong>Bindungselektronen zu sich zieht</strong>.</p>
+<p><strong>b)</strong> (1 P.)
+<strong>Fluor (F)</strong> hat die höchste Elektronegativität (EN = 4,0). Es steht <strong>rechts oben</strong> im Periodensystem (7. Hauptgruppe, 2. Periode).</p>
+<p><strong>c)</strong> (4 P., je 1 P.)</p>
+<table>
+<thead>
+<tr>
+<th>Bindung</th>
+<th>Rechnung</th>
+<th>ΔEN</th>
+<th>Bindungsart</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>N–H</td>
+<td>3,0 − 2,2</td>
+<td><strong>0,8</strong></td>
+<td>polare Elektronenpaarbindung</td>
+</tr>
+<tr>
+<td>F–F</td>
+<td>4,0 − 4,0</td>
+<td><strong>0</strong></td>
+<td>unpolare Elektronenpaarbindung</td>
+</tr>
+<tr>
+<td>Na–Cl</td>
+<td>3,16 − 0,9</td>
+<td><strong>2,26</strong></td>
+<td>Ionenbindung</td>
+</tr>
+<tr>
+<td>O–H</td>
+<td>3,44 − 2,2</td>
+<td><strong>1,24</strong></td>
+<td>polare Elektronenpaarbindung</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>Aufgabe 5 – Valenzstrichformeln (8 P.)</h2>
+<p><strong>a) HF</strong> (1 P.)</p>
+<pre><code>H — F̈    (F hat 3 freie Elektronenpaare)
+      ·· ·· ··
+H — F
+      ··
+</code></pre>
+<p>Kurz: <code>H–F</code> mit 3 NEP am F.</p>
+<p><strong>b) NH₃</strong> (2 P.)
+- N in der Mitte, drei H außen, <strong>1 NEP am N</strong> (oben):</p>
+<pre><code>     H
+     |
+H — N — H
+     ¨     (ein freies Elektronenpaar am N, meist oben gezeichnet)
+</code></pre>
+<p><strong>c) CO₂</strong> (2 P.)
+Linear, Doppelbindungen, je 2 NEP am O:</p>
+<pre><code>Ö = C = Ö     (je 2 freie Elektronenpaare an jedem O)
+</code></pre>
+<p><strong>d) N₂</strong> (1 P.)
+Dreifachbindung, je 1 NEP pro N:</p>
+<pre><code>:N ≡ N:
+</code></pre>
+<p><strong>e) Rechenweg am Beispiel NH₃</strong> (2 P.)</p>
+<table>
+<thead>
+<tr>
+<th>Schritt</th>
+<th>Rechnung</th>
+<th>Ergebnis</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>VE vorhanden</td>
+<td>5 + 3·1</td>
+<td>8 VE → <strong>4 VEP</strong></td>
+</tr>
+<tr>
+<td>VE benötigt</td>
+<td>8 + 3·2</td>
+<td>14 VE → <strong>7 VEP</strong></td>
+</tr>
+<tr>
+<td>BEP</td>
+<td>7 − 4</td>
+<td><strong>3 BEP</strong></td>
+</tr>
+<tr>
+<td>NEP</td>
+<td>4 − 3</td>
+<td><strong>1 NEP</strong></td>
+</tr>
+</tbody>
+</table>
+<p>→ N als Zentralatom (kann 3 Bindungen), 3 × H außen, 1 freies Elektronenpaar am N.</p>
+<hr />
+<h2>Aufgabe 6 – Polare Bindungen und Dipole (6 P.)</h2>
+<p><strong>a)</strong> (2 P.)
+Eine <strong>unpolare</strong> Elektronenpaarbindung liegt vor, wenn beide Bindungspartner (fast) gleich stark an den Elektronen ziehen (ΔEN &lt; 0,5). Die Elektronen sind dann gleichmäßig zwischen den Atomen verteilt.
+Eine <strong>polare</strong> Elektronenpaarbindung liegt vor, wenn die EN-Werte stärker unterschiedlich sind (0,5 ≤ ΔEN ≤ 1,7). Dann sind die Elektronen zum elektronegativeren Atom hin verschoben, und es entstehen <strong>Partialladungen</strong> (δ⁺ / δ⁻).</p>
+<p><strong>b)</strong> (2 P.)
+Ein <strong>Dipol-Molekül</strong> ist ein Molekül mit zwei unterschiedlich geladenen Polen.
+<strong>Bedingungen:</strong>
+1. Es muss mindestens eine <strong>polare Bindung</strong> enthalten (ΔEN zwischen 0,5 und 1,7).
+2. Das Molekül muss <strong>asymmetrisch</strong> aufgebaut sein, damit sich die Teilladungen <strong>nicht gegenseitig aufheben</strong>.</p>
+<p><strong>c)</strong> (2 P.)
+- <strong>Wasser (H₂O):</strong> hat polare O–H-Bindungen (ΔEN = 1,24) und ist <strong>gewinkelt</strong> gebaut. Die negative Seite (am O) und die positive Seite (an den Hs) liegen <strong>räumlich getrennt</strong> → <strong>Dipol</strong>. ✅
+- <strong>Kohlenstoffdioxid (CO₂):</strong> hat ebenfalls polare C=O-Bindungen, ist aber <strong>linear</strong> (O=C=O). Die beiden entgegengesetzten Teilladungen zeigen in genau entgegengesetzte Richtungen und <strong>heben sich gegenseitig auf</strong> → <strong>kein Dipol</strong>. ❌</p>
+<hr />
+<h2>Aufgabe 7 – EPA-Modell (5 P., je 1 P.)</h2>
+<table>
+<thead>
+<tr>
+<th>Molekül</th>
+<th>BP</th>
+<th>NEP</th>
+<th>Elektronengeometrie</th>
+<th>Molekülgeometrie</th>
+<th>Winkel</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>CH₄</strong></td>
+<td>4</td>
+<td>0</td>
+<td>tetraedrisch</td>
+<td><strong>tetraedrisch</strong></td>
+<td>109,5°</td>
+</tr>
+<tr>
+<td><strong>NH₃</strong></td>
+<td>3</td>
+<td>1</td>
+<td>tetraedrisch</td>
+<td><strong>trigonal pyramidal</strong></td>
+<td>~107°</td>
+</tr>
+<tr>
+<td><strong>H₂O</strong></td>
+<td>2</td>
+<td>2</td>
+<td>tetraedrisch</td>
+<td><strong>gewinkelt</strong></td>
+<td>~104,5°</td>
+</tr>
+<tr>
+<td><strong>HF</strong></td>
+<td>1</td>
+<td>3</td>
+<td>tetraedrisch</td>
+<td><strong>linear / gestreckt</strong></td>
+<td>— (nur 2 Atome)</td>
+</tr>
+<tr>
+<td><strong>CO₂</strong></td>
+<td>2</td>
+<td>0</td>
+<td>linear</td>
+<td><strong>linear</strong></td>
+<td>180°</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>Selbstkontrolle</h2>
+<ul>
+<li>[ ] Ich habe meine Antworten mit der Musterlösung verglichen.</li>
+<li>[ ] Bei Abzügen weiß ich, <strong>woran</strong> es lag (Begründung fehlte? Rechenfehler?).</li>
+<li>[ ] Ich kann jetzt die Themen, bei denen ich Fehler hatte, im <a class="wikilink" href="../index.html">Wiki</a> noch einmal nachlesen.</li>
+</ul>
+<p><strong>Viel Erfolg für die echte Klausur! 🎯</strong></p>
+    <footer>
+      <div class="nav-prev-next"><a class="prev" href="../Klausur/testklausur.html"><span class="label">◀ Zurück</span><span class="title">Testklausur</span></a><span></span></div>
+      <p style="margin-top:1.5rem;">Lernunterlagen zur Klausurvorbereitung Chemie 9a · Quellen: LEIFIchemie, Uni Erlangen</p>
+    </footer>
+  </main>
+</div>
+</body>
+</html>

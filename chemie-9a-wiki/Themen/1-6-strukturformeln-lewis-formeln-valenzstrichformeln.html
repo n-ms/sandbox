@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>1.6 Strukturformeln, Lewis-Formeln, Valenzstrichformeln · Chemie 9a Wiki</title>
+<style>
+:root {
+  --bg: #0f172a;
+  --bg-card: #1e293b;
+  --bg-card-2: #334155;
+  --text: #e2e8f0;
+  --text-dim: #94a3b8;
+  --accent: #38bdf8;
+  --accent-2: #a78bfa;
+  --success: #22c55e;
+  --warn: #f59e0b;
+  --border: #334155;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+  color: var(--text);
+  line-height: 1.65;
+  min-height: 100vh;
+}
+a { color: var(--accent); text-decoration: none; border-bottom: 1px dashed transparent; transition: border-color 0.15s; }
+a:hover { border-bottom-color: var(--accent); }
+a.wikilink {
+  background: rgba(56,189,248,0.12);
+  padding: 0.05rem 0.4rem;
+  border-radius: 4px;
+  border-bottom: none;
+}
+a.wikilink:hover { background: rgba(56,189,248,0.25); }
+a.external::after { content: " ↗"; font-size: 0.8em; color: var(--text-dim); }
+
+header {
+  padding: 1.2rem 2rem;
+  background: rgba(15,23,42,0.85);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--border);
+  position: sticky; top: 0; z-index: 10;
+  display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;
+}
+header .brand { font-weight: 700; font-size: 1.1rem; background: linear-gradient(90deg, var(--accent), var(--accent-2)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+header nav { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+header nav a {
+  background: var(--bg-card); color: var(--text); border: 1px solid var(--border);
+  padding: 0.4rem 0.8rem; border-radius: 999px; font-size: 0.8rem;
+}
+header nav a:hover { border-color: var(--accent); }
+header nav a.current { background: var(--accent); color: var(--bg); border-color: var(--accent); font-weight: 600; }
+
+.layout { display: flex; max-width: 1200px; margin: 0 auto; }
+.sidebar {
+  width: 260px; flex-shrink: 0;
+  padding: 2rem 1rem 2rem 2rem;
+  border-right: 1px solid var(--border);
+  position: sticky; top: 80px;
+  max-height: calc(100vh - 80px); overflow-y: auto;
+}
+.sidebar h3 { color: var(--accent); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.6rem; margin-top: 1rem; }
+.sidebar h3:first-child { margin-top: 0; }
+.sidebar ul { list-style: none; padding: 0; }
+.sidebar li { margin-bottom: 0.3rem; }
+.sidebar a { display: block; padding: 0.4rem 0.6rem; border-radius: 6px; color: var(--text-dim); font-size: 0.9rem; border-bottom: none; }
+.sidebar a:hover { background: var(--bg-card); color: var(--text); }
+.sidebar a.current { background: var(--bg-card-2); color: var(--accent); font-weight: 600; }
+
+main { flex: 1; padding: 2rem 2.5rem; max-width: 820px; min-width: 0; }
+
+h1, h2, h3, h4 { margin-top: 1.6rem; margin-bottom: 0.8rem; line-height: 1.3; }
+h1 { font-size: 1.9rem; color: transparent; background: linear-gradient(90deg, var(--accent), var(--accent-2)); -webkit-background-clip: text; background-clip: text; margin-top: 0; }
+h2 { font-size: 1.4rem; color: var(--accent); border-bottom: 1px solid var(--border); padding-bottom: 0.4rem; }
+h3 { font-size: 1.1rem; color: var(--accent-2); }
+h4 { font-size: 1rem; color: var(--text); }
+
+p, ul, ol { margin-bottom: 1rem; }
+ul, ol { padding-left: 1.5rem; }
+li { margin-bottom: 0.3rem; }
+strong { color: #fbbf24; font-weight: 600; }
+em { color: var(--text-dim); }
+code {
+  background: var(--bg-card-2);
+  padding: 0.1rem 0.4rem;
+  border-radius: 4px;
+  font-size: 0.9em;
+  font-family: "SF Mono", Consolas, Monaco, monospace;
+}
+pre {
+  background: var(--bg-card);
+  padding: 1rem;
+  border-radius: 8px;
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  margin-bottom: 1rem;
+}
+pre code { background: transparent; padding: 0; font-size: 0.85rem; }
+.mermaid { background: var(--bg-card); padding: 1rem; border-radius: 8px; border: 1px solid var(--border); margin: 1rem 0; text-align: center; }
+blockquote {
+  border-left: 4px solid var(--accent);
+  padding: 0.8rem 1rem;
+  background: rgba(56,189,248,0.08);
+  margin: 1rem 0;
+  border-radius: 0 6px 6px 0;
+}
+blockquote p:last-child { margin-bottom: 0; }
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1rem 0;
+  font-size: 0.92rem;
+  background: var(--bg-card);
+  border-radius: 6px;
+  overflow: hidden;
+}
+th, td { border: 1px solid var(--border); padding: 0.55rem 0.75rem; text-align: left; vertical-align: top; }
+th { background: var(--bg-card-2); color: var(--accent); font-weight: 600; }
+tr:nth-child(even) td { background: rgba(255,255,255,0.02); }
+
+hr { border: 0; border-top: 1px solid var(--border); margin: 2rem 0; }
+
+.breadcrumb { color: var(--text-dim); font-size: 0.85rem; margin-bottom: 1.5rem; }
+.breadcrumb a { color: var(--text-dim); }
+
+footer {
+  margin-top: 3rem; padding-top: 1.5rem; border-top: 1px solid var(--border);
+  color: var(--text-dim); font-size: 0.85rem;
+}
+footer .nav-prev-next { display: flex; justify-content: space-between; gap: 1rem; margin-top: 1rem; }
+footer .nav-prev-next a {
+  background: var(--bg-card); padding: 0.8rem 1rem; border-radius: 8px;
+  border: 1px solid var(--border); border-bottom: 1px solid var(--border);
+  flex: 1; max-width: 48%;
+}
+footer .nav-prev-next a:hover { border-color: var(--accent); background: var(--bg-card-2); }
+footer .nav-prev-next .label { display: block; color: var(--text-dim); font-size: 0.75rem; margin-bottom: 0.2rem; }
+footer .nav-prev-next .title { color: var(--accent); font-weight: 600; }
+footer .nav-prev-next .next { text-align: right; }
+
+@media (max-width: 860px) {
+  .sidebar { display: none; }
+  main { padding: 1.2rem; max-width: 100%; }
+  header { padding: 1rem; }
+  h1 { font-size: 1.5rem; }
+}
+</style>
+<script type="module">
+  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+  mermaid.initialize({ startOnLoad: false, theme: 'dark', themeVariables: { background: '#1e293b', primaryColor: '#334155', primaryTextColor: '#e2e8f0', primaryBorderColor: '#38bdf8', lineColor: '#94a3b8' } });
+  document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('pre > code.language-mermaid, pre > code').forEach(el => {
+      const code = el.textContent.trim();
+      if (code.startsWith('flowchart') || code.startsWith('graph') || code.startsWith('sequenceDiagram')) {
+        const div = document.createElement('div');
+        div.className = 'mermaid';
+        div.textContent = code;
+        el.parentElement.replaceWith(div);
+      }
+    });
+    mermaid.run();
+  });
+</script>
+</head>
+<body>
+<header>
+  <div class="brand">⚗️ Chemie 9a Wiki</div>
+  <nav><a href="../index.html">🏠 Start</a>
+<a href="https://n-ms.github.io/sandbox/chemie-9a/" target="_blank" rel="noopener">🎯 Lernseite</a></nav>
+</header>
+<div class="layout">
+  <aside class="sidebar"><h3>Start</h3><ul>
+<li><a class="" href="../index.html">🏠 Übersicht</a></li>
+</ul>
+<h3>Themen</h3><ul>
+<li><a class="" href="../Themen/1-1-edelgaskonfiguration-und-oktettregel.html">1.1 Oktettregel</a></li>
+<li><a class="" href="../Themen/1-2-kugelwolkenmodell.html">1.2 Kugelwolkenmodell</a></li>
+<li><a class="" href="../Themen/1-3-elektronenpaarbindung-atombindung.html">1.3 Elektronenpaarbindung</a></li>
+<li><a class="" href="../Themen/1-4-bindungstypen-im-ueberblick.html">1.4 Bindungstypen</a></li>
+<li><a class="" href="../Themen/1-5-elektronegativitaet-und-en-differenz.html">1.5 Elektronegativität</a></li>
+<li><a class="current" href="../Themen/1-6-strukturformeln-lewis-formeln-valenzstrichformeln.html">1.6 Valenzstrichformeln</a></li>
+<li><a class="" href="../Themen/1-7-polare-atombindungen-und-dipole.html">1.7 Dipole</a></li>
+<li><a class="" href="../Themen/1-8-epa-modell-molekuelgeometrie.html">1.8 EPA-Modell</a></li>
+</ul>
+<h3>Klausur</h3><ul>
+<li><a class="" href="../Klausur/testklausur.html">📝 Testklausur</a></li>
+<li><a class="" href="../Klausur/musterloesung.html">✅ Musterlösung</a></li>
+</ul></aside>
+  <main>
+    <h1>1.6 Strukturformeln, Lewis-Formeln, Valenzstrichformeln</h1>
+<blockquote>
+<p><strong>Kompetenz:</strong> Ich kann Strukturformeln / Lewis-Formeln / Valenzstrichformeln aufstellen und die entsprechenden Regeln dazu formulieren.</p>
+</blockquote>
+<p><strong>Quelle:</strong> <a class="external" target="_blank" rel="noopener" href="https://www.leifichemie.de/anorganische-verbindungen/molekular-gebaute-stoffe/grundwissen/valenzstrichformeln">LEIFIchemie – Valenzstrichformeln</a>
+<strong>Verwandte Notizen:</strong> <a class="wikilink" href="../Themen/1-3-elektronenpaarbindung-atombindung.html">1-3 Elektronenpaarbindung (Atombindung)</a> · <a class="wikilink" href="../Themen/1-2-kugelwolkenmodell.html">1-2 Kugelwolkenmodell</a> · <a class="wikilink" href="../Themen/1-8-epa-modell-molekuelgeometrie.html">1-8 EPA-Modell (Molekülgeometrie)</a></p>
+<h2>🎯 Worum geht es?</h2>
+<p>Um zu zeigen, <strong>wie Atome in einem Molekül verknüpft sind</strong>, benutzt man die <strong>Valenzstrichformel</strong> (auch Lewis-Formel oder Strukturformel genannt).</p>
+<blockquote>
+<p><strong>Drei Namen – eine Sache:</strong> Valenzstrichformel = Lewis-Formel = (in diesem Zusammenhang) Strukturformel.</p>
+</blockquote>
+<h2>🖋️ Die Zeichensprache</h2>
+<table>
+<thead>
+<tr>
+<th>Symbol</th>
+<th>Bedeutung</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Elementsymbol</strong> (z. B. O, H, C)</td>
+<td>Atomrumpf (Kern + innere Elektronen)</td>
+</tr>
+<tr>
+<td><strong>Punkt</strong> (·)</td>
+<td>ein einzelnes Valenzelektron</td>
+</tr>
+<tr>
+<td><strong>Strich zwischen zwei Atomen</strong></td>
+<td><strong>bindendes</strong> Elektronenpaar (BEP)</td>
+</tr>
+<tr>
+<td><strong>Strich am Atom</strong></td>
+<td><strong>nichtbindendes / freies</strong> Elektronenpaar (NEP)</td>
+</tr>
+</tbody>
+</table>
+<p>Beispiel Wasser: <code>H — O — H</code> mit <strong>zwei Strichen am O</strong> (die zwei freien Elektronenpaare)</p>
+<h2>📋 Die 8-Schritt-Anleitung (sehr prüfungsrelevant!)</h2>
+<p><strong>Beispiel: Schwefelwasserstoff H₂S</strong></p>
+<h3>Schritt 1 – Valenzelektronenpaare <strong>vorhanden</strong> (VEP)</h3>
+<p>Addiere alle Valenzelektronen, teile durch 2:
+- S: 6 VE (VI. Hauptgruppe)
+- 2×H: 2 × 1 = 2 VE
+- <strong>Summe: 8 VE ⇒ 4 VEP vorhanden</strong></p>
+<blockquote>
+<p>💡 Die Hauptgruppennummer = Anzahl der Valenzelektronen.</p>
+</blockquote>
+<h3>Schritt 2 – Valenzelektronenpaare <strong>benötigt</strong></h3>
+<p>Wenn jedes Atom Edelgaskonfiguration hätte:
+- Jedes Nicht-H-Atom braucht 8 VE
+- H und He brauchen 2 VE
+- S: 8 VE
+- 2×H: 2 × 2 = 4 VE
+- <strong>Summe: 12 VE ⇒ 6 VEP benötigt</strong></p>
+<h3>Schritt 3 – Bindende Elektronenpaare (BEP)</h3>
+<p><strong>BEP = benötigte VEP − vorhandene VEP</strong>
+Bei uns: 6 − 4 = <strong>2 BEP</strong></p>
+<h3>Schritt 4 – Nichtbindende Elektronenpaare (NEP)</h3>
+<p><strong>NEP = vorhandene VEP − BEP</strong>
+Bei uns: 4 − 2 = <strong>2 NEP</strong></p>
+<h3>Schritt 5 – Atome anordnen</h3>
+<ul>
+<li><strong>Zentralatom:</strong> das Atom, das die meisten Bindungen eingehen kann (je weiter <strong>links</strong> im PSE, desto mehr)</li>
+<li><strong>Wasserstoff immer außen</strong> (H macht nur eine Bindung)</li>
+</ul>
+<p>Bei H₂S → S in der Mitte, H außen.</p>
+<h3>Schritt 6 – BEP einzeichnen</h3>
+<p>Verbinde Zentralatom mit den Randatomen durch Striche. Anzahl Striche = Anzahl BEP.</p>
+<p><code>H — S — H</code></p>
+<h3>Schritt 7 – NEP verteilen</h3>
+<p>Verteile die freien Elektronenpaare so, dass <strong>jedes Atom sein Oktett</strong> (bzw. H sein Duett) erreicht.</p>
+<p>Bei H₂S: die 2 NEP ans S → am S noch 2 Striche oben/unten zeichnen.</p>
+<h3>Schritt 8 – Formalladung prüfen</h3>
+<p><strong>Formalladung = VE(elementar) − (NEP·2 + BEP·1)</strong></p>
+<p>Bei uns: alles 0 → keine Formalladungen, fertig.</p>
+<h2>🧪 Weitere Beispiele</h2>
+<h3>Wasser H₂O</h3>
+<ul>
+<li>VE: O(6) + 2·H(1) = 8 → 4 VEP vorhanden</li>
+<li>Benötigt: 8 + 2·2 = 12 → 6 VEP benötigt</li>
+<li>BEP: 6 − 4 = 2</li>
+<li>NEP: 4 − 2 = 2</li>
+</ul>
+<p>Struktur: <code>H — O — H</code> (zwei freie Elektronenpaare am O)</p>
+<h3>Kohlenstoffdioxid CO₂</h3>
+<ul>
+<li>VE: C(4) + 2·O(6) = 16 → 8 VEP vorhanden</li>
+<li>Benötigt: 8 + 2·8 = 24 → 12 VEP benötigt</li>
+<li>BEP: 12 − 8 = 4 (also 2 Doppelbindungen!)</li>
+<li>NEP: 8 − 4 = 4 (je 2 an jedem O)</li>
+</ul>
+<p>Struktur: <code>O = C = O</code> (mit je 2 NEP an jedem O)</p>
+<h3>Ammoniak NH₃</h3>
+<ul>
+<li>VE: N(5) + 3·H(1) = 8 → 4 VEP vorhanden</li>
+<li>Benötigt: 8 + 3·2 = 14 → 7 VEP benötigt</li>
+<li>BEP: 7 − 4 = 3</li>
+<li>NEP: 4 − 3 = 1 (am N!)</li>
+</ul>
+<p>Struktur: N mit 3 H drumherum, dazu 1 NEP oben am N.</p>
+<h2>⚠️ Häufige Fehler</h2>
+<ul>
+<li><strong>H bekommt nie Striche am Atom</strong> (kein NEP) – nur genau eine Bindung.</li>
+<li><strong>Mehrfachbindungen nicht vergessen</strong>: wenn BEP &gt; Anzahl Bindungspartner, müssen Doppel- oder Dreifachbindungen her.</li>
+<li><strong>Oktettregel überprüfen</strong> – ganz am Schluss jedes Atom durchzählen.</li>
+</ul>
+<h2>💡 Eselsbrücke</h2>
+<blockquote>
+<p>„<strong>V</strong>iel <strong>v</strong>orhanden minus <strong>viel benötigt</strong> = wie oft wir teilen müssen."
+(benötigt − vorhanden = BEP)</p>
+</blockquote>
+<h2>✅ Check dich selbst</h2>
+<ul>
+<li>[ ] Ich kann die 8 Schritte aufzählen.</li>
+<li>[ ] Ich kann H₂O, NH₃, CH₄, CO₂, N₂, HCl zeichnen.</li>
+<li>[ ] Ich weiß, warum H nie NEP bekommt.</li>
+<li>[ ] Ich kann Formalladungen überprüfen.</li>
+</ul>
+    <footer>
+      <div class="nav-prev-next"><a class="prev" href="../Themen/1-5-elektronegativitaet-und-en-differenz.html"><span class="label">◀ Zurück</span><span class="title">1-5 Elektronegativität und EN-Differenz</span></a><a class="next" href="../Themen/1-7-polare-atombindungen-und-dipole.html"><span class="label">Weiter ▶</span><span class="title">1-7 Polare Atombindungen und Dipole</span></a></div>
+      <p style="margin-top:1.5rem;">Lernunterlagen zur Klausurvorbereitung Chemie 9a · Quellen: LEIFIchemie, Uni Erlangen</p>
+    </footer>
+  </main>
+</div>
+</body>
+</html>

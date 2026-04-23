@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>1.5 Elektronegativität und EN-Differenz · Chemie 9a Wiki</title>
+<style>
+:root {
+  --bg: #0f172a;
+  --bg-card: #1e293b;
+  --bg-card-2: #334155;
+  --text: #e2e8f0;
+  --text-dim: #94a3b8;
+  --accent: #38bdf8;
+  --accent-2: #a78bfa;
+  --success: #22c55e;
+  --warn: #f59e0b;
+  --border: #334155;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+  color: var(--text);
+  line-height: 1.65;
+  min-height: 100vh;
+}
+a { color: var(--accent); text-decoration: none; border-bottom: 1px dashed transparent; transition: border-color 0.15s; }
+a:hover { border-bottom-color: var(--accent); }
+a.wikilink {
+  background: rgba(56,189,248,0.12);
+  padding: 0.05rem 0.4rem;
+  border-radius: 4px;
+  border-bottom: none;
+}
+a.wikilink:hover { background: rgba(56,189,248,0.25); }
+a.external::after { content: " ↗"; font-size: 0.8em; color: var(--text-dim); }
+
+header {
+  padding: 1.2rem 2rem;
+  background: rgba(15,23,42,0.85);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--border);
+  position: sticky; top: 0; z-index: 10;
+  display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;
+}
+header .brand { font-weight: 700; font-size: 1.1rem; background: linear-gradient(90deg, var(--accent), var(--accent-2)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+header nav { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+header nav a {
+  background: var(--bg-card); color: var(--text); border: 1px solid var(--border);
+  padding: 0.4rem 0.8rem; border-radius: 999px; font-size: 0.8rem;
+}
+header nav a:hover { border-color: var(--accent); }
+header nav a.current { background: var(--accent); color: var(--bg); border-color: var(--accent); font-weight: 600; }
+
+.layout { display: flex; max-width: 1200px; margin: 0 auto; }
+.sidebar {
+  width: 260px; flex-shrink: 0;
+  padding: 2rem 1rem 2rem 2rem;
+  border-right: 1px solid var(--border);
+  position: sticky; top: 80px;
+  max-height: calc(100vh - 80px); overflow-y: auto;
+}
+.sidebar h3 { color: var(--accent); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.6rem; margin-top: 1rem; }
+.sidebar h3:first-child { margin-top: 0; }
+.sidebar ul { list-style: none; padding: 0; }
+.sidebar li { margin-bottom: 0.3rem; }
+.sidebar a { display: block; padding: 0.4rem 0.6rem; border-radius: 6px; color: var(--text-dim); font-size: 0.9rem; border-bottom: none; }
+.sidebar a:hover { background: var(--bg-card); color: var(--text); }
+.sidebar a.current { background: var(--bg-card-2); color: var(--accent); font-weight: 600; }
+
+main { flex: 1; padding: 2rem 2.5rem; max-width: 820px; min-width: 0; }
+
+h1, h2, h3, h4 { margin-top: 1.6rem; margin-bottom: 0.8rem; line-height: 1.3; }
+h1 { font-size: 1.9rem; color: transparent; background: linear-gradient(90deg, var(--accent), var(--accent-2)); -webkit-background-clip: text; background-clip: text; margin-top: 0; }
+h2 { font-size: 1.4rem; color: var(--accent); border-bottom: 1px solid var(--border); padding-bottom: 0.4rem; }
+h3 { font-size: 1.1rem; color: var(--accent-2); }
+h4 { font-size: 1rem; color: var(--text); }
+
+p, ul, ol { margin-bottom: 1rem; }
+ul, ol { padding-left: 1.5rem; }
+li { margin-bottom: 0.3rem; }
+strong { color: #fbbf24; font-weight: 600; }
+em { color: var(--text-dim); }
+code {
+  background: var(--bg-card-2);
+  padding: 0.1rem 0.4rem;
+  border-radius: 4px;
+  font-size: 0.9em;
+  font-family: "SF Mono", Consolas, Monaco, monospace;
+}
+pre {
+  background: var(--bg-card);
+  padding: 1rem;
+  border-radius: 8px;
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  margin-bottom: 1rem;
+}
+pre code { background: transparent; padding: 0; font-size: 0.85rem; }
+.mermaid { background: var(--bg-card); padding: 1rem; border-radius: 8px; border: 1px solid var(--border); margin: 1rem 0; text-align: center; }
+blockquote {
+  border-left: 4px solid var(--accent);
+  padding: 0.8rem 1rem;
+  background: rgba(56,189,248,0.08);
+  margin: 1rem 0;
+  border-radius: 0 6px 6px 0;
+}
+blockquote p:last-child { margin-bottom: 0; }
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1rem 0;
+  font-size: 0.92rem;
+  background: var(--bg-card);
+  border-radius: 6px;
+  overflow: hidden;
+}
+th, td { border: 1px solid var(--border); padding: 0.55rem 0.75rem; text-align: left; vertical-align: top; }
+th { background: var(--bg-card-2); color: var(--accent); font-weight: 600; }
+tr:nth-child(even) td { background: rgba(255,255,255,0.02); }
+
+hr { border: 0; border-top: 1px solid var(--border); margin: 2rem 0; }
+
+.breadcrumb { color: var(--text-dim); font-size: 0.85rem; margin-bottom: 1.5rem; }
+.breadcrumb a { color: var(--text-dim); }
+
+footer {
+  margin-top: 3rem; padding-top: 1.5rem; border-top: 1px solid var(--border);
+  color: var(--text-dim); font-size: 0.85rem;
+}
+footer .nav-prev-next { display: flex; justify-content: space-between; gap: 1rem; margin-top: 1rem; }
+footer .nav-prev-next a {
+  background: var(--bg-card); padding: 0.8rem 1rem; border-radius: 8px;
+  border: 1px solid var(--border); border-bottom: 1px solid var(--border);
+  flex: 1; max-width: 48%;
+}
+footer .nav-prev-next a:hover { border-color: var(--accent); background: var(--bg-card-2); }
+footer .nav-prev-next .label { display: block; color: var(--text-dim); font-size: 0.75rem; margin-bottom: 0.2rem; }
+footer .nav-prev-next .title { color: var(--accent); font-weight: 600; }
+footer .nav-prev-next .next { text-align: right; }
+
+@media (max-width: 860px) {
+  .sidebar { display: none; }
+  main { padding: 1.2rem; max-width: 100%; }
+  header { padding: 1rem; }
+  h1 { font-size: 1.5rem; }
+}
+</style>
+<script type="module">
+  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+  mermaid.initialize({ startOnLoad: false, theme: 'dark', themeVariables: { background: '#1e293b', primaryColor: '#334155', primaryTextColor: '#e2e8f0', primaryBorderColor: '#38bdf8', lineColor: '#94a3b8' } });
+  document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('pre > code.language-mermaid, pre > code').forEach(el => {
+      const code = el.textContent.trim();
+      if (code.startsWith('flowchart') || code.startsWith('graph') || code.startsWith('sequenceDiagram')) {
+        const div = document.createElement('div');
+        div.className = 'mermaid';
+        div.textContent = code;
+        el.parentElement.replaceWith(div);
+      }
+    });
+    mermaid.run();
+  });
+</script>
+</head>
+<body>
+<header>
+  <div class="brand">⚗️ Chemie 9a Wiki</div>
+  <nav><a href="../index.html">🏠 Start</a>
+<a href="https://n-ms.github.io/sandbox/chemie-9a/" target="_blank" rel="noopener">🎯 Lernseite</a></nav>
+</header>
+<div class="layout">
+  <aside class="sidebar"><h3>Start</h3><ul>
+<li><a class="" href="../index.html">🏠 Übersicht</a></li>
+</ul>
+<h3>Themen</h3><ul>
+<li><a class="" href="../Themen/1-1-edelgaskonfiguration-und-oktettregel.html">1.1 Oktettregel</a></li>
+<li><a class="" href="../Themen/1-2-kugelwolkenmodell.html">1.2 Kugelwolkenmodell</a></li>
+<li><a class="" href="../Themen/1-3-elektronenpaarbindung-atombindung.html">1.3 Elektronenpaarbindung</a></li>
+<li><a class="" href="../Themen/1-4-bindungstypen-im-ueberblick.html">1.4 Bindungstypen</a></li>
+<li><a class="current" href="../Themen/1-5-elektronegativitaet-und-en-differenz.html">1.5 Elektronegativität</a></li>
+<li><a class="" href="../Themen/1-6-strukturformeln-lewis-formeln-valenzstrichformeln.html">1.6 Valenzstrichformeln</a></li>
+<li><a class="" href="../Themen/1-7-polare-atombindungen-und-dipole.html">1.7 Dipole</a></li>
+<li><a class="" href="../Themen/1-8-epa-modell-molekuelgeometrie.html">1.8 EPA-Modell</a></li>
+</ul>
+<h3>Klausur</h3><ul>
+<li><a class="" href="../Klausur/testklausur.html">📝 Testklausur</a></li>
+<li><a class="" href="../Klausur/musterloesung.html">✅ Musterlösung</a></li>
+</ul></aside>
+  <main>
+    <h1>1.5 Elektronegativität und EN-Differenz</h1>
+<blockquote>
+<p><strong>Kompetenz:</strong> Ich kenne das Konzept der Elektronegativität und die Bedeutung der Elektronegativitätsdifferenz, z. B. um die Bindungsart zu erkennen.</p>
+</blockquote>
+<p><strong>Quelle:</strong> <a class="external" target="_blank" rel="noopener" href="https://www.leifichemie.de/anorganische-verbindungen/molekular-gebaute-stoffe/grundwissen/elektronegativitaet-und-periodensystem">LEIFIchemie – Elektronegativität und Periodensystem</a>
+<strong>Verwandte Notizen:</strong> <a class="wikilink" href="../Themen/1-4-bindungstypen-im-ueberblick.html">1-4 Bindungstypen im Überblick</a> · <a class="wikilink" href="../Themen/1-7-polare-atombindungen-und-dipole.html">1-7 Polare Atombindungen und Dipole</a></p>
+<h2>🎯 Worum geht es?</h2>
+<p><strong>Elektronegativität (EN)</strong> ist eine Zahl, die angibt, <strong>wie stark ein Atom Bindungselektronen zu sich zieht</strong> – wenn es in einer Bindung steckt.</p>
+<blockquote>
+<p>Stell dir ein Tauziehen vor: Zwei Atome ziehen am selben „Seil" (dem Bindungselektronenpaar). Wer stärker zieht, hat die höhere Elektronegativität.</p>
+</blockquote>
+<h2>📏 Die Pauling-Skala</h2>
+<p>Der Wissenschaftler <strong>Linus Pauling</strong> hat eine Skala festgelegt:</p>
+<table>
+<thead>
+<tr>
+<th>Element</th>
+<th>EN</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Fluor (F)</td>
+<td><strong>4,0</strong> (höchster Wert!)</td>
+</tr>
+<tr>
+<td>Sauerstoff (O)</td>
+<td>3,44</td>
+</tr>
+<tr>
+<td>Stickstoff (N)</td>
+<td>3,0</td>
+</tr>
+<tr>
+<td>Chlor (Cl)</td>
+<td>3,16</td>
+</tr>
+<tr>
+<td>Kohlenstoff (C)</td>
+<td>2,55</td>
+</tr>
+<tr>
+<td>Wasserstoff (H)</td>
+<td>2,2</td>
+</tr>
+<tr>
+<td>Natrium (Na)</td>
+<td>0,93</td>
+</tr>
+<tr>
+<td>Francium (Fr)</td>
+<td>≈ 0,7 (niedrigster Wert)</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>Edelgase</strong> bekommen meist keinen EN-Wert, weil sie kaum Bindungen eingehen.</p>
+</blockquote>
+<h2>🧭 Trend im Periodensystem</h2>
+<pre><code>             EN nimmt zu →
+   ┌──────────────────────────────────┐
+   │                                  │
+EN │                              F   │
+zu │                                  │
+   │                                  │
+↓  │                                  │
+   │  Fr                              │
+   └──────────────────────────────────┘
+</code></pre>
+<p><strong>Regel:</strong>
+- <strong>Von links nach rechts</strong> im PSE: EN <strong>steigt</strong> (Kernladung nimmt zu, Elektronen werden stärker angezogen)
+- <strong>Von oben nach unten</strong> im PSE: EN <strong>sinkt</strong> (Atomradius wird größer, äußere Elektronen sind weiter weg)</p>
+<p>→ <strong>Fluor</strong> (rechts oben, vor den Edelgasen) hat die größte EN.
+→ <strong>Francium</strong> (links unten) hat die kleinste.</p>
+<p><strong>Warum?</strong> Je kleiner das Atom und je mehr positive Kernladung, desto stärker zieht der Kern die Elektronen.</p>
+<h2>📊 Die EN-Differenz (ΔEN) – das wichtigste Werkzeug!</h2>
+<p><strong>ΔEN = EN(Atom 1) − EN(Atom 2)</strong> (immer positiv, also Betrag)</p>
+<p>Mit ΔEN erkennst du <strong>die Bindungsart</strong>:</p>
+<table>
+<thead>
+<tr>
+<th>ΔEN</th>
+<th>Bindungsart</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>0</strong></td>
+<td>unpolare Elektronenpaarbindung (z. B. H–H, Cl–Cl)</td>
+</tr>
+<tr>
+<td><strong>0 &lt; ΔEN &lt; 0,5</strong></td>
+<td>fast unpolare EPB (z. B. C–H: 0,35)</td>
+</tr>
+<tr>
+<td><strong>0,5 ≤ ΔEN ≤ 1,7</strong></td>
+<td><strong>polare</strong> Elektronenpaarbindung → <a class="wikilink" href="../Themen/1-7-polare-atombindungen-und-dipole.html">Dipol</a> möglich</td>
+</tr>
+<tr>
+<td><strong>ΔEN &gt; 1,7</strong></td>
+<td>Ionenbindung</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>⚠️ Die Grenzen sind <strong>fließend</strong> – Richtwerte, keine harten Regeln. Gerade um 1,7 herum (z. B. AlCl₃ mit ΔEN = 1,5) gibt es Übergangsfälle.</p>
+</blockquote>
+<h2>🧪 Beispielrechnungen</h2>
+<h3>H–Cl (Salzsäure)</h3>
+<ul>
+<li>EN(H) = 2,2, EN(Cl) = 3,16</li>
+<li>ΔEN = 3,16 − 2,2 = <strong>0,96</strong> → <strong>polare</strong> EPB → Dipol</li>
+</ul>
+<h3>H–O (in H₂O)</h3>
+<ul>
+<li>EN(H) = 2,2, EN(O) = 3,44</li>
+<li>ΔEN = 1,24 → <strong>polare</strong> EPB → Wasser ist Dipol</li>
+</ul>
+<h3>Na–Cl (Kochsalz)</h3>
+<ul>
+<li>EN(Na) = 0,93, EN(Cl) = 3,16</li>
+<li>ΔEN = 2,23 → <strong>Ionenbindung</strong></li>
+</ul>
+<h3>C–H (z. B. im Methan)</h3>
+<ul>
+<li>EN(C) = 2,55, EN(H) = 2,2</li>
+<li>ΔEN = 0,35 → <strong>(fast) unpolare</strong> EPB</li>
+</ul>
+<h3>O=O (Sauerstoff)</h3>
+<ul>
+<li>beides O</li>
+<li>ΔEN = 0 → <strong>unpolare</strong> EPB</li>
+</ul>
+<h2>💡 Eselsbrücke</h2>
+<blockquote>
+<p>„<strong>F</strong> ist der <strong>F</strong>iesste – er zieht am stärksten am Elektronen-Seil."
+oder: „EN steigt <strong>nach rechts und nach oben</strong> – zu <strong>F</strong>luor hin."</p>
+</blockquote>
+<h2>✅ Check dich selbst</h2>
+<ul>
+<li>[ ] Ich kann den EN-Trend im PSE mit eigenen Worten erklären.</li>
+<li>[ ] Ich kann für zwei Elemente die ΔEN berechnen.</li>
+<li>[ ] Ich kann aus ΔEN auf die Bindungsart schließen.</li>
+<li>[ ] Ich weiß, warum Fluor die höchste EN hat.</li>
+</ul>
+    <footer>
+      <div class="nav-prev-next"><a class="prev" href="../Themen/1-4-bindungstypen-im-ueberblick.html"><span class="label">◀ Zurück</span><span class="title">1-4 Bindungstypen im Überblick</span></a><a class="next" href="../Themen/1-6-strukturformeln-lewis-formeln-valenzstrichformeln.html"><span class="label">Weiter ▶</span><span class="title">1-6 Strukturformeln, Lewis-Formeln, Valenzstrichformeln</span></a></div>
+      <p style="margin-top:1.5rem;">Lernunterlagen zur Klausurvorbereitung Chemie 9a · Quellen: LEIFIchemie, Uni Erlangen</p>
+    </footer>
+  </main>
+</div>
+</body>
+</html>

@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>1.1 Edelgaskonfiguration und Oktettregel · Chemie 9a Wiki</title>
+<style>
+:root {
+  --bg: #0f172a;
+  --bg-card: #1e293b;
+  --bg-card-2: #334155;
+  --text: #e2e8f0;
+  --text-dim: #94a3b8;
+  --accent: #38bdf8;
+  --accent-2: #a78bfa;
+  --success: #22c55e;
+  --warn: #f59e0b;
+  --border: #334155;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+  color: var(--text);
+  line-height: 1.65;
+  min-height: 100vh;
+}
+a { color: var(--accent); text-decoration: none; border-bottom: 1px dashed transparent; transition: border-color 0.15s; }
+a:hover { border-bottom-color: var(--accent); }
+a.wikilink {
+  background: rgba(56,189,248,0.12);
+  padding: 0.05rem 0.4rem;
+  border-radius: 4px;
+  border-bottom: none;
+}
+a.wikilink:hover { background: rgba(56,189,248,0.25); }
+a.external::after { content: " ↗"; font-size: 0.8em; color: var(--text-dim); }
+
+header {
+  padding: 1.2rem 2rem;
+  background: rgba(15,23,42,0.85);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--border);
+  position: sticky; top: 0; z-index: 10;
+  display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;
+}
+header .brand { font-weight: 700; font-size: 1.1rem; background: linear-gradient(90deg, var(--accent), var(--accent-2)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+header nav { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+header nav a {
+  background: var(--bg-card); color: var(--text); border: 1px solid var(--border);
+  padding: 0.4rem 0.8rem; border-radius: 999px; font-size: 0.8rem;
+}
+header nav a:hover { border-color: var(--accent); }
+header nav a.current { background: var(--accent); color: var(--bg); border-color: var(--accent); font-weight: 600; }
+
+.layout { display: flex; max-width: 1200px; margin: 0 auto; }
+.sidebar {
+  width: 260px; flex-shrink: 0;
+  padding: 2rem 1rem 2rem 2rem;
+  border-right: 1px solid var(--border);
+  position: sticky; top: 80px;
+  max-height: calc(100vh - 80px); overflow-y: auto;
+}
+.sidebar h3 { color: var(--accent); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.6rem; margin-top: 1rem; }
+.sidebar h3:first-child { margin-top: 0; }
+.sidebar ul { list-style: none; padding: 0; }
+.sidebar li { margin-bottom: 0.3rem; }
+.sidebar a { display: block; padding: 0.4rem 0.6rem; border-radius: 6px; color: var(--text-dim); font-size: 0.9rem; border-bottom: none; }
+.sidebar a:hover { background: var(--bg-card); color: var(--text); }
+.sidebar a.current { background: var(--bg-card-2); color: var(--accent); font-weight: 600; }
+
+main { flex: 1; padding: 2rem 2.5rem; max-width: 820px; min-width: 0; }
+
+h1, h2, h3, h4 { margin-top: 1.6rem; margin-bottom: 0.8rem; line-height: 1.3; }
+h1 { font-size: 1.9rem; color: transparent; background: linear-gradient(90deg, var(--accent), var(--accent-2)); -webkit-background-clip: text; background-clip: text; margin-top: 0; }
+h2 { font-size: 1.4rem; color: var(--accent); border-bottom: 1px solid var(--border); padding-bottom: 0.4rem; }
+h3 { font-size: 1.1rem; color: var(--accent-2); }
+h4 { font-size: 1rem; color: var(--text); }
+
+p, ul, ol { margin-bottom: 1rem; }
+ul, ol { padding-left: 1.5rem; }
+li { margin-bottom: 0.3rem; }
+strong { color: #fbbf24; font-weight: 600; }
+em { color: var(--text-dim); }
+code {
+  background: var(--bg-card-2);
+  padding: 0.1rem 0.4rem;
+  border-radius: 4px;
+  font-size: 0.9em;
+  font-family: "SF Mono", Consolas, Monaco, monospace;
+}
+pre {
+  background: var(--bg-card);
+  padding: 1rem;
+  border-radius: 8px;
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  margin-bottom: 1rem;
+}
+pre code { background: transparent; padding: 0; font-size: 0.85rem; }
+.mermaid { background: var(--bg-card); padding: 1rem; border-radius: 8px; border: 1px solid var(--border); margin: 1rem 0; text-align: center; }
+blockquote {
+  border-left: 4px solid var(--accent);
+  padding: 0.8rem 1rem;
+  background: rgba(56,189,248,0.08);
+  margin: 1rem 0;
+  border-radius: 0 6px 6px 0;
+}
+blockquote p:last-child { margin-bottom: 0; }
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1rem 0;
+  font-size: 0.92rem;
+  background: var(--bg-card);
+  border-radius: 6px;
+  overflow: hidden;
+}
+th, td { border: 1px solid var(--border); padding: 0.55rem 0.75rem; text-align: left; vertical-align: top; }
+th { background: var(--bg-card-2); color: var(--accent); font-weight: 600; }
+tr:nth-child(even) td { background: rgba(255,255,255,0.02); }
+
+hr { border: 0; border-top: 1px solid var(--border); margin: 2rem 0; }
+
+.breadcrumb { color: var(--text-dim); font-size: 0.85rem; margin-bottom: 1.5rem; }
+.breadcrumb a { color: var(--text-dim); }
+
+footer {
+  margin-top: 3rem; padding-top: 1.5rem; border-top: 1px solid var(--border);
+  color: var(--text-dim); font-size: 0.85rem;
+}
+footer .nav-prev-next { display: flex; justify-content: space-between; gap: 1rem; margin-top: 1rem; }
+footer .nav-prev-next a {
+  background: var(--bg-card); padding: 0.8rem 1rem; border-radius: 8px;
+  border: 1px solid var(--border); border-bottom: 1px solid var(--border);
+  flex: 1; max-width: 48%;
+}
+footer .nav-prev-next a:hover { border-color: var(--accent); background: var(--bg-card-2); }
+footer .nav-prev-next .label { display: block; color: var(--text-dim); font-size: 0.75rem; margin-bottom: 0.2rem; }
+footer .nav-prev-next .title { color: var(--accent); font-weight: 600; }
+footer .nav-prev-next .next { text-align: right; }
+
+@media (max-width: 860px) {
+  .sidebar { display: none; }
+  main { padding: 1.2rem; max-width: 100%; }
+  header { padding: 1rem; }
+  h1 { font-size: 1.5rem; }
+}
+</style>
+<script type="module">
+  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+  mermaid.initialize({ startOnLoad: false, theme: 'dark', themeVariables: { background: '#1e293b', primaryColor: '#334155', primaryTextColor: '#e2e8f0', primaryBorderColor: '#38bdf8', lineColor: '#94a3b8' } });
+  document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('pre > code.language-mermaid, pre > code').forEach(el => {
+      const code = el.textContent.trim();
+      if (code.startsWith('flowchart') || code.startsWith('graph') || code.startsWith('sequenceDiagram')) {
+        const div = document.createElement('div');
+        div.className = 'mermaid';
+        div.textContent = code;
+        el.parentElement.replaceWith(div);
+      }
+    });
+    mermaid.run();
+  });
+</script>
+</head>
+<body>
+<header>
+  <div class="brand">⚗️ Chemie 9a Wiki</div>
+  <nav><a href="../index.html">🏠 Start</a>
+<a href="https://n-ms.github.io/sandbox/chemie-9a/" target="_blank" rel="noopener">🎯 Lernseite</a></nav>
+</header>
+<div class="layout">
+  <aside class="sidebar"><h3>Start</h3><ul>
+<li><a class="" href="../index.html">🏠 Übersicht</a></li>
+</ul>
+<h3>Themen</h3><ul>
+<li><a class="current" href="../Themen/1-1-edelgaskonfiguration-und-oktettregel.html">1.1 Oktettregel</a></li>
+<li><a class="" href="../Themen/1-2-kugelwolkenmodell.html">1.2 Kugelwolkenmodell</a></li>
+<li><a class="" href="../Themen/1-3-elektronenpaarbindung-atombindung.html">1.3 Elektronenpaarbindung</a></li>
+<li><a class="" href="../Themen/1-4-bindungstypen-im-ueberblick.html">1.4 Bindungstypen</a></li>
+<li><a class="" href="../Themen/1-5-elektronegativitaet-und-en-differenz.html">1.5 Elektronegativität</a></li>
+<li><a class="" href="../Themen/1-6-strukturformeln-lewis-formeln-valenzstrichformeln.html">1.6 Valenzstrichformeln</a></li>
+<li><a class="" href="../Themen/1-7-polare-atombindungen-und-dipole.html">1.7 Dipole</a></li>
+<li><a class="" href="../Themen/1-8-epa-modell-molekuelgeometrie.html">1.8 EPA-Modell</a></li>
+</ul>
+<h3>Klausur</h3><ul>
+<li><a class="" href="../Klausur/testklausur.html">📝 Testklausur</a></li>
+<li><a class="" href="../Klausur/musterloesung.html">✅ Musterlösung</a></li>
+</ul></aside>
+  <main>
+    <h1>1.1 Edelgaskonfiguration und Oktettregel</h1>
+<blockquote>
+<p><strong>Kompetenz:</strong> Ich kann die Edelgaskonfiguration und Oktettregel erklären und anwenden.</p>
+</blockquote>
+<p><strong>Quelle:</strong> <a class="external" target="_blank" rel="noopener" href="https://www2.chemie.uni-erlangen.de/projects/vsc/chemie-mediziner-neu/bindung/oktettregel.html">Uni Erlangen – Oktettregel</a>
+<strong>Verwandte Notizen:</strong> <a class="wikilink" href="../Themen/1-2-kugelwolkenmodell.html">1-2 Kugelwolkenmodell</a> · <a class="wikilink" href="../Themen/1-3-elektronenpaarbindung-atombindung.html">1-3 Elektronenpaarbindung (Atombindung)</a> · <a class="wikilink" href="../index.html">00_Index</a></p>
+<h2>🎯 Worum geht es?</h2>
+<p>Atome sind wie kleine Gesellschaften, die einen Platz im Leben suchen: Sie wollen <strong>stabil</strong> sein. Und „stabil" bedeutet in der Chemie: <strong>so viele Außenelektronen haben wie ein Edelgas</strong>.</p>
+<h2>🧪 Die Edelgase – die Vorbilder</h2>
+<p>Edelgase (Helium, Neon, Argon, Krypton, Xenon, Radon) stehen in der <strong>8. Hauptgruppe</strong> des Periodensystems. Sie sind <strong>reaktionsträge</strong> – sie gehen kaum Verbindungen ein. Warum? Ihre Außenschale ist <strong>bereits voll</strong>.</p>
+<table>
+<thead>
+<tr>
+<th>Edelgas</th>
+<th>Außenelektronen</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Helium (He)</td>
+<td><strong>2</strong> (Sonderfall)</td>
+</tr>
+<tr>
+<td>Neon (Ne)</td>
+<td>8</td>
+</tr>
+<tr>
+<td>Argon (Ar)</td>
+<td>8</td>
+</tr>
+<tr>
+<td>Krypton (Kr)</td>
+<td>8</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>Edelgaskonfiguration</strong> = die Elektronenanordnung, bei der die äußere Schale voll ist (meistens 8, bei He 2).</p>
+</blockquote>
+<h2>⚖️ Die Oktettregel</h2>
+<p><strong>Merksatz:</strong></p>
+<blockquote>
+<p>Atome streben danach, <strong>acht Außenelektronen</strong> zu haben (Oktett), um die stabile Edelgaskonfiguration zu erreichen.</p>
+</blockquote>
+<p>Dafür haben sie <strong>drei Strategien</strong>:</p>
+<ol>
+<li><strong>Elektronen abgeben</strong> (z. B. Metalle) → werden zu positiven Ionen (Kationen)</li>
+<li><strong>Elektronen aufnehmen</strong> (z. B. Nichtmetalle) → werden zu negativen Ionen (Anionen)</li>
+<li><strong>Elektronen teilen</strong> (zwei Nichtmetalle) → es entsteht eine <a class="wikilink" href="../Themen/1-3-elektronenpaarbindung-atombindung.html">Elektronenpaarbindung</a></li>
+</ol>
+<h2>📋 Beispiele</h2>
+<h3>Natrium (Na) – gibt ab</h3>
+<ul>
+<li>Na hat <strong>1 Außenelektron</strong></li>
+<li>Gibt es ab → bekommt die Konfiguration von Neon (8 AE in der jetzt äußersten Schale)</li>
+<li>Wird zu <strong>Na⁺</strong></li>
+</ul>
+<h3>Chlor (Cl) – nimmt auf</h3>
+<ul>
+<li>Cl hat <strong>7 Außenelektronen</strong></li>
+<li>Nimmt 1 auf → bekommt 8 AE wie Argon</li>
+<li>Wird zu <strong>Cl⁻</strong></li>
+</ul>
+<h3>Wasserstoff (H) – Sonderfall</h3>
+<ul>
+<li>H hat <strong>1 Außenelektron</strong></li>
+<li>Strebt die Helium-Konfiguration (2 AE) an – nicht 8</li>
+<li>Teilt oder nimmt 1 Elektron auf</li>
+</ul>
+<h2>⚠️ Wichtig: Grenzen der Oktettregel</h2>
+<ul>
+<li>Für <strong>Wasserstoff und Helium</strong> gilt nicht „8", sondern <strong>2</strong> (Duett).</li>
+<li>Bei <strong>Übergangsmetallen</strong> (z. B. Eisen) und einigen anderen Elementen gibt es Ausnahmen.</li>
+<li>In der 9. Klasse reicht aber die Faustregel „<strong>8 Außenelektronen = stabil</strong>".</li>
+</ul>
+<h2>💡 Eselsbrücke</h2>
+<blockquote>
+<p>„Atome wollen cool sein wie die Edelgase. Dafür schlagen sie ihre Elektronenlager entweder leer oder füllen es voll – bis genau <strong>acht</strong> da sind."</p>
+</blockquote>
+<h2>✅ Check dich selbst</h2>
+<ul>
+<li>[ ] Ich kann erklären, warum Edelgase reaktionsträge sind.</li>
+<li>[ ] Ich kann zu einem beliebigen Element sagen, wie viele Elektronen es aufnehmen/abgeben muss.</li>
+<li>[ ] Ich kenne den Sonderfall H und He.</li>
+</ul>
+    <footer>
+      <div class="nav-prev-next"><a class="prev" href="../index.html"><span class="label">◀ Zurück</span><span class="title">00_Index</span></a><a class="next" href="../Themen/1-2-kugelwolkenmodell.html"><span class="label">Weiter ▶</span><span class="title">1-2 Kugelwolkenmodell</span></a></div>
+      <p style="margin-top:1.5rem;">Lernunterlagen zur Klausurvorbereitung Chemie 9a · Quellen: LEIFIchemie, Uni Erlangen</p>
+    </footer>
+  </main>
+</div>
+</body>
+</html>
