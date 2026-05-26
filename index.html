@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chemie KA 2 – Lern-App</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:linear-gradient(135deg,#0f0c29,#302b63,#24243e);min-height:100vh;color:#e0e0e0}
+.app{max-width:820px;margin:0 auto;padding:16px}
+.header{text-align:center;padding:28px 20px 20px;background:rgba(255,255,255,0.05);border-radius:20px;margin-bottom:24px;border:1px solid rgba(255,255,255,0.08)}
+.header h1{font-size:1.9em;background:linear-gradient(135deg,#a78bfa,#60a5fa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:6px}
+.header p{color:#94a3b8;font-size:0.9em}
+.screen{display:none}.screen.active{display:block}
+.topic-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:20px}
+.topic-card{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:16px;padding:22px 18px;cursor:pointer;transition:all .25s;text-align:center}
+.topic-card:hover{transform:translateY(-4px);background:rgba(255,255,255,0.1);border-color:rgba(167,139,250,0.5);box-shadow:0 10px 28px rgba(124,58,237,0.25)}
+.topic-card .icon{font-size:2.2em;margin-bottom:10px}
+.topic-card h3{font-size:.95em;color:#e2e8f0;margin-bottom:6px}
+.topic-card p{font-size:.78em;color:#94a3b8;line-height:1.4}
+.prog-bar{margin-top:10px;height:4px;background:rgba(255,255,255,0.08);border-radius:2px;overflow:hidden}
+.prog-fill{height:100%;background:linear-gradient(90deg,#7c3aed,#2563eb);border-radius:2px;transition:width .5s}
+.card{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:18px;padding:26px;margin-bottom:18px}
+.btn{padding:10px 24px;border:none;border-radius:10px;cursor:pointer;font-size:.9em;font-weight:600;transition:all .2s;display:inline-flex;align-items:center;gap:6px}
+.btn-primary{background:linear-gradient(135deg,#7c3aed,#2563eb);color:#fff}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 6px 18px rgba(124,58,237,0.35)}
+.btn-secondary{background:rgba(255,255,255,0.09);color:#e0e0e0;border:1px solid rgba(255,255,255,0.12)}
+.btn-secondary:hover{background:rgba(255,255,255,0.14)}
+.btn-success{background:linear-gradient(135deg,#059669,#10b981);color:#fff}
+.back-btn{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.1);border-radius:9px;cursor:pointer;color:#94a3b8;font-size:.82em;margin-bottom:18px;transition:all .2s}
+.back-btn:hover{background:rgba(255,255,255,0.12);color:#e2e8f0}
+.prog-indicator{display:flex;align-items:center;gap:12px;margin-bottom:18px}
+.prog-track{flex:1;height:6px;background:rgba(255,255,255,0.08);border-radius:3px;overflow:hidden}
+.prog-track-fill{height:100%;background:linear-gradient(90deg,#7c3aed,#2563eb);border-radius:3px;transition:width .4s}
+.prog-text{font-size:.82em;color:#94a3b8;white-space:nowrap}
+/* Flashcard */
+.fc-wrap{perspective:1000px;margin:18px 0}
+.fc{width:100%;min-height:190px;position:relative;transform-style:preserve-3d;transition:transform .55s;cursor:pointer}
+.fc.flipped{transform:rotateY(180deg)}
+.fc-front,.fc-back{position:absolute;width:100%;min-height:190px;backface-visibility:hidden;border-radius:14px;padding:28px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+.fc-front{background:linear-gradient(135deg,rgba(124,58,237,.25),rgba(37,99,235,.25));border:1px solid rgba(124,58,237,.4)}
+.fc-back{background:linear-gradient(135deg,rgba(5,150,105,.25),rgba(16,185,129,.25));border:1px solid rgba(5,150,105,.4);transform:rotateY(180deg)}
+.fc-label{font-size:.72em;text-transform:uppercase;letter-spacing:1px;margin-bottom:12px}
+.fc-front .fc-label{color:#a78bfa}.fc-back .fc-label{color:#34d399}
+.fc-front h2{font-size:1.3em;color:#e2e8f0}
+.fc-back p{font-size:.95em;color:#d1fae5;line-height:1.6}
+/* Quiz */
+.quiz-q{font-size:1.1em;color:#e2e8f0;margin-bottom:18px;line-height:1.5}
+.quiz-opts{display:flex;flex-direction:column;gap:10px}
+.quiz-opt{padding:13px 18px;background:rgba(255,255,255,0.06);border:2px solid rgba(255,255,255,0.09);border-radius:11px;cursor:pointer;transition:all .18s;font-size:.92em;color:#e0e0e0;text-align:left}
+.quiz-opt:hover:not(.disabled){background:rgba(124,58,237,.2);border-color:rgba(124,58,237,.5);transform:translateX(3px)}
+.quiz-opt.correct{background:rgba(5,150,105,.28);border-color:#10b981;color:#d1fae5}
+.quiz-opt.wrong{background:rgba(220,38,38,.28);border-color:#ef4444;color:#fee2e2}
+.quiz-opt.disabled{cursor:not-allowed}
+.quiz-fb{margin-top:14px;padding:14px;border-radius:11px;font-size:.87em;line-height:1.5;display:none}
+.quiz-fb.ok{background:rgba(5,150,105,.18);border:1px solid rgba(16,185,129,.3);color:#d1fae5}
+.quiz-fb.fail{background:rgba(220,38,38,.18);border:1px solid rgba(239,68,68,.3);color:#fee2e2}
+/* Results */
+.score-ring{width:110px;height:110px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;position:relative;background:conic-gradient(#7c3aed var(--deg,0deg),rgba(255,255,255,.08) 0)}
+.score-ring::after{content:'';position:absolute;width:82px;height:82px;background:#1a1833;border-radius:50%}
+.score-num{position:relative;z-index:1;font-size:1.4em;font-weight:700;color:#a78bfa}
+/* Table */
+table.itable{width:100%;border-collapse:collapse;margin:12px 0}
+table.itable th{background:rgba(124,58,237,.18);color:#a78bfa;padding:9px 13px;text-align:left;font-size:.82em;border-bottom:1px solid rgba(124,58,237,.25)}
+table.itable td{padding:9px 13px;border-bottom:1px solid rgba(255,255,255,.04);font-size:.82em;color:#cbd5e1}
+table.itable tr:hover td{background:rgba(255,255,255,.02)}
+.badge{display:inline-block;padding:2px 9px;border-radius:20px;font-size:.73em;font-weight:600}
+.badge-p{background:rgba(124,58,237,.25);color:#a78bfa;border:1px solid rgba(124,58,237,.35)}
+.badge-r{background:rgba(220,38,38,.25);color:#fca5a5;border:1px solid rgba(220,38,38,.35)}
+/* Action grid */
+.act-grid{display:grid;grid-template-columns:1fr 1fr;gap:13px;margin-top:16px}
+.act-card{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.09);border-radius:13px;padding:18px;cursor:pointer;transition:all .2s;text-align:center}
+.act-card:hover{background:rgba(124,58,237,.18);border-color:rgba(124,58,237,.4);transform:translateY(-2px)}
+.act-card .icon{font-size:1.7em;margin-bottom:7px}
+.act-card h4{color:#e2e8f0;font-size:.9em}
+.act-card p{color:#94a3b8;font-size:.77em;margin-top:3px}
+/* Chips */
+.chips{display:flex;flex-wrap:wrap;gap:7px;margin:10px 0}
+.chip{padding:4px 11px;border-radius:20px;font-size:.77em;background:rgba(255,255,255,.07);color:#cbd5e1;border:1px solid rgba(255,255,255,.1)}
+/* Zustandsänderungen */
+.phase-diagram{display:flex;align-items:center;justify-content:center;gap:0;flex-wrap:wrap;margin:16px 0}
+.phase-box{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:12px;padding:14px 18px;text-align:center;min-width:90px}
+.phase-box .state{font-size:1.4em;margin-bottom:4px}
+.phase-box .name{font-size:.82em;color:#e2e8f0;font-weight:600}
+.phase-arrow{display:flex;flex-direction:column;align-items:center;padding:0 4px;min-width:80px}
+.phase-arrow .up{font-size:.68em;color:#34d399;text-align:center;margin-bottom:2px}
+.phase-arrow .arr{font-size:1.1em;color:#94a3b8}
+.phase-arrow .down{font-size:.68em;color:#f87171;text-align:center;margin-top:2px}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.screen.active .card{animation:fadeUp .28s ease}
+@media(max-width:540px){.header h1{font-size:1.4em}.act-grid{grid-template-columns:1fr}.topic-grid{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+<div class="app">
+<div class="header">
+  <h1>⚗️ Chemie KA 2 – Lern-App</h1>
+  <p>7. Klasse Gymnasium Hessen &nbsp;·&nbsp; Herr Louwsma</p>
+</div>
+
+<!-- HOME -->
+<div id="s-home" class="screen active">
+  <div class="topic-grid">
+    <div class="topic-card" onclick="showTopic(0)">
+      <div class="icon">🧪</div><h3>Mischungen</h3>
+      <p>Gemische, homogen/heterogen, Aggregatzustand-Kombinationen</p>
+      <div class="prog-bar"><div class="prog-fill" id="p0" style="width:0%"></div></div>
+    </div>
+    <div class="topic-card" onclick="showTopic(1)">
+      <div class="icon">🔬</div><h3>Trennverfahren</h3>
+      <p>Filtration, Destillation, Magnetismus, Analyse</p>
+      <div class="prog-bar"><div class="prog-fill" id="p1" style="width:0%"></div></div>
+    </div>
+    <div class="topic-card" onclick="showTopic(2)">
+      <div class="icon">⚡</div><h3>Energie &amp; Reaktionen</h3>
+      <p>Endotherm, exotherm, Oxidation, Wortgleichung</p>
+      <div class="prog-bar"><div class="prog-fill" id="p2" style="width:0%"></div></div>
+    </div>
+    <div class="topic-card" onclick="showTopic(3)">
+      <div class="icon">⚛️</div><h3>Teilchenmodell</h3>
+      <p>Aggregatzustände, Zustandsänderungen, Materie</p>
+      <div class="prog-bar"><div class="prog-fill" id="p3" style="width:0%"></div></div>
+    </div>
+  </div>
+  <div class="card">
+    <h3 style="color:#a78bfa;margin-bottom:10px">🎯 Gesamtquiz</h3>
+    <p style="color:#94a3b8;font-size:.88em;margin-bottom:14px">Teste alle Themen gemischt – wie in der echten Klassenarbeit</p>
+    <button class="btn btn-primary" onclick="startGlobalQuiz()">Alle Themen testen →</button>
+  </div>
+</div>
+
+<!-- TOPIC DETAIL -->
+<div id="s-topic" class="screen">
+  <div class="back-btn" onclick="showScreen('home')">← Zurück</div>
+  <div id="topic-content"></div>
+</div>
+
+<!-- FLASHCARDS -->
+<div id="s-flash" class="screen">
+  <div class="back-btn" onclick="exitFlash()">← Zurück</div>
+  <div class="card">
+    <div class="prog-indicator">
+      <div class="prog-track"><div class="prog-track-fill" id="fc-bar"></div></div>
+      <span class="prog-text" id="fc-num">1 / 10</span>
+    </div>
+    <div class="fc-wrap">
+      <div class="fc" id="fc-card" onclick="flipCard()">
+        <div class="fc-front"><div class="fc-label">Begriff / Frage</div><h2 id="fc-q"></h2></div>
+        <div class="fc-back"><div class="fc-label">Erklärung</div><p id="fc-a"></p></div>
+      </div>
+    </div>
+    <p style="text-align:center;color:#475569;font-size:.78em;margin-bottom:18px">Klicke auf die Karte zum Umdrehen</p>
+    <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+      <button class="btn btn-secondary" onclick="prevCard()">← Zurück</button>
+      <button class="btn btn-primary" onclick="nextCard()">Weiter →</button>
+      <button class="btn btn-success" onclick="startTopicQuiz()">Quiz starten ✓</button>
+    </div>
+  </div>
+</div>
+
+<!-- QUIZ -->
+<div id="s-quiz" class="screen">
+  <div class="back-btn" onclick="exitQuiz()">← Abbrechen</div>
+  <div class="card">
+    <div class="prog-indicator">
+      <div class="prog-track"><div class="prog-track-fill" id="q-bar"></div></div>
+      <span class="prog-text" id="q-num">1 / 10</span>
+    </div>
+    <div style="display:flex;gap:16px;margin-bottom:16px">
+      <span style="color:#34d399;font-size:.83em">✓ <span id="q-ok">0</span> richtig</span>
+      <span style="color:#f87171;font-size:.83em">✗ <span id="q-fail">0</span> falsch</span>
+    </div>
+    <div class="quiz-q" id="q-text"></div>
+    <div class="quiz-opts" id="q-opts"></div>
+    <div class="quiz-fb" id="q-fb"></div>
+    <div style="margin-top:18px;display:none" id="q-next">
+      <button class="btn btn-primary" onclick="nextQuestion()">Nächste Frage →</button>
+    </div>
+  </div>
+</div>
+
+<!-- RESULTS -->
+<div id="s-results" class="screen">
+  <div class="card" style="text-align:center">
+    <h2 style="color:#a78bfa;margin-bottom:20px">Ergebnis</h2>
+    <div class="score-ring" id="s-ring"><span class="score-num" id="s-pct">0%</span></div>
+    <div id="s-stars" style="font-size:1.6em;margin-bottom:10px"></div>
+    <p id="s-msg" style="color:#94a3b8;margin-bottom:18px"></p>
+    <div id="s-stats" style="margin-bottom:20px"></div>
+    <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+      <button class="btn btn-secondary" onclick="showScreen('home')">Startseite</button>
+      <button class="btn btn-primary" onclick="retryQuiz()">Nochmal</button>
+    </div>
+  </div>
+</div>
+
+<!-- ENERGY DIAGRAM -->
+<div id="s-energy" class="screen">
+  <div class="back-btn" onclick="showTopic(2)">← Zurück</div>
+  <div class="card">
+    <h3 style="color:#a78bfa;margin-bottom:14px">⚡ Interaktives Energiediagramm</h3>
+    <div style="display:flex;gap:9px;margin-bottom:14px;flex-wrap:wrap">
+      <button class="btn btn-primary" id="e-exo" onclick="drawDiagram('exotherm')">🔥 Exotherm</button>
+      <button class="btn btn-secondary" id="e-endo" onclick="drawDiagram('endotherm')">❄️ Endotherm</button>
+    </div>
+    <svg id="e-svg" viewBox="0 0 500 290" style="width:100%;background:rgba(0,0,0,.25);border-radius:12px;display:block"></svg>
+    <div id="e-info" style="margin-top:14px"></div>
+  </div>
+</div>
+
+<script>
+// ── DATA ──────────────────────────────────────────────────────────────
+
+const TOPICS = [
+  {
+    id:0, icon:"🧪", title:"Mischungen",
+    sub:"Gemische, homogen/heterogen, Aggregatzustand-Kombinationen",
+    cards:[
+      {q:"Was ist ein Gemisch?", a:"Zwei oder mehr Stoffe, die NICHT chemisch verbunden sind. Jeder Stoff behält seine Eigenschaften. Sie lassen sich durch physikalische Verfahren wieder trennen."},
+      {q:"Homogenes Gemisch", a:"Überall gleich zusammengesetzt – die Bestandteile sind mit bloßem Auge nicht erkennbar. Beispiele: Salzwasser, Luft, Messing."},
+      {q:"Heterogenes Gemisch", a:"Nicht überall gleich zusammengesetzt – die Bestandteile sind erkennbar oder setzen sich ab. Beispiele: Sand+Wasser, Salatdressing, Granit."},
+      {q:"Suspension", a:"Feststoff ist in einer Flüssigkeit fein verteilt → heterogen. Setzt sich mit der Zeit ab. Beispiele: Schlamm, Orangensaft mit Fruchtfleisch."},
+      {q:"Emulsion", a:"Zwei nicht mischbare Flüssigkeiten fein verteilt → heterogen. Beispiele: Milch (Fett+Wasser), Mayonnaise."},
+      {q:"Lösung", a:"Stoff ist vollständig in Lösungsmittel gelöst → homogen. Beispiele: Salzwasser, Zuckerwasser."},
+      {q:"Legierung", a:"Homogenes Gemisch aus Metallen. Beispiele: Messing (Cu+Zn), Bronze (Cu+Sn), Stahl (Fe+C)."},
+      {q:"Gasgemisch", a:"Gas + Gas = homogenes Gemisch. Wichtigstes Beispiel: Luft (78% N₂, 21% O₂, ~1% Ar)."},
+      {q:"Aerosol", a:"Fester oder flüssiger Stoff fein in Gas verteilt → heterogen. Nebel = Flüssigkeit in Gas. Rauch = Feststoff in Gas."},
+      {q:"Aggregatzustand-Kombinationen", a:"fest+fest → Gemenge/Legierung | fest+flüssig → Suspension/Lösung | flüssig+flüssig → Emulsion/Lösung | Gas+Gas → Gasgemisch | fest/flüssig+Gas → Aerosol"},
+    ]
+  },
+  {
+    id:1, icon:"🔬", title:"Trennverfahren",
+    sub:"Methoden zur Trennung von Gemischen",
+    cards:[
+      {q:"Trennverfahren vs. Analyseverfahren", a:"Trennverfahren: Bestandteile werden als einzelne Fraktionen gewonnen (z.B. Filtration). Analyseverfahren: Die Zusammensetzung wird untersucht, ohne alle Stoffe zu trennen (z.B. Chromatographie)."},
+      {q:"Filtration", a:"Trennt Feststoff von Flüssigkeit durch ein Filterpapier. Geeignet für Suspensionen. Filtrat (Flüssigkeit) geht durch, Rückstand (Feststoff) bleibt zurück."},
+      {q:"Destillation", a:"Trennt Flüssigkeiten durch unterschiedliche Siedepunkte. Flüssigkeit mit niedrigerem Siedepunkt verdampft zuerst → kondensiert → wird aufgefangen."},
+      {q:"Magnetische Trennung", a:"Magnetische Stoffe (Eisen, Nickel, Cobalt) werden mit einem Magneten herausgezogen. Funktioniert NUR bei ferromagnetischen Materialien!"},
+      {q:"Eindampfen / Verdampfen", a:"Lösung erhitzen → Lösungsmittel verdampft → gelöster Feststoff bleibt zurück. Beispiel: Salz aus Salzwasser gewinnen."},
+      {q:"Chromatographie", a:"Analyseverfahren: Stoffe wandern unterschiedlich schnell durch ein Trennmittel (z.B. Filterpapier). Trennt Farbstoffe, zeigt Zusammensetzung."},
+      {q:"Zentrifugation", a:"Schnelles Rotieren erzeugt Fliehkraft → schwerere Teilchen sammeln sich außen. Beispiel: Blutplasma von Blutzellen trennen."},
+      {q:"Sieben", a:"Trennt Feststoffe unterschiedlicher Korngröße. Kleinere Körner fallen durch die Maschen, größere bleiben zurück. Beispiel: Sand von Kies trennen."},
+      {q:"Wichtig: Fraktionen erhalten", a:"Bei einem Trennverfahren ist es wichtig, die getrennten Bestandteile als Fraktionen einzeln zu sammeln. Nur dann ist die Trennung vollständig."},
+      {q:"Welches Verfahren für welches Gemisch?", a:"Suspension → Filtration | Lösung → Eindampfen | Flüssigkeitsgemisch → Destillation | Eisengemisch → Magnet | Farbstoffgemisch → Chromatographie"},
+    ]
+  },
+  {
+    id:2, icon:"⚡", title:"Energie & Reaktionen",
+    sub:"Endotherm, exotherm, Oxidation, Verbrennung, Wortgleichung",
+    cards:[
+      {q:"Exotherme Reaktion", a:"Energie wird an die Umgebung abgegeben → es wird WARM. Produkte haben weniger Energie als Ausgangsstoffe. Beispiele: Verbrennung, Rostbildung, Wärmekissen."},
+      {q:"Endotherme Reaktion", a:"Energie wird aus der Umgebung aufgenommen → es wird KALT. Produkte haben mehr Energie als Ausgangsstoffe. Beispiele: Fotosynthese, Kältepacks, Schmelzen."},
+      {q:"Aktivierungsenergie", a:"Die Mindestenergie, die nötig ist, um eine Reaktion zu STARTEN. Auch exotherme Reaktionen brauchen eine Zündung! Im Diagramm: der Berg zwischen Ausgangsstoffen und Produkt-Niveau."},
+      {q:"Energiediagramm", a:"Zeigt Energie auf Y-Achse, Reaktionsverlauf auf X-Achse. Exotherm: Produkte liegen TIEFER als Ausgangsstoffe. Endotherm: Produkte liegen HÖHER. Der Gipfel = Aktivierungsenergie."},
+      {q:"Oxidation", a:"Reaktion eines Stoffes mit Sauerstoff. Kann langsam (Rostbildung von Eisen) oder schnell (Verbrennung) ablaufen."},
+      {q:"Verbrennung", a:"Schnelle Oxidation mit sichtbarer Flamme und starker Wärmeentwicklung. Benötigt: Brennstoff + Sauerstoff + Zündtemperatur (Feuerdreieck!). Produkte meist CO₂ und H₂O."},
+      {q:"Feuerdreieck", a:"Verbrennung braucht alle drei: 1) Brennstoff, 2) Sauerstoff (aus der Luft), 3) Zündtemperatur. Fehlt eines → Feuer erlischt. Löschmethoden: Sauerstoff entziehen oder abkühlen."},
+      {q:"Wortgleichung", a:"Beschreibt eine Reaktion in Worten: Ausgangsstoffe → Produkte. Beispiel: Kohlenstoff + Sauerstoff → Kohlenstoffdioxid. Der Pfeil bedeutet 'reagiert zu'."},
+      {q:"Zerteilungsgrad", a:"Je FEINER ein Stoff zerteilt ist, desto größer die Oberfläche, desto SCHNELLER die Reaktion. Holzspäne brennen schneller als ein Klotz. Zucker-Staub kann explodieren!"},
+      {q:"Luft – Zusammensetzung", a:"78% Stickstoff (N₂) · 21% Sauerstoff (O₂) · ~1% Argon und Spurengase. NUR der Sauerstoff ist reaktiv und beteiligt sich an Verbrennungen!"},
+    ]
+  },
+  {
+    id:3, icon:"⚛️", title:"Teilchenmodell & Aggregatzustände",
+    sub:"Aufbau der Materie, Zustandsänderungen, Eigenschaften",
+    cards:[
+      {q:"Teilchenmodell – Grundidee", a:"Alle Materie besteht aus winzig kleinen Teilchen (Atomen/Molekülen). Zwischen den Teilchen ist leerer Raum. Teilchen sind ständig in Bewegung – schneller bei höherer Temperatur."},
+      {q:"Aggregatzustand: fest", a:"Teilchen dicht gepackt in fester Struktur, schwingen nur. Form und Volumen sind konstant. Beispiele: Eis, Eisen, Salzkristalle."},
+      {q:"Aggregatzustand: flüssig", a:"Teilchen sind nah beieinander, können sich aber bewegen und aneinander vorbeigleiten. Volumen konstant, Form variabel. Beispiele: Wasser, Öl, Quecksilber."},
+      {q:"Aggregatzustand: gasförmig", a:"Teilchen weit voneinander entfernt, bewegen sich sehr schnell. Volumen und Form variabel (füllt Gefäß aus). Beispiele: Wasserdampf, Luft."},
+      {q:"Schmelzen & Erstarren", a:"Schmelzen: fest → flüssig (Energie aufnehmen). Erstarren: flüssig → fest (Energie abgeben). Beispiel: Eis schmilzt bei 0°C zu Wasser."},
+      {q:"Sieden & Kondensieren", a:"Sieden/Verdampfen: flüssig → gasförmig (Energie aufnehmen). Kondensieren: gasförmig → flüssig (Energie abgeben). Wasser siedet bei 100°C."},
+      {q:"Sublimieren & Resublimieren", a:"Sublimieren: fest → gasförmig OHNE flüssige Phase. Resublimieren: gasförmig → fest. Beispiele: Trockeneis (CO₂), Mottenkugeln, Frost."},
+      {q:"Eigenschaften der Materie", a:"Charakteristische Eigenschaften: Farbe, Geruch, Dichte, Schmelzpunkt, Siedepunkt, Löslichkeit, elektrische Leitfähigkeit, Magnetismus, Härte."},
+      {q:"Dichte", a:"Dichte = Masse ÷ Volumen [g/cm³]. Eisen (7,9 g/cm³) sinkt in Wasser (1 g/cm³). Holz (~0,5 g/cm³) schwimmt. Je größer die Dichte, desto schwerer ist das Material pro Volumen."},
+      {q:"Diffusion", a:"Teilchen verteilen sich von selbst von höherer zu niedrigerer Konzentration – wegen ihrer ständigen Bewegung. Beispiel: Parfüm verbreitet sich im Raum."},
+    ]
+  }
+];
+
+const QUESTIONS = [
+  // MISCHUNGEN
+  {t:0,q:"Was ist ein Gemisch?",
+   o:["Zwei Stoffe chemisch verbunden","Zwei oder mehr Stoffe NICHT chemisch verbunden – behalten ihre Eigenschaften","Ein reiner Stoff aus einem Element","Ein Feststoff, der in Wasser gelöst ist"],
+   c:1,e:"Ein Gemisch besteht aus zwei oder mehr Stoffen, die physikalisch vermischt, aber NICHT chemisch verbunden sind. Jeder Stoff behält seine Eigenschaften und kann durch physikalische Verfahren wieder getrennt werden."},
+  {t:0,q:"Was unterscheidet ein homogenes von einem heterogenen Gemisch?",
+   o:["Homogen = flüssig, heterogen = fest","Homogen: überall gleich zusammengesetzt (Bestandteile nicht erkennbar); Heterogen: Bestandteile erkennbar/sichtbar","Homogen = 2 Stoffe, heterogen = mehr als 2","Homogen ist natürlich, heterogen ist künstlich"],
+   c:1,e:"Homogene Gemische sehen überall gleich aus (z.B. Salzwasser, Luft). Heterogene Gemische haben erkennbare Bestandteile oder setzen sich ab (z.B. Sand+Wasser, Granit)."},
+  {t:0,q:"Was ist eine Suspension?",
+   o:["Homogenes Gemisch aus zwei Flüssigkeiten","Fein verteilter Feststoff in einer Flüssigkeit – heterogenes Gemisch, setzt sich ab","Gas vollständig in Flüssigkeit gelöst","Homogenes Gemisch aus zwei Metallen"],
+   c:1,e:"Eine Suspension ist ein heterogenes Gemisch: Feststoff-Teilchen sind in einer Flüssigkeit verteilt, aber nicht gelöst. Sie setzen sich mit der Zeit ab (z.B. Schlamm, Orangensaft mit Fruchtfleisch)."},
+  {t:0,q:"Luft ist ein Beispiel für …",
+   o:["Eine Emulsion","Einen Reinstoff","Ein homogenes Gasgemisch","Eine Suspension"],
+   c:2,e:"Luft ist ein homogenes Gasgemisch: ca. 78% Stickstoff, 21% Sauerstoff, ~1% Argon. Überall in der Luft ist die Zusammensetzung gleich – deshalb homogen."},
+  {t:0,q:"Welche Kombination ergibt eine Emulsion?",
+   o:["Feststoff + Flüssigkeit","Gas + Gas","Zwei nicht mischbare Flüssigkeiten","Feststoff + Gas"],
+   c:2,e:"Eine Emulsion entsteht, wenn zwei nicht miteinander mischbare Flüssigkeiten fein verteilt werden. Beispiele: Milch (Fett in Wasser), Mayonnaise."},
+  {t:0,q:"Was ist eine Legierung?",
+   o:["Heterogenes Gemisch aus Metallen","Homogenes Gemisch aus Metallen","Lösung von Metall in Wasser","Feststoff + Gas Gemisch"],
+   c:1,e:"Eine Legierung ist ein homogenes Gemisch aus zwei oder mehr Metallen. Beispiele: Messing (Kupfer + Zink), Bronze (Kupfer + Zinn), Stahl (Eisen + Kohlenstoff)."},
+  // TRENNVERFAHREN
+  {t:1,q:"Was ist der Unterschied zwischen Trennverfahren und Analyseverfahren?",
+   o:["Kein Unterschied","Trennverfahren → Bestandteile als Fraktionen gewinnen; Analyseverfahren → Zusammensetzung untersuchen","Trennverfahren = chemisch, Analyseverfahren = physikalisch","Analyseverfahren nutzen immer Wärme"],
+   c:1,e:"Bei Trennverfahren werden die Bestandteile tatsächlich voneinander getrennt und als einzelne Fraktionen gewonnen (z.B. Filtration). Analyseverfahren untersuchen die Zusammensetzung (z.B. Chromatographie), ohne alles zu trennen."},
+  {t:1,q:"Wie trennt man am besten eine Suspension aus Sand und Wasser?",
+   o:["Destillation","Magnetische Trennung","Filtration","Eindampfen"],
+   c:2,e:"Bei der Filtration läuft die Flüssigkeit durch das Filterpapier, während der Feststoff (Rückstand) zurückbleibt. Genau richtig für Suspensionen wie Sand + Wasser."},
+  {t:1,q:"Wie gewinnt man Salz aus Salzwasser zurück?",
+   o:["Filtration – Salz bleibt im Filter","Eindampfen – Wasser verdampft, Salz bleibt zurück","Magnet – Salz ist magnetisch","Sieben – Salzkörner sind größer"],
+   c:1,e:"Salzwasser ist eine Lösung – das Salz ist vollständig gelöst und kann NICHT durch Filtration abgetrennt werden. Beim Eindampfen verdampft das Wasser, das Salz kristallisiert aus."},
+  {t:1,q:"Auf welche Stoffe wirkt die magnetische Trennung?",
+   o:["Alle Metalle","Alle schweren Feststoffe","Nur ferromagnetische Stoffe: Eisen, Nickel, Cobalt","Alle leitfähigen Materialien"],
+   c:2,e:"Magnetische Trennung funktioniert NUR bei ferromagnetischen Stoffen: Eisen, Nickel und Cobalt. Aluminium, Kupfer oder andere Metalle reagieren nicht auf Magnete."},
+  {t:1,q:"Wofür verwendet man die Destillation?",
+   o:["Feststoff von Flüssigkeit trennen","Zwei Flüssigkeiten mit unterschiedlichen Siedepunkten trennen","Magnetische von nicht-magnetischen Stoffen trennen","Stoffe nach Korngröße trennen"],
+   c:1,e:"Bei der Destillation werden Flüssigkeiten mit verschiedenen Siedepunkten getrennt: Die Flüssigkeit mit dem niedrigeren Siedepunkt verdampft zuerst, wird gekühlt (kondensiert) und separat aufgefangen."},
+  {t:1,q:"Was bedeutet 'Fraktionen erhalten' bei einem Trennverfahren?",
+   o:["Das Gemisch in viele Teile zerteilen","Die getrennten Bestandteile einzeln sammeln und aufbewahren","Das Verfahren mehrfach wiederholen","Die Temperatur in Stufen erhöhen"],
+   c:1,e:"Wichtig: Bei einem echten Trennverfahren muss man die getrennten Bestandteile als einzelne Fraktionen gewinnen können. Nur dann ist die Trennung vollständig gelungen."},
+  // ENERGIE & REAKTIONEN
+  {t:2,q:"Was ist eine exotherme Reaktion?",
+   o:["Eine Reaktion, die Energie verbraucht und kühlt","Eine Reaktion, die Energie an die Umgebung abgibt – es wird warm","Eine Reaktion ohne Aktivierungsenergie","Eine Reaktion, die nur im Dunkeln läuft"],
+   c:1,e:"Exotherm = Energie nach außen (lat. 'exo'). Die Produkte haben weniger Energie als die Ausgangsstoffe. Die Differenz wird als Wärme abgegeben. Beispiele: Verbrennung, Rost, Wärmekissen."},
+  {t:2,q:"Was ist Aktivierungsenergie?",
+   o:["Energie die bei der Reaktion freigesetzt wird","Die Energiedifferenz zwischen Produkten und Ausgangsstoffen","Die Mindestenergie, die benötigt wird, um eine Reaktion zu STARTEN","Die Energie, die im Brennstoff gespeichert ist"],
+   c:2,e:"Die Aktivierungsenergie ist die Starterenergie, ohne die eine Reaktion nicht abläuft – auch wenn sie exotherm ist. Ohne Zündung verbrennt Holz nicht, obwohl viel Energie freigesetzt würde."},
+  {t:2,q:"Was zeigt ein Energiediagramm einer ENDOthermen Reaktion?",
+   o:["Produkte liegen energetisch tiefer als Ausgangsstoffe","Produkte liegen energetisch HÖHER als Ausgangsstoffe","Ausgangsstoffe und Produkte liegen gleich hoch","Es gibt keinen Aktivierungsenergie-Gipfel"],
+   c:1,e:"Endotherm = Energie nach innen (lat. 'endo'). Energie wird aufgenommen, deshalb haben die Produkte MEHR Energie als die Ausgangsstoffe → sie liegen im Diagramm höher. Beispiel: Kältepacks werden kalt."},
+  {t:2,q:"Was versteht man unter dem Zerteilungsgrad?",
+   o:["Anzahl der Bestandteile im Gemisch","Wie fein ein Stoff zerteilt ist – je feiner, desto mehr Oberfläche, desto schneller die Reaktion","Geschwindigkeit der Destillation","Anteil von Sauerstoff in der Luft"],
+   c:1,e:"Hoher Zerteilungsgrad = viele kleine Stücke = große Gesamtoberfläche = schnellere Reaktion. Holzspäne brennen viel schneller als ein Klotz. Zucker-Staub kann sogar explodieren!"},
+  {t:2,q:"Was braucht man für eine Verbrennung? (Feuerdreieck)",
+   o:["Wasser, Wärme, Brennstoff","Brennstoff + Sauerstoff + Zündtemperatur","Kohlenstoff, Wasserstoff, Sauerstoff","Stickstoff, Sauerstoff, Wärme"],
+   c:1,e:"Das Feuerdreieck: Brennstoff + Sauerstoff + Zündtemperatur. Alle drei müssen gleichzeitig vorhanden sein. Löschen = eines wegnehmen: Sand (kein O₂), Wasser (Abkühlen)."},
+  {t:2,q:"Was unterscheidet Oxidation von Verbrennung?",
+   o:["Kein Unterschied, beide Begriffe sind identisch","Verbrennung ist eine schnelle Oxidation mit sichtbarer Flamme; Oxidation kann auch langsam ablaufen (z.B. Rost)","Oxidation braucht Wasser, Verbrennung Sauerstoff","Verbrennung ist langsam, Oxidation schnell"],
+   c:1,e:"Oxidation = Reaktion mit Sauerstoff (kann langsam oder schnell sein). Verbrennung = sehr schnelle Oxidation mit sichtbarer Flamme und starker Wärme. Rost ist eine langsame Oxidation, Feuer ist eine schnelle."},
+  {t:2,q:"Wie lautet die Wortgleichung für die Verbrennung von Kohlenstoff?",
+   o:["Kohlenstoff + Wasser → Kohlenmonoxid","Kohlenstoff + Sauerstoff → Kohlenstoffdioxid","Kohlenstoff + Stickstoff → Kohlenstoffnitrid","Kohlenstoffdioxid → Kohlenstoff + Sauerstoff"],
+   c:1,e:"Wortgleichung: Kohlenstoff + Sauerstoff → Kohlenstoffdioxid. Der Pfeil bedeutet 'reagiert zu'. Die Ausgangsstoffe stehen links, die Produkte rechts."},
+  // TEILCHENMODELL
+  {t:3,q:"Was sagt das Teilchenmodell aus?",
+   o:["Materie ist kontinuierlich ohne Lücken","Alle Materie besteht aus winzig kleinen Teilchen in ständiger Bewegung, zwischen denen leerer Raum ist","Nur Flüssigkeiten bestehen aus Teilchen","Feste Stoffe haben keine Teilchenbewegung"],
+   c:1,e:"Das Teilchenmodell: Alle Materie besteht aus Teilchen (Atomen/Molekülen). Zwischen ihnen ist leerer Raum. Sie bewegen sich immer – schneller bei höherer Temperatur."},
+  {t:3,q:"Was passiert beim SCHMELZEN auf Teilchenebene?",
+   o:["Teilchen werden kleiner","Teilchen verschwinden teilweise","Teilchen gewinnen Energie, lösen sich aus ihrer festen Anordnung und können sich bewegen","Teilchen brechen auseinander"],
+   c:2,e:"Schmelzen (fest→flüssig): Die Teilchen bekommen so viel Wärmeenergie, dass die Bindungen überwunden werden. Sie bleiben nah beieinander, können sich aber nun frei bewegen."},
+  {t:3,q:"Was ist 'Sublimieren'?",
+   o:["Flüssig → fest","Gasförmig → flüssig","Fest → gasförmig OHNE flüssige Zwischenphase","Flüssig → gasförmig"],
+   c:2,e:"Sublimieren = direkt von fest nach gasförmig, ohne flüssige Phase. Das Gegenteil heißt Resublimieren. Beispiele: Trockenes CO₂ (Trockeneis), Mottenkugeln, Frost."},
+  {t:3,q:"Wie sind Teilchen im gasförmigen Zustand?",
+   o:["Dicht gepackt, kaum Bewegung","Nah beieinander, können sich bewegen","Sehr weit voneinander entfernt, sehr schnelle Bewegung, füllen den gesamten Raum","In regelmäßiger Gitterstruktur"],
+   c:2,e:"Gas: Teilchen sehr weit entfernt, sehr schnell in alle Richtungen. Deshalb hat Gas kein eigenes Volumen – es dehnt sich aus und füllt jeden Behälter vollständig aus."},
+  {t:3,q:"Was ist Dichte?",
+   o:["Dichte = Volumen × Masse","Dichte = Masse ÷ Volumen [g/cm³] – Masse pro Volumeneinheit","Dichte = Temperatur ÷ Masse","Dichte = Oberfläche ÷ Gewicht"],
+   c:1,e:"Dichte = Masse/Volumen. Eisen: 7,9 g/cm³ → sinkt in Wasser (1 g/cm³). Holz: ~0,5 g/cm³ → schwimmt. Die Dichte ist eine charakteristische Eigenschaft eines Stoffes."},
+  {t:3,q:"Warum steigt Parfüm-Geruch von selbst im Zimmer auf?",
+   o:["Wegen der Schwerkraft","Wegen Kondensation","Diffusion: Teilchen bewegen sich von selbst von hoher zu niedriger Konzentration","Wegen Oxidation"],
+   c:2,e:"Diffusion: Teilchen sind immer in Bewegung und verteilen sich von selbst gleichmäßig. Der Geruch breitet sich aus, weil die Parfüm-Moleküle in Bereiche mit niedrigerer Konzentration wandern."},
+];
+
+// ── STATE ──────────────────────────────────────────────────────────────
+let tid = 0, fcIdx = 0, fcSrc = 'topic';
+let qs = [], qIdx = 0, qOk = 0, qFail = 0, qAnswered = false, qSrc = 'home';
+let prog = [0,0,0,0];
+
+// ── NAVIGATION ──────────────────────────────────────────────────────────
+function showScreen(n){ document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active')); document.getElementById('s-'+n).classList.add('active'); }
+
+function showTopic(id){
+  tid = id;
+  const t = TOPICS[id];
+  const qCount = QUESTIONS.filter(q=>q.t===id).length;
+  document.getElementById('topic-content').innerHTML = `
+    <div style="display:flex;align-items:center;gap:14px;margin-bottom:20px">
+      <span style="font-size:2.8em">${t.icon}</span>
+      <div><h2 style="color:#e2e8f0;margin-bottom:3px">${t.title}</h2><p style="color:#94a3b8;font-size:.88em">${t.sub}</p></div>
+    </div>
+    <div class="card">
+      <h4 style="color:#a78bfa;margin-bottom:10px">Was lernst du hier?</h4>
+      <div class="chips">${t.cards.map(c=>`<span class="chip">${c.q}</span>`).join('')}</div>
+    </div>
+    <div class="act-grid">
+      <div class="act-card" onclick="startFlash(${id})"><div class="icon">🃏</div><h4>Karteikarten lernen</h4><p>${t.cards.length} Karten</p></div>
+      <div class="act-card" onclick="startTopicQuizById(${id})"><div class="icon">❓</div><h4>Quiz starten</h4><p>${qCount} Fragen</p></div>
+    </div>
+    ${id===2?`<div class="card" style="margin-top:14px"><h4 style="color:#a78bfa;margin-bottom:10px">⚡ Energiediagramm interaktiv</h4><button class="btn btn-secondary" onclick="openEnergy()">Diagramm öffnen →</button></div>`:''}
+    ${id===0?`<div class="card" style="margin-top:14px"><h4 style="color:#a78bfa;margin-bottom:14px">🧪 Mischungs-Übersicht</h4>${mixTable()}</div>`:''}
+    ${id===1?`<div class="card" style="margin-top:14px"><h4 style="color:#a78bfa;margin-bottom:14px">🔬 Trennverfahren-Übersicht</h4>${sepTable()}</div>`:''}
+    ${id===3?`<div class="card" style="margin-top:14px"><h4 style="color:#a78bfa;margin-bottom:14px">⚛️ Zustandsänderungen</h4>${phaseDiagram()}</div>`:''}
+  `;
+  showScreen('topic');
+}
+
+function mixTable(){return`<table class="itable"><tr><th>Typ</th><th>Bestandteile</th><th>Art</th><th>Beispiel</th></tr><tr><td>Lösung</td><td>Feststoff+Flüssigkeit</td><td><span class="badge badge-p">homogen</span></td><td>Salzwasser</td></tr><tr><td>Suspension</td><td>Feststoff+Flüssigkeit</td><td><span class="badge badge-r">heterogen</span></td><td>Schlamm</td></tr><tr><td>Emulsion</td><td>Flüssig+Flüssig</td><td><span class="badge badge-r">heterogen</span></td><td>Milch</td></tr><tr><td>Gasgemisch</td><td>Gas+Gas</td><td><span class="badge badge-p">homogen</span></td><td>Luft</td></tr><tr><td>Aerosol</td><td>Flüssig/fest+Gas</td><td><span class="badge badge-r">heterogen</span></td><td>Nebel, Rauch</td></tr><tr><td>Legierung</td><td>Metall+Metall</td><td><span class="badge badge-p">homogen</span></td><td>Messing</td></tr><tr><td>Gemenge</td><td>Feststoff+Feststoff</td><td><span class="badge badge-r">heterogen</span></td><td>Sand+Kies</td></tr></table>`;}
+function sepTable(){return`<table class="itable"><tr><th>Verfahren</th><th>Trennt</th><th>Prinzip</th></tr><tr><td>Filtration</td><td>Feststoff / Flüssigkeit</td><td>Porengröße</td></tr><tr><td>Destillation</td><td>Flüssig / Flüssig</td><td>Siedepunkte</td></tr><tr><td>Eindampfen</td><td>Gelöster Stoff / Flüssigkeit</td><td>Verdampfung</td></tr><tr><td>Magnet</td><td>Fe/Ni/Co / Rest</td><td>Magnetismus</td></tr><tr><td>Sieben</td><td>Feste Körner</td><td>Korngröße</td></tr><tr><td>Zentrifuge</td><td>Nach Dichte</td><td>Fliehkraft</td></tr><tr><td>Chromatographie</td><td>Farbstoffe/Gemische</td><td>Wandergeschwindigkeit</td></tr></table>`;}
+function phaseDiagram(){return`<div class="phase-diagram">
+  <div class="phase-box"><div class="state">🧊</div><div class="name">Fest</div></div>
+  <div class="phase-arrow"><div class="up">Schmelzen →</div><div class="arr">⇄</div><div class="down">← Erstarren</div></div>
+  <div class="phase-box"><div class="state">💧</div><div class="name">Flüssig</div></div>
+  <div class="phase-arrow"><div class="up">Sieden/Verdampfen →</div><div class="arr">⇄</div><div class="down">← Kondensieren</div></div>
+  <div class="phase-box"><div class="state">💨</div><div class="name">Gasförmig</div></div>
+</div>
+<p style="color:#94a3b8;font-size:.78em;text-align:center">Sublimieren: fest → gasförmig direkt &nbsp;|&nbsp; Resublimieren: gasförmig → fest direkt</p>`;}
+
+// ── FLASHCARDS ──────────────────────────────────────────────────────────
+function startFlash(id){ tid=id; fcIdx=0; fcSrc='topic'; renderCard(); showScreen('flash'); }
+function renderCard(){
+  const cards=TOPICS[tid].cards, c=cards[fcIdx];
+  document.getElementById('fc-card').classList.remove('flipped');
+  document.getElementById('fc-q').textContent=c.q;
+  document.getElementById('fc-a').textContent=c.a;
+  const p=(fcIdx+1)/cards.length*100;
+  document.getElementById('fc-bar').style.width=p+'%';
+  document.getElementById('fc-num').textContent=`${fcIdx+1} / ${cards.length}`;
+}
+function flipCard(){ document.getElementById('fc-card').classList.toggle('flipped'); }
+function nextCard(){ const l=TOPICS[tid].cards.length; if(fcIdx<l-1){fcIdx++;renderCard();}else if(confirm('Alle Karten gesehen! Quiz starten?')){startTopicQuiz();} }
+function prevCard(){ if(fcIdx>0){fcIdx--;renderCard();} }
+function exitFlash(){ showTopic(tid); }
+
+// ── QUIZ ──────────────────────────────────────────────────────────────
+function startTopicQuizById(id){ tid=id; startTopicQuiz(); }
+function startTopicQuiz(){ qSrc='topic'; qs=shuffle(QUESTIONS.filter(q=>q.t===tid)); initQuiz(); showScreen('quiz'); }
+function startGlobalQuiz(){ qSrc='home'; qs=shuffle([...QUESTIONS]); initQuiz(); showScreen('quiz'); }
+function initQuiz(){ qIdx=0; qOk=0; qFail=0; document.getElementById('q-ok').textContent=0; document.getElementById('q-fail').textContent=0; renderQ(); }
+function renderQ(){
+  if(qIdx>=qs.length){ showResults(); return; }
+  const q=qs[qIdx]; qAnswered=false;
+  document.getElementById('q-bar').style.width=(qIdx/qs.length*100)+'%';
+  document.getElementById('q-num').textContent=`Frage ${qIdx+1} / ${qs.length}`;
+  document.getElementById('q-text').textContent=q.q;
+  const container=document.getElementById('q-opts'); container.innerHTML='';
+  q.o.forEach((o,i)=>{
+    const d=document.createElement('div'); d.className='quiz-opt';
+    d.textContent=String.fromCharCode(65+i)+') '+o;
+    d.onclick=()=>answerQ(i); container.appendChild(d);
+  });
+  const fb=document.getElementById('q-fb'); fb.style.display='none'; fb.className='quiz-fb';
+  document.getElementById('q-next').style.display='none';
+}
+function answerQ(sel){
+  if(qAnswered)return; qAnswered=true;
+  const q=qs[qIdx];
+  document.querySelectorAll('.quiz-opt').forEach(o=>o.classList.add('disabled'));
+  document.querySelectorAll('.quiz-opt')[q.c].classList.add('correct');
+  const fb=document.getElementById('q-fb');
+  if(sel===q.c){
+    qOk++; document.getElementById('q-ok').textContent=qOk;
+    fb.className='quiz-fb ok'; fb.innerHTML=`✓ Richtig! ${q.e}`;
+  } else {
+    qFail++; document.getElementById('q-fail').textContent=qFail;
+    document.querySelectorAll('.quiz-opt')[sel].classList.add('wrong');
+    fb.className='quiz-fb fail'; fb.innerHTML=`✗ Falsch! Richtig wäre: <strong>${String.fromCharCode(65+q.c)}) ${q.o[q.c]}</strong><br><br>${q.e}`;
+  }
+  fb.style.display='block'; document.getElementById('q-next').style.display='block';
+}
+function nextQuestion(){ qIdx++; renderQ(); }
+function exitQuiz(){ qSrc==='topic'?showTopic(tid):showScreen('home'); }
+function retryQuiz(){ qSrc==='topic'?startTopicQuizById(tid):startGlobalQuiz(); }
+function showResults(){
+  const total=qs.length, pct=Math.round(qOk/total*100);
+  document.getElementById('s-ring').style.setProperty('--deg',(pct/100*360)+'deg');
+  document.getElementById('s-pct').textContent=pct+'%';
+  const msgs=[['⭐⭐⭐','Ausgezeichnet! Bestens vorbereitet für die KA!'],['⭐⭐','Gut gemacht! Noch ein bisschen wiederholen.'],['⭐','Grundlagen vorhanden – nochmal die schwachen Punkte üben.'],['','Nochmal durch die Karteikarten – du schaffst das!']];
+  const [stars,msg]=pct>=90?msgs[0]:pct>=70?msgs[1]:pct>=50?msgs[2]:msgs[3];
+  document.getElementById('s-stars').textContent=stars;
+  document.getElementById('s-msg').textContent=msg;
+  document.getElementById('s-stats').innerHTML=`<div style="display:flex;justify-content:center;gap:30px"><div style="text-align:center"><div style="font-size:1.8em;color:#34d399;font-weight:700">${qOk}</div><div style="font-size:.8em;color:#94a3b8">Richtig</div></div><div style="text-align:center"><div style="font-size:1.8em;color:#f87171;font-weight:700">${qFail}</div><div style="font-size:.8em;color:#94a3b8">Falsch</div></div><div style="text-align:center"><div style="font-size:1.8em;color:#a78bfa;font-weight:700">${total}</div><div style="font-size:.8em;color:#94a3b8">Gesamt</div></div></div>`;
+  if(qSrc==='topic'){ prog[tid]=Math.max(prog[tid],pct); document.getElementById('p'+tid).style.width=prog[tid]+'%'; }
+  showScreen('results');
+}
+
+// ── ENERGY DIAGRAM ──────────────────────────────────────────────────────
+function openEnergy(){ showScreen('energy'); drawDiagram('exotherm'); }
+function drawDiagram(type){
+  const isExo=type==='exotherm';
+  document.getElementById('e-exo').className=isExo?'btn btn-primary':'btn btn-secondary';
+  document.getElementById('e-endo').className=!isExo?'btn btn-primary':'btn btn-secondary';
+  const startY=isExo?75:195, endY=isExo?195:75, peakY=28, ac=isExo?'#34d399':'#f87171';
+  document.getElementById('e-svg').innerHTML=`
+    <defs>
+      <marker id="ay" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3z" fill="#fbbf24"/></marker>
+      <marker id="ac" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3z" fill="${ac}"/></marker>
+      <marker id="acu" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto" orient="270"><path d="M0,0 L0,6 L8,3z" fill="${ac}"/></marker>
+    </defs>
+    <text x="14" y="155" fill="#475569" font-size="10" font-family="system-ui" transform="rotate(-90,14,155)">Energie</text>
+    <line x1="25" y1="250" x2="475" y2="250" stroke="rgba(255,255,255,.08)" stroke-width="1"/>
+    <text x="200" y="270" fill="#475569" font-size="10" font-family="system-ui">Reaktionsverlauf →</text>
+    <line x1="${55}" y1="${startY}" x2="135" y2="${startY}" stroke="rgba(255,255,255,.15)" stroke-width="1" stroke-dasharray="4,3"/>
+    <line x1="${355}" y1="${endY}" x2="445" y2="${endY}" stroke="rgba(255,255,255,.15)" stroke-width="1" stroke-dasharray="4,3"/>
+    <path d="M 60 ${startY} L 130 ${startY} Q 195 ${startY} 250 ${peakY} Q 305 ${endY} 360 ${endY} L 440 ${endY}" stroke="#7c3aed" stroke-width="3" fill="none" stroke-linecap="round"/>
+    <line x1="290" y1="${startY-2}" x2="290" y2="${peakY+5}" stroke="#fbbf24" stroke-width="1.5" stroke-dasharray="3,3" marker-end="url(#ay)"/>
+    <text x="296" y="${Math.round((startY+peakY)/2)}" fill="#fbbf24" font-size="10" font-family="system-ui">E_A</text>
+    <line x1="420" y1="${startY}" x2="420" y2="${endY+(isExo?4:-4)}" stroke="${ac}" stroke-width="1.5" stroke-dasharray="3,3" marker-end="url(#ac)"/>
+    <text x="426" y="${Math.round((startY+endY)/2)}" fill="${ac}" font-size="10" font-family="system-ui">ΔE</text>
+    <text x="62" y="${startY-8}" fill="#94a3b8" font-size="11" font-family="system-ui">Ausgangsstoffe</text>
+    <text x="${isExo?360:358}" y="${endY-8}" fill="#94a3b8" font-size="11" font-family="system-ui">Produkte</text>
+    <text x="215" y="${peakY-6}" fill="#a78bfa" font-size="10" font-family="system-ui">Aktivierungs-energie</text>
+    <rect x="155" y="256" width="190" height="22" rx="5" fill="rgba(124,58,237,.18)"/>
+    <text x="250" y="271" fill="#a78bfa" font-size="12" font-family="system-ui" font-weight="bold" text-anchor="middle">${isExo?'🔥 Exotherm – Wärme wird abgegeben':'❄️ Endotherm – Wärme wird aufgenommen'}</text>
+  `;
+  document.getElementById('e-info').innerHTML=`<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;text-align:center">
+    <div style="padding:10px;background:rgba(124,58,237,.12);border-radius:10px;border:1px solid rgba(124,58,237,.25)"><div style="font-size:.72em;color:#a78bfa;margin-bottom:4px">Aktivierungsenergie</div><div style="font-size:.82em;color:#e2e8f0">Startenergie der Reaktion</div></div>
+    <div style="padding:10px;background:rgba(${isExo?'5,150,105':'220,38,38'},.12);border-radius:10px;border:1px solid rgba(${isExo?'5,150,105':'220,38,38'},.25)"><div style="font-size:.72em;color:${isExo?'#34d399':'#f87171'};margin-bottom:4px">Energiedifferenz (ΔE)</div><div style="font-size:.82em;color:#e2e8f0">${isExo?'Energie abgegeben':'Energie aufgenommen'}</div></div>
+    <div style="padding:10px;background:rgba(251,191,36,.08);border-radius:10px;border:1px solid rgba(251,191,36,.2)"><div style="font-size:.72em;color:#fbbf24;margin-bottom:4px">Produkte</div><div style="font-size:.82em;color:#e2e8f0">${isExo?'Weniger':'Mehr'} Energie als Ausgangsstoffe</div></div>
+  </div>`;
+}
+
+// ── UTILS ──────────────────────────────────────────────────────────────
+function shuffle(a){ for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a; }
+</script>
+</body>
+</html>
