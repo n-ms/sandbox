@@ -3,513 +3,1114 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Chemie KA 2 – Lern-App</title>
+<title>Bio Lernapp – Immunsystem &amp; Genetik</title>
 <style>
+:root{--green:#1a7a4a;--green-l:#e8f5ee;--green-m:#4caf80;--orange:#e67e22;--orange-l:#fef3e8;--bg:#f4f8f5;--white:#fff;--text:#1a1a2e;--muted:#6b7280;--border:#d1e8da;--shadow:0 2px 10px rgba(0,0,0,.08);--r:12px;--rs:8px}
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Segoe UI',system-ui,sans-serif;background:linear-gradient(135deg,#0f0c29,#302b63,#24243e);min-height:100vh;color:#e0e0e0}
-.app{max-width:820px;margin:0 auto;padding:16px}
-.header{text-align:center;padding:28px 20px 20px;background:rgba(255,255,255,0.05);border-radius:20px;margin-bottom:24px;border:1px solid rgba(255,255,255,0.08)}
-.header h1{font-size:1.9em;background:linear-gradient(135deg,#a78bfa,#60a5fa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:6px}
-.header p{color:#94a3b8;font-size:0.9em}
-.screen{display:none}.screen.active{display:block}
-.topic-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:20px}
-.topic-card{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:16px;padding:22px 18px;cursor:pointer;transition:all .25s;text-align:center}
-.topic-card:hover{transform:translateY(-4px);background:rgba(255,255,255,0.1);border-color:rgba(167,139,250,0.5);box-shadow:0 10px 28px rgba(124,58,237,0.25)}
-.topic-card .icon{font-size:2.2em;margin-bottom:10px}
-.topic-card h3{font-size:.95em;color:#e2e8f0;margin-bottom:6px}
-.topic-card p{font-size:.78em;color:#94a3b8;line-height:1.4}
-.prog-bar{margin-top:10px;height:4px;background:rgba(255,255,255,0.08);border-radius:2px;overflow:hidden}
-.prog-fill{height:100%;background:linear-gradient(90deg,#7c3aed,#2563eb);border-radius:2px;transition:width .5s}
-.card{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:18px;padding:26px;margin-bottom:18px}
-.btn{padding:10px 24px;border:none;border-radius:10px;cursor:pointer;font-size:.9em;font-weight:600;transition:all .2s;display:inline-flex;align-items:center;gap:6px}
-.btn-primary{background:linear-gradient(135deg,#7c3aed,#2563eb);color:#fff}
-.btn-primary:hover{transform:translateY(-2px);box-shadow:0 6px 18px rgba(124,58,237,0.35)}
-.btn-secondary{background:rgba(255,255,255,0.09);color:#e0e0e0;border:1px solid rgba(255,255,255,0.12)}
-.btn-secondary:hover{background:rgba(255,255,255,0.14)}
-.btn-success{background:linear-gradient(135deg,#059669,#10b981);color:#fff}
-.back-btn{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.1);border-radius:9px;cursor:pointer;color:#94a3b8;font-size:.82em;margin-bottom:18px;transition:all .2s}
-.back-btn:hover{background:rgba(255,255,255,0.12);color:#e2e8f0}
-.prog-indicator{display:flex;align-items:center;gap:12px;margin-bottom:18px}
-.prog-track{flex:1;height:6px;background:rgba(255,255,255,0.08);border-radius:3px;overflow:hidden}
-.prog-track-fill{height:100%;background:linear-gradient(90deg,#7c3aed,#2563eb);border-radius:3px;transition:width .4s}
-.prog-text{font-size:.82em;color:#94a3b8;white-space:nowrap}
-/* Flashcard */
-.fc-wrap{perspective:1000px;margin:18px 0}
-.fc{width:100%;min-height:190px;position:relative;transform-style:preserve-3d;transition:transform .55s;cursor:pointer}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;line-height:1.65}
+
+/* NAV */
+nav{background:var(--white);border-bottom:2px solid var(--border);position:sticky;top:0;z-index:100;box-shadow:0 2px 12px rgba(26,122,74,.1)}
+.nav-inner{max-width:1100px;margin:0 auto;padding:0 16px;display:flex;align-items:center;gap:4px}
+.nav-logo{font-size:1.25rem;font-weight:900;color:var(--green);padding:12px 12px 12px 0;white-space:nowrap;flex-shrink:0}
+.nav-logo span{color:var(--orange)}
+.nav-tabs{display:flex;overflow-x:auto;scrollbar-width:none;flex:1}
+.nav-tabs::-webkit-scrollbar{display:none}
+.nav-tab{background:none;border:none;border-bottom:3px solid transparent;padding:14px 14px;cursor:pointer;font-size:.88rem;font-weight:700;color:var(--muted);white-space:nowrap;transition:all .2s}
+.nav-tab:hover{color:var(--green);background:var(--green-l)}
+.nav-tab.active{color:var(--green);border-bottom-color:var(--green)}
+
+/* LAYOUT */
+main{max-width:1100px;margin:0 auto;padding:28px 16px 80px}
+.section{display:none}.section.active{display:block}
+.section-title{font-size:1.5rem;font-weight:900;color:var(--green);margin-bottom:4px}
+.section-sub{color:var(--muted);margin-bottom:28px;font-size:.93rem}
+
+/* DASHBOARD */
+.dash-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px;margin-bottom:36px}
+.dash-card{background:var(--white);border-radius:var(--r);padding:24px;cursor:pointer;box-shadow:var(--shadow);border:2px solid transparent;transition:all .2s;text-align:center}
+.dash-card:hover{border-color:var(--green);transform:translateY(-3px);box-shadow:0 8px 24px rgba(26,122,74,.15)}
+.dash-icon{font-size:2.4rem;margin-bottom:10px}
+.dash-card h3{font-size:.95rem;font-weight:800;margin-bottom:5px}
+.dash-card p{font-size:.82rem;color:var(--muted)}
+.topics-wrap h2{font-size:1rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:12px}
+.topics{display:flex;flex-wrap:wrap;gap:8px}
+.topic-chip{background:var(--white);border:1.5px solid var(--border);border-radius:20px;padding:6px 14px;font-size:.82rem;font-weight:600;color:var(--green)}
+
+/* LERNZETTEL */
+.lz-section{background:var(--white);border-radius:var(--r);padding:24px;margin-bottom:22px;box-shadow:var(--shadow);border-left:4px solid var(--green)}
+.lz-hdr{display:flex;align-items:center;gap:10px;margin-bottom:18px}
+.lz-num{background:var(--green);color:#fff;width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.85rem;font-weight:800;flex-shrink:0}
+.lz-title{font-size:1rem;font-weight:800;color:var(--green)}
+.lz-body{display:grid;grid-template-columns:170px 1fr;gap:22px;align-items:start}
+@media(max-width:600px){.lz-body{grid-template-columns:1fr}}
+.lz-img-wrap{text-align:center}
+.lz-img{width:160px;border-radius:var(--rs);border:2px solid var(--border);box-shadow:var(--shadow);cursor:zoom-in;transition:transform .2s;display:block}
+.lz-img:hover{transform:scale(1.04)}
+.lz-img-cap{font-size:.72rem;color:var(--muted);margin-top:5px}
+.lz-content h3{font-size:.95rem;font-weight:800;color:var(--green);margin:14px 0 5px}
+.lz-content h3:first-child{margin-top:0}
+.lz-content p,.lz-content li{font-size:.9rem;margin-bottom:5px}
+.lz-content ol,.lz-content ul{padding-left:18px;margin-bottom:6px}
+
+/* KARTEIKARTEN */
+.karten-bar{display:flex;align-items:center;gap:8px;margin-bottom:22px;flex-wrap:wrap}
+.filt-btn{background:var(--white);border:2px solid var(--border);border-radius:20px;padding:5px 14px;cursor:pointer;font-size:.83rem;font-weight:700;color:var(--muted);transition:all .2s}
+.filt-btn.active{background:var(--green);color:#fff;border-color:var(--green)}
+.card-count{margin-left:auto;font-size:.88rem;color:var(--muted);font-weight:700}
+.pb-wrap{background:var(--border);border-radius:4px;height:6px;max-width:560px;margin:0 auto 16px}
+.pb-fill{background:var(--green);height:100%;border-radius:4px;transition:width .3s}
+.fc-area{perspective:1000px;max-width:560px;margin:0 auto 18px}
+.fc{width:100%;min-height:240px;position:relative;transform-style:preserve-3d;transition:transform .45s;cursor:pointer}
 .fc.flipped{transform:rotateY(180deg)}
-.fc-front,.fc-back{position:absolute;width:100%;min-height:190px;backface-visibility:hidden;border-radius:14px;padding:28px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
-.fc-front{background:linear-gradient(135deg,rgba(124,58,237,.25),rgba(37,99,235,.25));border:1px solid rgba(124,58,237,.4)}
-.fc-back{background:linear-gradient(135deg,rgba(5,150,105,.25),rgba(16,185,129,.25));border:1px solid rgba(5,150,105,.4);transform:rotateY(180deg)}
-.fc-label{font-size:.72em;text-transform:uppercase;letter-spacing:1px;margin-bottom:12px}
-.fc-front .fc-label{color:#a78bfa}.fc-back .fc-label{color:#34d399}
-.fc-front h2{font-size:1.3em;color:#e2e8f0}
-.fc-back p{font-size:.95em;color:#d1fae5;line-height:1.6}
-/* Quiz */
-.quiz-q{font-size:1.1em;color:#e2e8f0;margin-bottom:18px;line-height:1.5}
-.quiz-opts{display:flex;flex-direction:column;gap:10px}
-.quiz-opt{padding:13px 18px;background:rgba(255,255,255,0.06);border:2px solid rgba(255,255,255,0.09);border-radius:11px;cursor:pointer;transition:all .18s;font-size:.92em;color:#e0e0e0;text-align:left}
-.quiz-opt:hover:not(.disabled){background:rgba(124,58,237,.2);border-color:rgba(124,58,237,.5);transform:translateX(3px)}
-.quiz-opt.correct{background:rgba(5,150,105,.28);border-color:#10b981;color:#d1fae5}
-.quiz-opt.wrong{background:rgba(220,38,38,.28);border-color:#ef4444;color:#fee2e2}
-.quiz-opt.disabled{cursor:not-allowed}
-.quiz-fb{margin-top:14px;padding:14px;border-radius:11px;font-size:.87em;line-height:1.5;display:none}
-.quiz-fb.ok{background:rgba(5,150,105,.18);border:1px solid rgba(16,185,129,.3);color:#d1fae5}
-.quiz-fb.fail{background:rgba(220,38,38,.18);border:1px solid rgba(239,68,68,.3);color:#fee2e2}
-/* Results */
-.score-ring{width:110px;height:110px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;position:relative;background:conic-gradient(#7c3aed var(--deg,0deg),rgba(255,255,255,.08) 0)}
-.score-ring::after{content:'';position:absolute;width:82px;height:82px;background:#1a1833;border-radius:50%}
-.score-num{position:relative;z-index:1;font-size:1.4em;font-weight:700;color:#a78bfa}
-/* Table */
-table.itable{width:100%;border-collapse:collapse;margin:12px 0}
-table.itable th{background:rgba(124,58,237,.18);color:#a78bfa;padding:9px 13px;text-align:left;font-size:.82em;border-bottom:1px solid rgba(124,58,237,.25)}
-table.itable td{padding:9px 13px;border-bottom:1px solid rgba(255,255,255,.04);font-size:.82em;color:#cbd5e1}
-table.itable tr:hover td{background:rgba(255,255,255,.02)}
-.badge{display:inline-block;padding:2px 9px;border-radius:20px;font-size:.73em;font-weight:600}
-.badge-p{background:rgba(124,58,237,.25);color:#a78bfa;border:1px solid rgba(124,58,237,.35)}
-.badge-r{background:rgba(220,38,38,.25);color:#fca5a5;border:1px solid rgba(220,38,38,.35)}
-/* Action grid */
-.act-grid{display:grid;grid-template-columns:1fr 1fr;gap:13px;margin-top:16px}
-.act-card{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.09);border-radius:13px;padding:18px;cursor:pointer;transition:all .2s;text-align:center}
-.act-card:hover{background:rgba(124,58,237,.18);border-color:rgba(124,58,237,.4);transform:translateY(-2px)}
-.act-card .icon{font-size:1.7em;margin-bottom:7px}
-.act-card h4{color:#e2e8f0;font-size:.9em}
-.act-card p{color:#94a3b8;font-size:.77em;margin-top:3px}
-/* Chips */
-.chips{display:flex;flex-wrap:wrap;gap:7px;margin:10px 0}
-.chip{padding:4px 11px;border-radius:20px;font-size:.77em;background:rgba(255,255,255,.07);color:#cbd5e1;border:1px solid rgba(255,255,255,.1)}
-/* Zustandsänderungen */
-.phase-diagram{display:flex;align-items:center;justify-content:center;gap:0;flex-wrap:wrap;margin:16px 0}
-.phase-box{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:12px;padding:14px 18px;text-align:center;min-width:90px}
-.phase-box .state{font-size:1.4em;margin-bottom:4px}
-.phase-box .name{font-size:.82em;color:#e2e8f0;font-weight:600}
-.phase-arrow{display:flex;flex-direction:column;align-items:center;padding:0 4px;min-width:80px}
-.phase-arrow .up{font-size:.68em;color:#34d399;text-align:center;margin-bottom:2px}
-.phase-arrow .arr{font-size:1.1em;color:#94a3b8}
-.phase-arrow .down{font-size:.68em;color:#f87171;text-align:center;margin-top:2px}
-@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
-.screen.active .card{animation:fadeUp .28s ease}
-@media(max-width:540px){.header h1{font-size:1.4em}.act-grid{grid-template-columns:1fr}.topic-grid{grid-template-columns:1fr 1fr}}
+.fc-face{position:absolute;inset:0;backface-visibility:hidden;border-radius:var(--r);padding:36px 28px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;box-shadow:0 4px 20px rgba(0,0,0,.1);min-height:240px}
+.fc-front{background:linear-gradient(135deg,var(--green) 0%,#2d9960 100%);color:#fff}
+.fc-back{background:var(--white);border:2px solid var(--green);transform:rotateY(180deg)}
+.fc-cat{font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:1px;opacity:.75;margin-bottom:10px}
+.fc-term{font-size:1.35rem;font-weight:900;line-height:1.3}
+.fc-hint{font-size:.82rem;opacity:.65;margin-top:14px}
+.fc-def{font-size:1rem;line-height:1.7;color:var(--text)}
+.fc-nav{display:flex;align-items:center;justify-content:center;gap:14px;margin-top:12px}
+.fc-btn{background:var(--white);border:2px solid var(--border);border-radius:50%;width:42px;height:42px;cursor:pointer;font-size:1.1rem;display:flex;align-items:center;justify-content:center;transition:all .2s}
+.fc-btn:hover{background:var(--green);color:#fff;border-color:var(--green)}
+.shuffle-btn{background:var(--white);border:2px solid var(--border);border-radius:20px;padding:6px 16px;cursor:pointer;font-size:.83rem;font-weight:700;color:var(--muted);transition:all .2s}
+.shuffle-btn:hover{border-color:var(--green);color:var(--green)}
+
+/* QUIZ */
+.quiz-wrap{max-width:680px;margin:0 auto}
+.quiz-prog{display:flex;gap:5px;margin-bottom:22px;flex-wrap:wrap}
+.qdot{width:11px;height:11px;border-radius:50%;background:var(--border);transition:background .3s}
+.qdot.done{background:var(--green-m)}.qdot.ok{background:var(--green)}.qdot.bad{background:#e74c3c}
+.q-card{background:var(--white);border-radius:var(--r);padding:26px;margin-bottom:14px;box-shadow:var(--shadow)}
+.q-num{font-size:.75rem;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px}
+.q-text{font-size:1rem;font-weight:700;margin-bottom:18px;line-height:1.5}
+.ans-opts{display:flex;flex-direction:column;gap:9px}
+.ans-opt{background:var(--bg);border:2px solid var(--border);border-radius:var(--rs);padding:11px 15px;cursor:pointer;font-size:.9rem;text-align:left;transition:all .2s;display:flex;align-items:center;gap:10px}
+.ans-opt:hover:not([disabled]){border-color:var(--green);background:var(--green-l)}
+.ans-opt.sel{border-color:var(--green);background:var(--green-l)}
+.ans-opt.ok{border-color:#27ae60;background:#eafaf1}
+.ans-opt.bad{border-color:#e74c3c;background:#fdf0f0}
+.ans-opt:disabled{cursor:default}
+.opt-l{background:var(--border);border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-size:.78rem;font-weight:800;flex-shrink:0;transition:all .2s}
+.ans-opt.ok .opt-l{background:#27ae60;color:#fff}.ans-opt.bad .opt-l{background:#e74c3c;color:#fff}
+.q-fb{margin-top:10px;padding:9px 13px;border-radius:var(--rs);font-size:.86rem;display:none}
+.q-fb.show{display:block}.q-fb.ok{background:#eafaf1;color:#1e8449;border:1px solid #a9dfbf}.q-fb.bad{background:#fdf0f0;color:#c0392b;border:1px solid #f1aeb5}
+.quiz-nav{display:flex;justify-content:space-between;align-items:center;margin-top:6px}
+.qbtn{background:var(--green);color:#fff;border:none;border-radius:var(--rs);padding:11px 22px;cursor:pointer;font-size:.92rem;font-weight:800;transition:background .2s}
+.qbtn:hover{background:#155a38}.qbtn:disabled{background:var(--border);color:var(--muted);cursor:default}
+.quiz-result{display:none;text-align:center;background:var(--white);border-radius:var(--r);padding:40px 24px;box-shadow:var(--shadow)}
+.quiz-result.show{display:block}
+.res-score{font-size:4rem;font-weight:900;color:var(--green);margin-bottom:6px}
+.res-msg{font-size:1.1rem;color:var(--muted);margin-bottom:22px}
+
+/* ILLUSTRATIONEN */
+.illu-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:20px}
+.illu-card{background:var(--white);border-radius:var(--r);padding:22px;box-shadow:var(--shadow)}
+.illu-card h3{font-size:.95rem;font-weight:800;color:var(--green);margin-bottom:14px}
+.illu-card svg{width:100%;height:auto}
+
+/* MODAL */
+.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:999;align-items:center;justify-content:center}
+.modal.open{display:flex}
+.modal img{max-width:90vw;max-height:90vh;border-radius:var(--rs)}
+.modal-x{position:absolute;top:14px;right:18px;background:none;border:none;color:#fff;font-size:2rem;cursor:pointer;line-height:1}
 </style>
 </head>
 <body>
-<div class="app">
-<div class="header">
-  <h1>⚗️ Chemie KA 2 – Lern-App</h1>
-  <p>7. Klasse Gymnasium Hessen &nbsp;·&nbsp; Herr Louwsma</p>
-</div>
 
-<!-- HOME -->
-<div id="s-home" class="screen active">
-  <div class="topic-grid">
-    <div class="topic-card" onclick="showTopic(0)">
-      <div class="icon">🧪</div><h3>Mischungen</h3>
-      <p>Gemische, homogen/heterogen, Aggregatzustand-Kombinationen</p>
-      <div class="prog-bar"><div class="prog-fill" id="p0" style="width:0%"></div></div>
-    </div>
-    <div class="topic-card" onclick="showTopic(1)">
-      <div class="icon">🔬</div><h3>Trennverfahren</h3>
-      <p>Filtration, Destillation, Magnetismus, Analyse</p>
-      <div class="prog-bar"><div class="prog-fill" id="p1" style="width:0%"></div></div>
-    </div>
-    <div class="topic-card" onclick="showTopic(2)">
-      <div class="icon">⚡</div><h3>Energie &amp; Reaktionen</h3>
-      <p>Endotherm, exotherm, Oxidation, Wortgleichung</p>
-      <div class="prog-bar"><div class="prog-fill" id="p2" style="width:0%"></div></div>
-    </div>
-    <div class="topic-card" onclick="showTopic(3)">
-      <div class="icon">⚛️</div><h3>Teilchenmodell</h3>
-      <p>Aggregatzustände, Zustandsänderungen, Materie</p>
-      <div class="prog-bar"><div class="prog-fill" id="p3" style="width:0%"></div></div>
+<nav>
+  <div class="nav-inner">
+    <div class="nav-logo">🧬 Bio<span>App</span></div>
+    <div class="nav-tabs">
+      <button class="nav-tab active" onclick="showTab('dash')">🏠 Übersicht</button>
+      <button class="nav-tab" onclick="showTab('lz')">📓 Lernzettel</button>
+      <button class="nav-tab" onclick="showTab('karten')">🃏 Karteikarten</button>
+      <button class="nav-tab" onclick="showTab('quiz')">❓ Quiz</button>
+      <button class="nav-tab" onclick="showTab('illu')">🔬 Illustrationen</button>
     </div>
   </div>
-  <div class="card">
-    <h3 style="color:#a78bfa;margin-bottom:10px">🎯 Gesamtquiz</h3>
-    <p style="color:#94a3b8;font-size:.88em;margin-bottom:14px">Teste alle Themen gemischt – wie in der echten Klassenarbeit</p>
-    <button class="btn btn-primary" onclick="startGlobalQuiz()">Alle Themen testen →</button>
-  </div>
-</div>
+</nav>
 
-<!-- TOPIC DETAIL -->
-<div id="s-topic" class="screen">
-  <div class="back-btn" onclick="showScreen('home')">← Zurück</div>
-  <div id="topic-content"></div>
-</div>
+<main>
 
-<!-- FLASHCARDS -->
-<div id="s-flash" class="screen">
-  <div class="back-btn" onclick="exitFlash()">← Zurück</div>
-  <div class="card">
-    <div class="prog-indicator">
-      <div class="prog-track"><div class="prog-track-fill" id="fc-bar"></div></div>
-      <span class="prog-text" id="fc-num">1 / 10</span>
+<!-- DASHBOARD -->
+<section id="dash" class="section active">
+  <h1 class="section-title">Immunsystem &amp; Genetik</h1>
+  <p class="section-sub">Interaktive Lernapp · 14 Lernzettel · 35 Karteikarten · 15 Quizfragen · 6 Illustrationen</p>
+  <div class="dash-grid">
+    <div class="dash-card" onclick="showTab('lz')">
+      <div class="dash-icon">📓</div>
+      <h3>Lernzettel</h3>
+      <p>14 Originalzettel mit Transkription</p>
     </div>
-    <div class="fc-wrap">
-      <div class="fc" id="fc-card" onclick="flipCard()">
-        <div class="fc-front"><div class="fc-label">Begriff / Frage</div><h2 id="fc-q"></h2></div>
-        <div class="fc-back"><div class="fc-label">Erklärung</div><p id="fc-a"></p></div>
+    <div class="dash-card" onclick="showTab('karten')">
+      <div class="dash-icon">🃏</div>
+      <h3>Karteikarten</h3>
+      <p>35 Begriffe zum Üben &amp; Wiederholen</p>
+    </div>
+    <div class="dash-card" onclick="showTab('quiz')">
+      <div class="dash-icon">❓</div>
+      <h3>Quiz</h3>
+      <p>15 Multiple-Choice-Fragen</p>
+    </div>
+    <div class="dash-card" onclick="showTab('illu')">
+      <div class="dash-icon">🔬</div>
+      <h3>Illustrationen</h3>
+      <p>Bakterie, Virus, Mitose, Meiose &amp; mehr</p>
+    </div>
+  </div>
+  <div class="topics-wrap">
+    <h2>Themen</h2>
+    <div class="topics">
+      <span class="topic-chip">🦠 Bakterien &amp; Viren</span>
+      <span class="topic-chip">🤧 Infektionen</span>
+      <span class="topic-chip">🛡️ Immunabwehr</span>
+      <span class="topic-chip">💉 Antikörper</span>
+      <span class="topic-chip">🧬 Chromosomen</span>
+      <span class="topic-chip">🔄 Mitose</span>
+      <span class="topic-chip">♻️ Meiose</span>
+      <span class="topic-chip">🔀 Crossing-over</span>
+      <span class="topic-chip">⚤ Geschlechtsbestimmung</span>
+      <span class="topic-chip">🧫 Erbkrankheiten</span>
+    </div>
+  </div>
+</section>
+
+<!-- LERNZETTEL -->
+<section id="lz" class="section">
+  <h1 class="section-title">Lernzettel</h1>
+  <p class="section-sub">Originalfotos mit vollständiger Transkription — Bild anklicken zum Vergrößern.</p>
+
+  <div class="lz-section">
+    <div class="lz-hdr"><div class="lz-num">1</div><div class="lz-title">Infektion &amp; Aufbau der Bakterien</div></div>
+    <div class="lz-body">
+      <div class="lz-img-wrap">
+        <img class="lz-img" src="WhatsApp Image 2026-05-31 at 11.59.10 (1).jpeg" alt="Lernzettel 1" onclick="openModal(this.src)">
+        <div class="lz-img-cap">Originalzettel 1</div>
+      </div>
+      <div class="lz-content">
+        <h3>Definition Infektion</h3>
+        <p>Eine Infektion entsteht, wenn Krankheitserreger wie Bakterien oder Viren in den Körper eindringen, sich dort vermehren und Krankheiten auslösen. Der Körper reagiert darauf mit seiner Immunabwehr.</p>
+        <h3>Bakterien</h3>
+        <p>Bakterien sind winzige einzellige Lebewesen. Sie kommen fast überall vor: im Wasser, in der Luft, auf der Haut und im menschlichen Körper. Viele Bakterien sind nützlich, manche können jedoch Krankheiten verursachen. Solche Bakterien nennt man Krankheitserreger. Bakterien besitzen keinen Zellkern. Ihre Erbsubstanz liegt frei im Zellplasma. Sie vermehren sich durch Zellteilung und können sich dadurch sehr schnell ausbreiten.</p>
+        <h3>Aufbau von Bakterien</h3>
+        <ol>
+          <li>Die <strong>Zellwand</strong> schützt die Zelle und gibt ihr Stabilität.</li>
+          <li>Unter der Zellwand liegt die <strong>Zellmembran</strong>. Sie regelt den Stoffaustausch mit der Umgebung.</li>
+          <li>Das <strong>Zellplasma</strong> füllt die Zelle aus und enthält wichtige Stoffe.</li>
+          <li>Die <strong>Erbsubstanz (DNA)</strong> liegt frei im Zellplasma als ringförmiges Chromosom.</li>
+          <li>Zusätzlich können kleine DNA-Ringe vorhanden sein, die <strong>Plasmide</strong> genannt werden.</li>
+          <li>Viele Bakterien besitzen <strong>Geißeln</strong> zur Fortbewegung.</li>
+          <li>Manche besitzen außerdem eine <strong>Schleimhülle oder Kapsel</strong>, die sie vor dem Immunsystem schützt.</li>
+        </ol>
       </div>
     </div>
-    <p style="text-align:center;color:#475569;font-size:.78em;margin-bottom:18px">Klicke auf die Karte zum Umdrehen</p>
-    <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
-      <button class="btn btn-secondary" onclick="prevCard()">← Zurück</button>
-      <button class="btn btn-primary" onclick="nextCard()">Weiter →</button>
-      <button class="btn btn-success" onclick="startTopicQuiz()">Quiz starten ✓</button>
+  </div>
+
+  <div class="lz-section">
+    <div class="lz-hdr"><div class="lz-num">2</div><div class="lz-title">Salmonelleninfektion &amp; Aufbau Viren</div></div>
+    <div class="lz-body">
+      <div class="lz-img-wrap">
+        <img class="lz-img" src="WhatsApp Image 2026-05-31 at 11.59.10 (2).jpeg" alt="Lernzettel 2" onclick="openModal(this.src)">
+        <div class="lz-img-cap">Originalzettel 2</div>
+      </div>
+      <div class="lz-content">
+        <h3>Verlauf einer Salmonelleninfektion</h3>
+        <p>Die Abbildung zeigt den Verlauf einer Salmonelleninfektion anhand der Körpertemperatur. Zunächst gelangen Salmonellen durch verdorbene Nahrung in den Körper. Danach beginnt die <strong>Inkubationszeit</strong>. In dieser Zeit vermehren sich die Bakterien im Darm, ohne dass bereits die Symptome auftreten. Anschließend produzieren die Salmonellen Giftstoffe. Dadurch steigt die Körpertemperatur stark an. Typische Symptome sind Durchfall, Erbrechen, Schwäche und Fieber. Im weiteren Verlauf bekämpft das Immunsystem die Krankheitserreger. Die Körpertemperatur sinkt langsam wieder und die Symptome verschwinden. Dies nennt man <strong>Genesung</strong>.</p>
+        <h3>Viren</h3>
+        <p>Viren sind keine echten Lebewesen, da sie keinen eigenen Stoffwechsel besitzen und sich nicht selbst vermehren können. Sie sind deutlich kleiner als Bakterien und benötigen immer eine Wirtszelle.</p>
+        <h3>Aufbau eines Virus</h3>
+        <ol>
+          <li>Erbsubstanz (DNA oder RNA)</li>
+          <li>eine Proteinhülle (<strong>Capsid</strong>)</li>
+          <li>manchmal einer zusätzlichen Hüllmembran</li>
+          <li>Auf der Hülle befinden sich spezielle Proteine, mit denen das Virus an Körperzellen andocken kann.</li>
+        </ol>
+      </div>
     </div>
   </div>
-</div>
+
+  <div class="lz-section">
+    <div class="lz-hdr"><div class="lz-num">3</div><div class="lz-title">Rekombination &amp; Diversität</div></div>
+    <div class="lz-body">
+      <div class="lz-img-wrap">
+        <img class="lz-img" src="WhatsApp Image 2026-05-31 at 11.59.10.jpeg" alt="Lernzettel 3" onclick="openModal(this.src)">
+        <div class="lz-img-cap">Originalzettel 3</div>
+      </div>
+      <div class="lz-content">
+        <h3>Definition Rekombination</h3>
+        <p>Während der Meiose entstehen einzigartige Keimzellen (Spermien oder Eizellen). Dies geschieht während der Anordnung der homologen Chromosomen in der Zellmitte. Der Zufall entscheidet, ob die Tochterzelle ein Chromosom des Vaters oder der Mutter enthält, wodurch die jeweils 23 Chromosomen von Vater und Mutter in 2²³ möglichen Kombinationen verteilt werden.</p>
+        <h3>Zufällige Verteilung der Chromosomen</h3>
+        <p>Während der Meiose werden mütterliche und väterliche Chromosomen zufällig auf die Keimzellen verteilt. Dadurch entstehen unterschiedliche Genkombinationen. Durch die Zufälligkeit der Chromosomenverteilung hat jede Spermienzelle und jede Eizelle eine neue, einzigartige Kombination von Erbinformationen.</p>
+        <h3>Definition Diversität</h3>
+        <p>Diversität bedeutet genetische Vielfalt innerhalb einer Art. Dadurch unterscheiden sich Menschen in ihren Merkmalen voneinander.</p>
+        <h3>Was wird während der Rekombination neu kombiniert?</h3>
+        <p>Die homologen Chromosomenpaare werden durch die Teilungsspindel auseinander gezogen.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="lz-section">
+    <div class="lz-hdr"><div class="lz-num">4</div><div class="lz-title">Antigen, Antikörper &amp; Lymphsystem</div></div>
+    <div class="lz-body">
+      <div class="lz-img-wrap">
+        <img class="lz-img" src="WhatsApp Image 2026-05-31 at 11.59.11.jpeg" alt="Lernzettel 4" onclick="openModal(this.src)">
+        <div class="lz-img-cap">Originalzettel 4</div>
+      </div>
+      <div class="lz-content">
+        <h3>Definition Antigen</h3>
+        <p>Ein Antigen ist ein bestimmtes Merkmal auf der Oberfläche eines Krankheitserregers, das vom Immunsystem erkannt wird.</p>
+        <h3>Definition Antikörper</h3>
+        <p>Antikörper sind spezielle Eiweiße, die von B-Zellen gebildet werden. Sie passen nach dem <strong>Schlüssel-Schloss-Prinzip</strong> genau zu einem bestimmten Antigen. Antikörper binden an Krankheitserreger und machen sie unschädlich oder markieren sie für andere Abwehrzellen.</p>
+        <h3>Definition Immunkomplex</h3>
+        <p>Ein Immunkomplex entsteht, wenn ein Antikörper an ein Antigen bindet. Dadurch können Krankheitserreger leichter zerstört werden.</p>
+        <h3>Lymphsystem</h3>
+        <p>Das Lymphsystem ist ein zweites Gefäßsystem neben dem Blutkreislauf. Es transportiert überschüssiges Wasser zurück ins Blut und verteilt weiße Blutkörperchen im Körper. In den <strong>Lymphknoten</strong> werden Erreger gefiltert und bekämpft.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="lz-section">
+    <div class="lz-hdr"><div class="lz-num">5</div><div class="lz-title">Chromosomensatz, haploid &amp; diploid</div></div>
+    <div class="lz-body">
+      <div class="lz-img-wrap">
+        <img class="lz-img" src="WhatsApp Image 2026-05-31 at 11.59.11 (1).jpeg" alt="Lernzettel 5" onclick="openModal(this.src)">
+        <div class="lz-img-cap">Originalzettel 5</div>
+      </div>
+      <div class="lz-content">
+        <h3>Menschlicher Chromosomensatz</h3>
+        <p>Der Mensch besitzt normalerweise <strong>46 Chromosomen</strong> bzw. <strong>23 Chromosomenpaare</strong>. Je ein Chromosom eines Paares stammt von der Mutter und eines vom Vater.</p>
+        <h3>Definition homologe Chromosomen</h3>
+        <p>Homologe Chromosomen sind gleichartige Chromosomenpaare mit denselben Genen. Ein Chromosom stammt von der Mutter, das andere vom Vater.</p>
+        <h3>Definition Autosomen</h3>
+        <p>Autosomen sind alle Chromosomen, die nicht für das Geschlecht verantwortlich sind. Der Mensch besitzt <strong>44 Autosomen</strong>.</p>
+        <h3>Definition Gonosomen</h3>
+        <p>Gonosomen sind die Geschlechtschromosomen. Frauen besitzen <strong>XX</strong>, Männer <strong>XY</strong>.</p>
+        <h3>Definition haploid</h3>
+        <p>Haploid bedeutet, dass eine Zelle einen einfachen Chromosomensatz besitzt. Keimzellen besitzen beim Menschen <strong>23 Chromosomen</strong>.</p>
+        <h3>Definition diploid</h3>
+        <p>Diploid bedeutet, dass eine Zelle einen doppelten Chromosomensatz besitzt. Körperzellen besitzen beim Menschen <strong>46 Chromosomen</strong>.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="lz-section">
+    <div class="lz-hdr"><div class="lz-num">6</div><div class="lz-title">Humorale &amp; zelluläre Immunantwort</div></div>
+    <div class="lz-body">
+      <div class="lz-img-wrap">
+        <img class="lz-img" src="WhatsApp Image 2026-05-31 at 11.59.11 (2).jpeg" alt="Lernzettel 6" onclick="openModal(this.src)">
+        <div class="lz-img-cap">Originalzettel 6</div>
+      </div>
+      <div class="lz-content">
+        <h3>Humorale Immunantwort</h3>
+        <p>Bei der humoralen Immunantwort bilden B-Zellen Antikörper gegen Krankheitserreger. Die Antikörper befinden sich im Blut und in der Lymphflüssigkeit. Die humorale Immunantwort wirkt hauptsächlich gegen Erreger <strong>außerhalb</strong> der Körperzellen.</p>
+        <h3>Ablauf der humoralen Immunantwort</h3>
+        <ol>
+          <li>Krankheitserreger gelangen in den Körper.</li>
+          <li>Makrophagen fressen die Erreger und präsentieren deren Antigene.</li>
+          <li>T-Helferzellen werden aktiviert.</li>
+          <li>Die T-Helferzellen aktivieren B-Zellen.</li>
+          <li>B-Zellen bilden passende Antikörper.</li>
+          <li>Antikörper binden an die Antigene → Immunkomplexe entstehen.</li>
+          <li>Die Erreger werden zerstört.</li>
+          <li>Gedächtniszellen bleiben zurück.</li>
+        </ol>
+        <h3>Zelluläre Immunantwort</h3>
+        <p>Die zelluläre Immunantwort bekämpft infizierte Körperzellen direkt. Dabei spielen <strong>T-Killerzellen</strong> eine wichtige Rolle. Diese Immunantwort ist besonders wichtig bei Virusinfektionen.</p>
+        <h3>Ablauf der zellulären Immunantwort</h3>
+        <ol>
+          <li>Viren infizieren Körperzellen.</li>
+          <li>Die infizierten Zellen zeigen Antigene auf ihrer Oberfläche.</li>
+          <li>T-Killerzellen erkennen diese Antigene.</li>
+          <li>Die T-Killerzellen zerstören die infizierten Zellen.</li>
+          <li>Das Virus kann sich nicht weiter vermehren.</li>
+          <li>Gedächtniszellen bleiben erhalten.</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+
+  <div class="lz-section">
+    <div class="lz-hdr"><div class="lz-num">7</div><div class="lz-title">Keimzellen, DNA &amp; Chromosomen</div></div>
+    <div class="lz-body">
+      <div class="lz-img-wrap">
+        <img class="lz-img" src="WhatsApp Image 2026-05-31 at 11.59.12.jpeg" alt="Lernzettel 7" onclick="openModal(this.src)">
+        <div class="lz-img-cap">Originalzettel 7</div>
+      </div>
+      <div class="lz-content">
+        <h3>Entwicklung aus Keimzellen</h3>
+        <p>Die Entwicklung eines Menschen beginnt mit der Befruchtung. Dabei verschmilzt ein Spermium mit einer Eizelle. Beide Keimzellen besitzen nur den halben Chromosomensatz. Durch ihre Verschmelzung entsteht die <strong>Zygote</strong> mit vollständigem Chromosomensatz. Die Zygote teilt sich anschließend durch Mitose immer weiter.</p>
+        <h3>Genetische Information</h3>
+        <p>Die genetische Information eines Menschen ist in der <strong>DNA</strong> gespeichert. Sie enthält alle Informationen für den Aufbau und die Funktionen des Körpers und bestimmt Merkmale wie Augenfarbe, Haarfarbe oder Blutgruppe. Die DNA befindet sich im Zellkern und ist in Chromosomen organisiert.</p>
+        <h3>Chromosomen</h3>
+        <p>Chromosomen bestehen aus DNA und Proteinen. Sie tragen die Erbinformationen eines Menschen. Vor einer Zellteilung wird die DNA verdoppelt. Dadurch besteht ein Chromosom aus zwei <strong>Schwesterchromatiden</strong>.</p>
+        <h3>Funktion der Chromosomen</h3>
+        <p>Chromosomen speichern die genetische Information und sorgen dafür, dass diese bei Zellteilungen richtig weitergegeben wird.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="lz-section">
+    <div class="lz-hdr"><div class="lz-num">8</div><div class="lz-title">Zygote, Chromatiden &amp; Mitose</div></div>
+    <div class="lz-body">
+      <div class="lz-img-wrap">
+        <img class="lz-img" src="WhatsApp Image 2026-05-31 at 11.59.12 (1).jpeg" alt="Lernzettel 8" onclick="openModal(this.src)">
+        <div class="lz-img-cap">Originalzettel 8</div>
+      </div>
+      <div class="lz-content">
+        <h3>Definition Zygote</h3>
+        <p>Die Zygote ist die erste Zelle eines neuen Menschen, die nach der Befruchtung entsteht.</p>
+        <h3>Definition 1-Chromatid-Chromosom</h3>
+        <p>Ein 1-Chromatid-Chromosom besteht aus einem Chromatid. Es entsteht nach der Trennung der Schwesterchromatiden während der Mitose oder Meiose.</p>
+        <h3>Definition 2-Chromatid-Chromosom</h3>
+        <p>Ein 2-Chromatid-Chromosom besteht aus zwei identischen Schwesterchromatiden. Es entsteht nach der Verdopplung der DNA vor der Zellteilung.</p>
+        <h3>Funktion und Aufgabe der Mitose</h3>
+        <p>Die Mitose dient dem <strong>Wachstum</strong>, der <strong>Wundheilung</strong> und der Erneuerung alter oder beschädigter Körperzellen. Dabei entstehen zwei genetisch identische Tochterzellen mit derselben Chromosomenzahl wie die Ausgangszelle.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="lz-section">
+    <div class="lz-hdr"><div class="lz-num">9</div><div class="lz-title">Tröpfcheninfektion &amp; Immunabwehr</div></div>
+    <div class="lz-body">
+      <div class="lz-img-wrap">
+        <img class="lz-img" src="WhatsApp Image 2026-05-31 at 11.59.12 (2).jpeg" alt="Lernzettel 9" onclick="openModal(this.src)">
+        <div class="lz-img-cap">Originalzettel 9</div>
+      </div>
+      <div class="lz-content">
+        <h3>Definition Tröpfcheninfektion</h3>
+        <p>Eine Tröpfcheninfektion ist die Übertragung von Krankheitserregern durch kleine Flüssigkeitstropfen in der Luft. Diese entstehen beim Husten, Niesen und Sprechen und können von anderen Menschen eingeatmet werden.</p>
+        <h3>Ablauf einer viralen Infektion</h3>
+        <p>Zuerst gelangt das Virus in den Körper. Mit seinen Oberflächenproteinen dockt es an eine passende Wirtszelle an. Danach schleust das Virus seine Erbsubstanz in die Zelle ein. Die Wirtszelle wird umprogrammiert und produziert nun Virusbestandteile. An diesen Bestandteilen entstehen neue Viren. Die neuen Viren verlassen die Zelle und infizieren weitere Körperzellen.</p>
+        <h3>Unspezifische Immunabwehr</h3>
+        <p>Die unspezifische Immunabwehr ist die <strong>erste Schützlinie</strong> des Körpers. Sie ist angeboren und reagiert schnell gegen viele verschiedene Krankheitserreger.</p>
+        <h3>Spezifische Immunabwehr</h3>
+        <p>Die spezifische Immunabwehr arbeitet gezielt gegen einen bestimmten Erreger. Sie benötigt etwas länger, ist dafür aber sehr genau. Sie kann sich Krankheitserreger merken → bei einer zweiten Infektion reagiert der Körper schneller.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="lz-section">
+    <div class="lz-hdr"><div class="lz-num">10</div><div class="lz-title">Orte der Immunabwehr &amp; Makrophagen</div></div>
+    <div class="lz-body">
+      <div class="lz-img-wrap">
+        <img class="lz-img" src="WhatsApp Image 2026-05-31 at 11.59.12 (3).jpeg" alt="Lernzettel 10" onclick="openModal(this.src)">
+        <div class="lz-img-cap">Originalzettel 10</div>
+      </div>
+      <div class="lz-content">
+        <h3>Orte der unspezifischen Immunabwehr</h3>
+        <ul>
+          <li>Haut · Tränenflüssigkeit</li>
+          <li>Schleimhäute · Speichel</li>
+          <li>Magensäure · Nasenschleim</li>
+        </ul>
+        <p>Diese Schutzbarrieren verhindern, dass Krankheitserreger in den Körper eindringen.</p>
+        <h3>Wie funktioniert die unspezifische Immunabwehr?</h3>
+        <p>Wenn Krankheitserreger in den Körper gelangen, reagieren Fresszellen sofort. Außerdem kommt es oft zu Entzündungen oder Fieber. Dadurch werden Erreger bekämpft und ihre Vermehrung verlangsamt.</p>
+        <h3>Definition Makrophage</h3>
+        <p>Makrophagen sind große Fresszellen des Immunsystems. Sie erkennen Krankheitserreger, nehmen sie auf und verdauen sie. Außerdem <strong>präsentieren</strong> sie Teile der Erreger an andere Immunzellen und aktivieren dadurch die spezifische Immunabwehr.</p>
+        <h3>Definition weiße Blutkörperchen (Leukozyten)</h3>
+        <p>Weiße Blutkörperchen heißen auch <strong>Leukozyten</strong>. Sie gehören zum Immunsystem und bekämpfen Krankheitserreger im Körper. Dazu gehören: Makrophagen · B-Zellen · T-Zellen.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="lz-section">
+    <div class="lz-hdr"><div class="lz-num">11</div><div class="lz-title">Ablauf Mitose &amp; Funktion Meiose</div></div>
+    <div class="lz-body">
+      <div class="lz-img-wrap">
+        <img class="lz-img" src="WhatsApp Image 2026-05-31 at 11.59.12 (4).jpeg" alt="Lernzettel 11" onclick="openModal(this.src)">
+        <div class="lz-img-cap">Originalzettel 11</div>
+      </div>
+      <div class="lz-content">
+        <h3>Ablauf Mitose</h3>
+        <ol>
+          <li><strong>Vor der Mitose:</strong> Erbinformation verdoppeln → aus 1-Chromatid- werden 2-Chromatid-Chromosomen. DNA wird zu Chromosomen verpackt. Zwei Schwesterchromatiden hängen am Centromer zusammen.</li>
+          <li>Die Chromosomen ordnen sich in der <strong>Zellmitte</strong> an.</li>
+          <li>Die <strong>Schwesterchromatiden werden getrennt</strong> und zu gegenüberliegenden Zellpolen gezogen.</li>
+          <li>Die Zellmembran schnürt sich ein → Zelle teilt sich.</li>
+          <li>DNA wird entpackt → <strong>2 genetisch identische Tochterzellen</strong> entstehen.</li>
+        </ol>
+        <h3>Funktion und Aufgabe der Meiose</h3>
+        <p>Die Meiose dient zur Bildung von Keimzellen (Spermien und Eizellen). Dabei wird der Chromosomensatz halbiert, damit bei der Befruchtung wieder die normale Chromosomenzahl entsteht. Außerdem sorgt die Meiose durch <strong>Crossing-over</strong> und die zufällige Verteilung der Chromosomen für genetische Vielfalt.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="lz-section">
+    <div class="lz-hdr"><div class="lz-num">12</div><div class="lz-title">Erbkrankheiten &amp; Crossing-over</div></div>
+    <div class="lz-body">
+      <div class="lz-img-wrap">
+        <img class="lz-img" src="WhatsApp Image 2026-05-31 at 11.59.12 (5).jpeg" alt="Lernzettel 12" onclick="openModal(this.src)">
+        <div class="lz-img-cap">Originalzettel 12</div>
+      </div>
+      <div class="lz-content">
+        <h3>Erbkrankheiten</h3>
+        <p>Erbkrankheiten entstehen durch Veränderungen der Gene oder Chromosomen. Ursachen können Mutationen oder Fehler bei der Meiose sein. Dabei können Chromosomen falsch verteilt werden. Ein bekanntes Beispiel ist <strong>Trisomie 21</strong>: Chromosom 21 liegt dreimal statt zweimal vor.</p>
+        <h3>Crossing-over</h3>
+        <p>Beim Crossing-over lagern sich homologe Chromosomen paarweise zusammen. Dabei tauschen die Chromatiden Stücke ihrer DNA aus. Dadurch entstehen neue Genkombinationen, die vorher weder nur von der Mutter noch nur vom Vater vorhanden waren. Das Crossing-over sorgt für mehr genetische Vielfalt.</p>
+        <h3>Verteilung der Chromosomen in der Meiose</h3>
+        <p>Während der Meiose werden die mütterlichen und väterlichen Chromosomen zufällig auf die Keimzellen verteilt. Dadurch entstehen immer unterschiedliche Kombinationen → genetische Vielfalt.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="lz-section">
+    <div class="lz-hdr"><div class="lz-num">13</div><div class="lz-title">Erbkrankheiten &amp; Geschlechtsbestimmung</div></div>
+    <div class="lz-body">
+      <div class="lz-img-wrap">
+        <img class="lz-img" src="WhatsApp Image 2026-05-31 at 11.59.12 (6).jpeg" alt="Lernzettel 13" onclick="openModal(this.src)">
+        <div class="lz-img-cap">Originalzettel 13</div>
+      </div>
+      <div class="lz-content">
+        <h3>Entstehung von Frauen und Männern</h3>
+        <p>Die <strong>Geschlechtschromosomen</strong> bestimmen das Geschlecht eines Menschen. Frauen besitzen zwei X-Chromosomen (<strong>XX</strong>), Männer ein X- und ein Y-Chromosom (<strong>XY</strong>). Die Eizelle enthält immer ein X-Chromosom. Spermien besitzen entweder ein X- oder ein Y-Chromosom.</p>
+        <ul>
+          <li>X-Spermium + Eizelle → <strong>Mädchen (XX)</strong></li>
+          <li>Y-Spermium + Eizelle → <strong>Junge (XY)</strong></li>
+        </ul>
+        <p>Das Geschlecht wird also vom <strong>Spermium</strong> bestimmt.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="lz-section">
+    <div class="lz-hdr"><div class="lz-num">14</div><div class="lz-title">Ablauf der Meiose</div></div>
+    <div class="lz-body">
+      <div class="lz-img-wrap">
+        <img class="lz-img" src="WhatsApp Image 2026-05-31 at 11.59.12 (7).jpeg" alt="Lernzettel 14" onclick="openModal(this.src)">
+        <div class="lz-img-cap">Originalzettel 14</div>
+      </div>
+      <div class="lz-content">
+        <h3>1. meiotische Teilung</h3>
+        <ol>
+          <li>Vor der Zellteilung wird die Erbinformation verdoppelt → 2-Chromatid-Chromosomen entstehen.</li>
+          <li>Homologe Chromosomen ordnen sich in der Zellmitte an.</li>
+          <li>Die Teilungsspindel zieht die homologen Chromosomen auseinander → je ein Chromosom wandert zu einem Zellpol.</li>
+          <li>Es entstehen zwei Tochterzellen → <strong>Chromosomensatz wird von 2n auf n reduziert.</strong></li>
+        </ol>
+        <h3>2. meiotische Teilung</h3>
+        <ol>
+          <li>Beide Zellen durchlaufen eine Mitose → Chromosomen ordnen sich erneut in der Zellmitte an.</li>
+          <li>Die Chromatiden werden getrennt → 1-Chromatid-Chromosomen entstehen → Zellen teilen sich.</li>
+          <li>Ergebnis: <strong>4 Geschlechtszellen mit einfachem Chromosomensatz (n)</strong>.</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- KARTEIKARTEN -->
+<section id="karten" class="section">
+  <h1 class="section-title">Karteikarten</h1>
+  <p class="section-sub">Karte anklicken zum Umdrehen · Alle 35 Begriffe</p>
+  <div class="karten-bar">
+    <button class="filt-btn active" onclick="setFilter('all',this)">Alle</button>
+    <button class="filt-btn" onclick="setFilter('mikro',this)">🦠 Mikrobiologie</button>
+    <button class="filt-btn" onclick="setFilter('immun',this)">🛡️ Immunsystem</button>
+    <button class="filt-btn" onclick="setFilter('genetik',this)">🧬 Genetik</button>
+    <button class="shuffle-btn" onclick="shuffleCards()">🔀 Mischen</button>
+    <span class="card-count" id="card-count">1 / 35</span>
+  </div>
+  <div class="pb-wrap"><div class="pb-fill" id="pb-fill" style="width:2.9%"></div></div>
+  <div class="fc-area">
+    <div class="fc" id="fc" onclick="flipCard()">
+      <div class="fc-face fc-front">
+        <div class="fc-cat" id="fc-cat"></div>
+        <div class="fc-term" id="fc-term"></div>
+        <div class="fc-hint">Anklicken zum Aufdecken</div>
+      </div>
+      <div class="fc-face fc-back">
+        <div class="fc-cat" id="fc-cat-b" style="color:var(--muted)"></div>
+        <div class="fc-def" id="fc-def"></div>
+      </div>
+    </div>
+  </div>
+  <div class="fc-nav">
+    <button class="fc-btn" onclick="prevCard()">◀</button>
+    <button class="fc-btn" onclick="flipCard()">↺</button>
+    <button class="fc-btn" onclick="nextCard()">▶</button>
+  </div>
+</section>
 
 <!-- QUIZ -->
-<div id="s-quiz" class="screen">
-  <div class="back-btn" onclick="exitQuiz()">← Abbrechen</div>
-  <div class="card">
-    <div class="prog-indicator">
-      <div class="prog-track"><div class="prog-track-fill" id="q-bar"></div></div>
-      <span class="prog-text" id="q-num">1 / 10</span>
-    </div>
-    <div style="display:flex;gap:16px;margin-bottom:16px">
-      <span style="color:#34d399;font-size:.83em">✓ <span id="q-ok">0</span> richtig</span>
-      <span style="color:#f87171;font-size:.83em">✗ <span id="q-fail">0</span> falsch</span>
-    </div>
-    <div class="quiz-q" id="q-text"></div>
-    <div class="quiz-opts" id="q-opts"></div>
-    <div class="quiz-fb" id="q-fb"></div>
-    <div style="margin-top:18px;display:none" id="q-next">
-      <button class="btn btn-primary" onclick="nextQuestion()">Nächste Frage →</button>
+<section id="quiz" class="section">
+  <h1 class="section-title">Quiz</h1>
+  <p class="section-sub">15 Multiple-Choice-Fragen · Sofortiges Feedback</p>
+  <div class="quiz-wrap">
+    <div class="quiz-prog" id="quiz-prog"></div>
+    <div id="quiz-questions"></div>
+    <div class="quiz-result" id="quiz-result">
+      <div class="res-score" id="res-score"></div>
+      <div class="res-msg" id="res-msg"></div>
+      <button class="qbtn" onclick="resetQuiz()">🔄 Nochmal versuchen</button>
     </div>
   </div>
-</div>
+</section>
 
-<!-- RESULTS -->
-<div id="s-results" class="screen">
-  <div class="card" style="text-align:center">
-    <h2 style="color:#a78bfa;margin-bottom:20px">Ergebnis</h2>
-    <div class="score-ring" id="s-ring"><span class="score-num" id="s-pct">0%</span></div>
-    <div id="s-stars" style="font-size:1.6em;margin-bottom:10px"></div>
-    <p id="s-msg" style="color:#94a3b8;margin-bottom:18px"></p>
-    <div id="s-stats" style="margin-bottom:20px"></div>
-    <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
-      <button class="btn btn-secondary" onclick="showScreen('home')">Startseite</button>
-      <button class="btn btn-primary" onclick="retryQuiz()">Nochmal</button>
-    </div>
-  </div>
-</div>
+<!-- ILLUSTRATIONEN -->
+<section id="illu" class="section">
+  <h1 class="section-title">Illustrationen</h1>
+  <p class="section-sub">Beschriftete Diagramme zu den wichtigsten Themen</p>
+  <div class="illu-grid">
 
-<!-- ENERGY DIAGRAM -->
-<div id="s-energy" class="screen">
-  <div class="back-btn" onclick="showTopic(2)">← Zurück</div>
-  <div class="card">
-    <h3 style="color:#a78bfa;margin-bottom:14px">⚡ Interaktives Energiediagramm</h3>
-    <div style="display:flex;gap:9px;margin-bottom:14px;flex-wrap:wrap">
-      <button class="btn btn-primary" id="e-exo" onclick="drawDiagram('exotherm')">🔥 Exotherm</button>
-      <button class="btn btn-secondary" id="e-endo" onclick="drawDiagram('endotherm')">❄️ Endotherm</button>
+    <div class="illu-card" style="grid-column:1/-1">
+      <h3>🦠 Aufbau einer Bakterienzelle</h3>
+      <svg viewBox="0 0 600 280" xmlns="http://www.w3.org/2000/svg" style="max-height:280px">
+        <!-- Schleimhülle -->
+        <ellipse cx="240" cy="140" rx="185" ry="115" fill="none" stroke="#a8d5b5" stroke-width="2" stroke-dasharray="6,4"/>
+        <!-- Zellwand -->
+        <ellipse cx="240" cy="140" rx="165" ry="98" fill="#c8e6c9" stroke="#4caf80" stroke-width="4"/>
+        <!-- Zellmembran -->
+        <ellipse cx="240" cy="140" rx="148" ry="84" fill="#e8f5e9" stroke="#81c784" stroke-width="2.5"/>
+        <!-- Zellplasma -->
+        <ellipse cx="240" cy="140" rx="144" ry="80" fill="#f1f8e9"/>
+        <!-- DNA Ring -->
+        <ellipse cx="220" cy="145" rx="45" ry="35" fill="none" stroke="#1565c0" stroke-width="3"/>
+        <text x="210" y="150" font-size="10" fill="#1565c0" font-weight="bold">DNA</text>
+        <!-- Plasmid 1 -->
+        <ellipse cx="290" cy="125" rx="16" ry="12" fill="none" stroke="#e65100" stroke-width="2"/>
+        <!-- Plasmid 2 -->
+        <ellipse cx="310" cy="158" rx="13" ry="10" fill="none" stroke="#e65100" stroke-width="2"/>
+        <!-- Geißeln -->
+        <path d="M405 110 Q430 90 420 70 Q410 50 435 35" fill="none" stroke="#795548" stroke-width="2.5"/>
+        <path d="M405 140 Q440 130 435 110 Q430 88 455 80" fill="none" stroke="#795548" stroke-width="2.5"/>
+        <path d="M405 165 Q435 170 440 155 Q445 138 470 135" fill="none" stroke="#795548" stroke-width="2.5"/>
+        <!-- LABELS right side -->
+        <line x1="422" y1="42" x2="480" y2="30" stroke="#999" stroke-width="1"/>
+        <text x="482" y="33" font-size="11" fill="#333">Geißeln</text>
+        <line x1="240" y1="42" x2="300" y2="18" stroke="#999" stroke-width="1"/>
+        <text x="302" y="21" font-size="11" fill="#333">Schleimhülle/Kapsel</text>
+        <line x1="178" y1="62" x2="120" y2="40" stroke="#999" stroke-width="1"/>
+        <text x="10" y="43" font-size="11" fill="#333">Zellwand</text>
+        <line x1="160" y1="80" x2="100" y2="68" stroke="#999" stroke-width="1"/>
+        <text x="2" y="71" font-size="11" fill="#333">Zellmembran</text>
+        <line x1="200" y1="215" x2="160" y2="238" stroke="#999" stroke-width="1"/>
+        <text x="50" y="241" font-size="11" fill="#333">Zellplasma</text>
+        <line x1="248" y1="175" x2="240" y2="238" stroke="#999" stroke-width="1"/>
+        <text x="195" y="253" font-size="11" fill="#1565c0">DNA (ringförmig)</text>
+        <line x1="293" y1="135" x2="330" y2="105" stroke="#999" stroke-width="1"/>
+        <text x="332" y="108" font-size="11" fill="#e65100">Plasmide</text>
+      </svg>
     </div>
-    <svg id="e-svg" viewBox="0 0 500 290" style="width:100%;background:rgba(0,0,0,.25);border-radius:12px;display:block"></svg>
-    <div id="e-info" style="margin-top:14px"></div>
+
+    <div class="illu-card">
+      <h3>🔬 Aufbau eines Virus</h3>
+      <svg viewBox="0 0 300 280" xmlns="http://www.w3.org/2000/svg">
+        <!-- Hüllmembran -->
+        <circle cx="150" cy="145" r="90" fill="#fff3e0" stroke="#ef6c00" stroke-width="3"/>
+        <!-- Spikes (Oberflächenproteine) -->
+        <g stroke="#ef6c00" stroke-width="2.5" fill="#ef6c00">
+          <line x1="150" y1="55" x2="150" y2="38"/><polygon points="150,32 145,42 155,42"/>
+          <line x1="195" y1="68" x2="208" y2="55"/><polygon points="213,50 205,58 215,62"/>
+          <line x1="227" y1="108" x2="242" y2="102"/><polygon points="248,99 239,106 243,116"/>
+          <line x1="236" y1="155" x2="252" y2="155"/><polygon points="258,155 248,150 248,160"/>
+          <line x1="220" y1="200" x2="232" y2="212"/><polygon points="237,217 228,210 234,202"/>
+          <line x1="150" y1="235" x2="150" y2="252"/><polygon points="150,258 145,248 155,248"/>
+          <line x1="80" y1="200" x2="68" y2="212"/><polygon points="63,217 66,206 74,214"/>
+          <line x1="64" y1="155" x2="48" y2="155"/><polygon points="42,155 52,150 52,160"/>
+          <line x1="75" y1="108" x2="60" y2="100"/><polygon points="54,97 63,104 58,114"/>
+          <line x1="105" y1="68" x2="93" y2="55"/><polygon points="88,50 96,59 104,53"/>
+        </g>
+        <!-- Capsid -->
+        <polygon points="150,75 195,100 207,148 185,192 115,192 93,148 105,100" fill="#ffe0b2" stroke="#e65100" stroke-width="2.5"/>
+        <!-- Erbsubstanz -->
+        <path d="M130 130 Q150 115 170 130 Q190 145 170 160 Q150 175 130 160 Q110 145 130 130Z" fill="#e3f2fd" stroke="#1565c0" stroke-width="2"/>
+        <text x="135" y="148" font-size="10" fill="#1565c0" font-weight="bold">DNA/RNA</text>
+        <!-- Labels -->
+        <text x="155" y="22" font-size="10" fill="#ef6c00" font-weight="bold">Oberflächenproteine</text>
+        <line x1="150" y1="32" x2="170" y2="26" stroke="#999" stroke-width="1"/>
+        <text x="10" y="110" font-size="10" fill="#e65100">Capsid</text>
+        <line x1="50" y1="108" x2="100" y2="118" stroke="#999" stroke-width="1"/>
+        <text x="10" y="175" font-size="10" fill="#ef6c00">Hüllmembran</text>
+        <line x1="62" y1="170" x2="95" y2="162" stroke="#999" stroke-width="1"/>
+      </svg>
+    </div>
+
+    <div class="illu-card">
+      <h3>⚤ Geschlechtsbestimmung</h3>
+      <svg viewBox="0 0 300 260" xmlns="http://www.w3.org/2000/svg">
+        <!-- Mutter -->
+        <rect x="30" y="20" width="100" height="40" rx="8" fill="#fce4ec" stroke="#e91e63" stroke-width="2"/>
+        <text x="80" y="36" text-anchor="middle" font-size="11" fill="#c2185b" font-weight="bold">Mutter</text>
+        <text x="80" y="52" text-anchor="middle" font-size="12" fill="#c2185b">XX</text>
+        <!-- Vater -->
+        <rect x="170" y="20" width="100" height="40" rx="8" fill="#e3f2fd" stroke="#1565c0" stroke-width="2"/>
+        <text x="220" y="36" text-anchor="middle" font-size="11" fill="#1565c0" font-weight="bold">Vater</text>
+        <text x="220" y="52" text-anchor="middle" font-size="12" fill="#1565c0">XY</text>
+        <!-- Eizelle -->
+        <ellipse cx="80" cy="120" rx="35" ry="22" fill="#fce4ec" stroke="#e91e63" stroke-width="2"/>
+        <text x="80" y="118" text-anchor="middle" font-size="10" fill="#c2185b">Eizelle</text>
+        <text x="80" y="132" text-anchor="middle" font-size="11" fill="#c2185b" font-weight="bold">X</text>
+        <!-- Spermien -->
+        <ellipse cx="200" cy="110" rx="30" ry="18" fill="#e3f2fd" stroke="#1565c0" stroke-width="2"/>
+        <text x="200" y="108" text-anchor="middle" font-size="9" fill="#1565c0">Spermium</text>
+        <text x="200" y="122" text-anchor="middle" font-size="11" fill="#1565c0" font-weight="bold">X</text>
+        <ellipse cx="250" cy="130" rx="30" ry="18" fill="#e8f5e9" stroke="#2e7d32" stroke-width="2"/>
+        <text x="250" y="128" text-anchor="middle" font-size="9" fill="#2e7d32">Spermium</text>
+        <text x="250" y="142" text-anchor="middle" font-size="11" fill="#2e7d32" font-weight="bold">Y</text>
+        <!-- Arrows -->
+        <line x1="80" y1="60" x2="80" y2="97" stroke="#e91e63" stroke-width="1.5" marker-end="url(#ah)"/>
+        <line x1="220" y1="60" x2="210" y2="91" stroke="#1565c0" stroke-width="1.5" marker-end="url(#ah)"/>
+        <line x1="220" y1="60" x2="245" y2="111" stroke="#2e7d32" stroke-width="1.5" marker-end="url(#ah)"/>
+        <!-- Results -->
+        <line x1="110" y1="125" x2="130" y2="175" stroke="#c2185b" stroke-width="1.5" marker-end="url(#ah)"/>
+        <line x1="200" y1="128" x2="160" y2="175" stroke="#1565c0" stroke-width="1.5" marker-end="url(#ah)"/>
+        <rect x="110" y="178" width="80" height="36" rx="8" fill="#fce4ec" stroke="#e91e63" stroke-width="2"/>
+        <text x="150" y="193" text-anchor="middle" font-size="11" fill="#c2185b" font-weight="bold">Mädchen</text>
+        <text x="150" y="207" text-anchor="middle" font-size="12" fill="#c2185b">XX</text>
+        <line x1="115" y1="148" x2="220" y2="178" stroke="#2e7d32" stroke-width="1.5" marker-end="url(#ah)"/>
+        <rect x="200" y="178" width="80" height="36" rx="8" fill="#e8f5e9" stroke="#2e7d32" stroke-width="2"/>
+        <text x="240" y="193" text-anchor="middle" font-size="11" fill="#2e7d32" font-weight="bold">Junge</text>
+        <text x="240" y="207" text-anchor="middle" font-size="12" fill="#2e7d32">XY</text>
+        <defs><marker id="ah" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#666"/></marker></defs>
+      </svg>
+    </div>
+
+    <div class="illu-card" style="grid-column:1/-1">
+      <h3>🔄 Ablauf der Mitose</h3>
+      <svg viewBox="0 0 700 180" xmlns="http://www.w3.org/2000/svg" style="max-height:180px">
+        <defs>
+          <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#4caf80"/></marker>
+        </defs>
+        <!-- Step boxes -->
+        <g>
+          <!-- 0: Ausgangszelle -->
+          <rect x="5" y="30" width="110" height="120" rx="10" fill="#f1f8e9" stroke="#4caf80" stroke-width="2"/>
+          <text x="60" y="52" text-anchor="middle" font-size="9" fill="#2e7d32" font-weight="bold">Ausgangszelle</text>
+          <text x="60" y="65" text-anchor="middle" font-size="8" fill="#555">2n = 46</text>
+          <!-- chromosomes: 2-chromatid -->
+          <line x1="40" y1="80" x2="40" y2="115" stroke="#1565c0" stroke-width="3.5"/>
+          <line x1="46" y1="80" x2="46" y2="115" stroke="#1a237e" stroke-width="3.5"/>
+          <line x1="56" y1="80" x2="56" y2="115" stroke="#c62828" stroke-width="3.5"/>
+          <line x1="62" y1="80" x2="62" y2="115" stroke="#b71c1c" stroke-width="3.5"/>
+          <line x1="72" y1="80" x2="72" y2="115" stroke="#1b5e20" stroke-width="3.5"/>
+          <line x1="78" y1="80" x2="78" y2="115" stroke="#33691e" stroke-width="3.5"/>
+          <!-- centromere dots -->
+          <circle cx="43" cy="97" r="3" fill="#ffd600"/>
+          <circle cx="59" cy="97" r="3" fill="#ffd600"/>
+          <circle cx="75" cy="97" r="3" fill="#ffd600"/>
+          <text x="60" y="138" text-anchor="middle" font-size="8" fill="#555">DNA verdoppelt</text>
+          <text x="60" y="148" text-anchor="middle" font-size="8" fill="#555">2-Chromatid-Chr.</text>
+        </g>
+        <line x1="116" y1="90" x2="136" y2="90" stroke="#4caf80" stroke-width="2" marker-end="url(#arr)"/>
+        <g>
+          <!-- 1: Anordnung -->
+          <rect x="139" y="30" width="110" height="120" rx="10" fill="#f1f8e9" stroke="#4caf80" stroke-width="2"/>
+          <text x="194" y="52" text-anchor="middle" font-size="9" fill="#2e7d32" font-weight="bold">Anordnung</text>
+          <text x="194" y="65" text-anchor="middle" font-size="8" fill="#555">in Zellmitte</text>
+          <line x1="172" y1="75" x2="172" y2="125" stroke="#e91e63" stroke-width="1.5" stroke-dasharray="4,3"/>
+          <line x1="219" y1="75" x2="219" y2="125" stroke="#e91e63" stroke-width="1.5" stroke-dasharray="4,3"/>
+          <line x1="177" y1="88" x2="177" y2="112" stroke="#1565c0" stroke-width="3.5"/>
+          <line x1="183" y1="88" x2="183" y2="112" stroke="#1a237e" stroke-width="3.5"/>
+          <line x1="193" y1="88" x2="193" y2="112" stroke="#c62828" stroke-width="3.5"/>
+          <line x1="199" y1="88" x2="199" y2="112" stroke="#b71c1c" stroke-width="3.5"/>
+          <line x1="209" y1="88" x2="209" y2="112" stroke="#1b5e20" stroke-width="3.5"/>
+          <line x1="215" y1="88" x2="215" y2="112" stroke="#33691e" stroke-width="3.5"/>
+          <circle cx="180" cy="100" r="3" fill="#ffd600"/>
+          <circle cx="196" cy="100" r="3" fill="#ffd600"/>
+          <circle cx="212" cy="100" r="3" fill="#ffd600"/>
+        </g>
+        <line x1="250" y1="90" x2="270" y2="90" stroke="#4caf80" stroke-width="2" marker-end="url(#arr)"/>
+        <g>
+          <!-- 2: Trennung -->
+          <rect x="273" y="30" width="110" height="120" rx="10" fill="#fff8e1" stroke="#ffa000" stroke-width="2"/>
+          <text x="328" y="52" text-anchor="middle" font-size="9" fill="#e65100" font-weight="bold">Trennung</text>
+          <text x="328" y="65" text-anchor="middle" font-size="8" fill="#555">Chromatiden trennen</text>
+          <line x1="303" y1="80" x2="303" y2="100" stroke="#1565c0" stroke-width="3.5"/>
+          <line x1="309" y1="80" x2="309" y2="100" stroke="#c62828" stroke-width="3.5"/>
+          <line x1="319" y1="80" x2="319" y2="100" stroke="#1b5e20" stroke-width="3.5"/>
+          <line x1="337" y1="100" x2="337" y2="120" stroke="#1a237e" stroke-width="3.5"/>
+          <line x1="343" y1="100" x2="343" y2="120" stroke="#b71c1c" stroke-width="3.5"/>
+          <line x1="353" y1="100" x2="353" y2="120" stroke="#33691e" stroke-width="3.5"/>
+          <!-- spindle fibers -->
+          <line x1="295" y1="75" x2="295" y2="125" stroke="#e91e63" stroke-width="1.5" stroke-dasharray="3,3"/>
+          <line x1="365" y1="75" x2="365" y2="125" stroke="#e91e63" stroke-width="1.5" stroke-dasharray="3,3"/>
+        </g>
+        <line x1="384" y1="90" x2="404" y2="90" stroke="#4caf80" stroke-width="2" marker-end="url(#arr)"/>
+        <g>
+          <!-- 3: Teilung -->
+          <rect x="407" y="30" width="110" height="120" rx="10" fill="#fce4ec" stroke="#e91e63" stroke-width="2"/>
+          <text x="462" y="52" text-anchor="middle" font-size="9" fill="#c2185b" font-weight="bold">Zellteilung</text>
+          <text x="462" y="65" text-anchor="middle" font-size="8" fill="#555">Membran schnürt ein</text>
+          <line x1="432" y1="78" x2="432" y2="98" stroke="#1565c0" stroke-width="3.5"/>
+          <line x1="443" y1="78" x2="443" y2="98" stroke="#c62828" stroke-width="3.5"/>
+          <line x1="454" y1="78" x2="454" y2="98" stroke="#1b5e20" stroke-width="3.5"/>
+          <line x1="432" y1="105" x2="432" y2="125" stroke="#1a237e" stroke-width="3.5"/>
+          <line x1="443" y1="105" x2="443" y2="125" stroke="#b71c1c" stroke-width="3.5"/>
+          <line x1="454" y1="105" x2="454" y2="125" stroke="#33691e" stroke-width="3.5"/>
+          <line x1="415" y1="101" x2="500" y2="101" stroke="#e91e63" stroke-width="2" stroke-dasharray="5,3"/>
+        </g>
+        <line x1="518" y1="90" x2="538" y2="90" stroke="#4caf80" stroke-width="2" marker-end="url(#arr)"/>
+        <g>
+          <!-- 4: Tochterzellen -->
+          <rect x="541" y="30" width="152" height="120" rx="10" fill="#e8f5e9" stroke="#2e7d32" stroke-width="2.5"/>
+          <text x="617" y="48" text-anchor="middle" font-size="9" fill="#2e7d32" font-weight="bold">2 Tochterzellen</text>
+          <text x="617" y="61" text-anchor="middle" font-size="8" fill="#2e7d32">genetisch identisch · 2n</text>
+          <!-- Cell 1 -->
+          <ellipse cx="575" cy="105" rx="22" ry="35" fill="#f1f8e9" stroke="#4caf80" stroke-width="1.5"/>
+          <line x1="568" y1="88" x2="568" y2="122" stroke="#1565c0" stroke-width="2.5"/>
+          <line x1="574" y1="88" x2="574" y2="122" stroke="#c62828" stroke-width="2.5"/>
+          <line x1="580" y1="88" x2="580" y2="122" stroke="#1b5e20" stroke-width="2.5"/>
+          <!-- Cell 2 -->
+          <ellipse cx="655" cy="105" rx="22" ry="35" fill="#f1f8e9" stroke="#4caf80" stroke-width="1.5"/>
+          <line x1="648" y1="88" x2="648" y2="122" stroke="#1565c0" stroke-width="2.5"/>
+          <line x1="654" y1="88" x2="654" y2="122" stroke="#c62828" stroke-width="2.5"/>
+          <line x1="660" y1="88" x2="660" y2="122" stroke="#1b5e20" stroke-width="2.5"/>
+        </g>
+      </svg>
+    </div>
+
+    <div class="illu-card" style="grid-column:1/-1">
+      <h3>♻️ Ablauf der Meiose</h3>
+      <svg viewBox="0 0 700 260" xmlns="http://www.w3.org/2000/svg" style="max-height:260px">
+        <defs>
+          <marker id="arr2" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#1a7a4a"/></marker>
+        </defs>
+        <!-- Start cell (2n=46) -->
+        <ellipse cx="80" cy="130" rx="60" ry="95" fill="#e8f5e9" stroke="#2e7d32" stroke-width="2.5"/>
+        <text x="80" y="44" text-anchor="middle" font-size="10" fill="#2e7d32" font-weight="bold">Ausgangszelle</text>
+        <text x="80" y="58" text-anchor="middle" font-size="9" fill="#555">2n = 46</text>
+        <!-- chromosomes blue+red pairs -->
+        <line x1="62" y1="75" x2="62" y2="105" stroke="#1565c0" stroke-width="3"/><line x1="68" y1="75" x2="68" y2="105" stroke="#1a237e" stroke-width="3"/>
+        <line x1="78" y1="75" x2="78" y2="105" stroke="#c62828" stroke-width="3"/><line x1="84" y1="75" x2="84" y2="105" stroke="#b71c1c" stroke-width="3"/>
+        <line x1="94" y1="75" x2="94" y2="105" stroke="#e65100" stroke-width="3"/><line x1="100" y1="75" x2="100" y2="105" stroke="#bf360c" stroke-width="3"/>
+        <!-- crossing-over label -->
+        <text x="80" y="125" text-anchor="middle" font-size="8" fill="#e65100">+ Crossing-over</text>
+        <!-- dividing lines lower -->
+        <line x1="62" y1="140" x2="62" y2="175" stroke="#1565c0" stroke-width="3"/><line x1="68" y1="140" x2="68" y2="175" stroke="#1a237e" stroke-width="3"/>
+        <line x1="78" y1="140" x2="78" y2="175" stroke="#c62828" stroke-width="3"/><line x1="84" y1="140" x2="84" y2="175" stroke="#b71c1c" stroke-width="3"/>
+        <line x1="94" y1="140" x2="94" y2="175" stroke="#e65100" stroke-width="3"/><line x1="100" y1="140" x2="100" y2="175" stroke="#bf360c" stroke-width="3"/>
+        <!-- Arrow right to 1.Teilung -->
+        <line x1="142" y1="130" x2="175" y2="130" stroke="#1a7a4a" stroke-width="2" marker-end="url(#arr2)"/>
+        <text x="158" y="122" text-anchor="middle" font-size="8" fill="#1a7a4a">1. Teilung</text>
+        <!-- Cell top -->
+        <ellipse cx="245" cy="80" rx="55" ry="65" fill="#e3f2fd" stroke="#1565c0" stroke-width="2"/>
+        <text x="245" y="20" text-anchor="middle" font-size="9" fill="#1565c0" font-weight="bold">n = 23</text>
+        <text x="245" y="32" text-anchor="middle" font-size="8" fill="#555">2-Chromatid</text>
+        <line x1="230" y1="48" x2="230" y2="75" stroke="#1565c0" stroke-width="3"/><line x1="236" y1="48" x2="236" y2="75" stroke="#1a237e" stroke-width="3"/>
+        <line x1="248" y1="48" x2="248" y2="75" stroke="#c62828" stroke-width="3"/><line x1="254" y1="48" x2="254" y2="75" stroke="#b71c1c" stroke-width="3"/>
+        <line x1="230" y1="85" x2="230" y2="112" stroke="#1565c0" stroke-width="3"/><line x1="236" y1="85" x2="236" y2="112" stroke="#1a237e" stroke-width="3"/>
+        <line x1="248" y1="85" x2="248" y2="112" stroke="#c62828" stroke-width="3"/><line x1="254" y1="85" x2="254" y2="112" stroke="#b71c1c" stroke-width="3"/>
+        <!-- Cell bottom -->
+        <ellipse cx="245" cy="195" rx="55" ry="55" fill="#fff3e0" stroke="#ef6c00" stroke-width="2"/>
+        <text x="245" y="148" text-anchor="middle" font-size="9" fill="#ef6c00" font-weight="bold">n = 23</text>
+        <text x="245" y="160" text-anchor="middle" font-size="8" fill="#555">2-Chromatid</text>
+        <line x1="230" y1="170" x2="230" y2="195" stroke="#e65100" stroke-width="3"/><line x1="236" y1="170" x2="236" y2="195" stroke="#bf360c" stroke-width="3"/>
+        <line x1="248" y1="170" x2="248" y2="195" stroke="#1b5e20" stroke-width="3"/><line x1="254" y1="170" x2="254" y2="195" stroke="#33691e" stroke-width="3"/>
+        <line x1="230" y1="200" x2="230" y2="220" stroke="#e65100" stroke-width="3"/><line x1="236" y1="200" x2="236" y2="220" stroke="#bf360c" stroke-width="3"/>
+        <line x1="248" y1="200" x2="248" y2="220" stroke="#1b5e20" stroke-width="3"/><line x1="254" y1="200" x2="254" y2="220" stroke="#33691e" stroke-width="3"/>
+        <!-- arrows to 2.Teilung -->
+        <line x1="301" y1="80" x2="345" y2="80" stroke="#1a7a4a" stroke-width="2" marker-end="url(#arr2)"/>
+        <line x1="301" y1="195" x2="345" y2="195" stroke="#1a7a4a" stroke-width="2" marker-end="url(#arr2)"/>
+        <text x="323" y="68" text-anchor="middle" font-size="8" fill="#1a7a4a">2. Teilung</text>
+        <text x="323" y="185" text-anchor="middle" font-size="8" fill="#1a7a4a">2. Teilung</text>
+        <!-- 4 final cells -->
+        <ellipse cx="405" cy="50" rx="42" ry="38" fill="#e8f5e9" stroke="#2e7d32" stroke-width="2"/>
+        <text x="405" y="36" text-anchor="middle" font-size="8" fill="#2e7d32" font-weight="bold">n = 23</text>
+        <line x1="395" y1="44" x2="395" y2="62" stroke="#1565c0" stroke-width="2.5"/>
+        <line x1="405" y1="44" x2="405" y2="62" stroke="#c62828" stroke-width="2.5"/>
+        <ellipse cx="405" cy="130" rx="42" ry="38" fill="#e8f5e9" stroke="#2e7d32" stroke-width="2"/>
+        <text x="405" y="116" text-anchor="middle" font-size="8" fill="#2e7d32" font-weight="bold">n = 23</text>
+        <line x1="395" y1="124" x2="395" y2="142" stroke="#1a237e" stroke-width="2.5"/>
+        <line x1="405" y1="124" x2="405" y2="142" stroke="#b71c1c" stroke-width="2.5"/>
+        <ellipse cx="405" cy="180" rx="42" ry="38" fill="#fff3e0" stroke="#ef6c00" stroke-width="2"/>
+        <text x="405" y="166" text-anchor="middle" font-size="8" fill="#ef6c00" font-weight="bold">n = 23</text>
+        <line x1="395" y1="174" x2="395" y2="192" stroke="#e65100" stroke-width="2.5"/>
+        <line x1="405" y1="174" x2="405" y2="192" stroke="#1b5e20" stroke-width="2.5"/>
+        <ellipse cx="405" cy="238" rx="42" ry="17" fill="#fff3e0" stroke="#ef6c00" stroke-width="2"/>
+        <text x="405" y="234" text-anchor="middle" font-size="8" fill="#ef6c00" font-weight="bold">n = 23</text>
+        <line x1="395" y1="228" x2="395" y2="238" stroke="#bf360c" stroke-width="2.5"/>
+        <line x1="405" y1="228" x2="405" y2="238" stroke="#33691e" stroke-width="2.5"/>
+        <!-- result label -->
+        <rect x="455" y="95" width="235" height="70" rx="10" fill="#e8f5e9" stroke="#2e7d32" stroke-width="2"/>
+        <text x="572" y="118" text-anchor="middle" font-size="11" fill="#2e7d32" font-weight="bold">Ergebnis</text>
+        <text x="572" y="136" text-anchor="middle" font-size="10" fill="#333">4 Keimzellen</text>
+        <text x="572" y="152" text-anchor="middle" font-size="10" fill="#333">haploid · n = 23</text>
+        <line x1="448" y1="130" x2="454" y2="130" stroke="#2e7d32" stroke-width="1.5" marker-end="url(#arr2)"/>
+      </svg>
+    </div>
+
+    <div class="illu-card" style="grid-column:1/-1">
+      <h3>🛡️ Humorale Immunantwort – Ablauf</h3>
+      <svg viewBox="0 0 700 110" xmlns="http://www.w3.org/2000/svg" style="max-height:110px">
+        <defs><marker id="arr3" markerWidth="7" markerHeight="7" refX="5" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#1a7a4a"/></marker></defs>
+        <g>
+          <rect x="4" y="25" width="82" height="60" rx="8" fill="#fff3e0" stroke="#ef6c00" stroke-width="1.5"/>
+          <text x="45" y="48" text-anchor="middle" font-size="9" fill="#e65100" font-weight="bold">Erreger</text>
+          <text x="45" y="62" text-anchor="middle" font-size="8" fill="#555">dringen ein</text>
+          <text x="45" y="75" text-anchor="middle" font-size="9">🦠</text>
+        </g>
+        <line x1="88" y1="55" x2="101" y2="55" stroke="#1a7a4a" stroke-width="1.5" marker-end="url(#arr3)"/>
+        <g>
+          <rect x="103" y="25" width="82" height="60" rx="8" fill="#fce4ec" stroke="#e91e63" stroke-width="1.5"/>
+          <text x="144" y="48" text-anchor="middle" font-size="9" fill="#c2185b" font-weight="bold">Makrophage</text>
+          <text x="144" y="62" text-anchor="middle" font-size="8" fill="#555">frisst + präsentiert</text>
+          <text x="144" y="75" text-anchor="middle" font-size="9">🍽️</text>
+        </g>
+        <line x1="187" y1="55" x2="200" y2="55" stroke="#1a7a4a" stroke-width="1.5" marker-end="url(#arr3)"/>
+        <g>
+          <rect x="202" y="25" width="82" height="60" rx="8" fill="#e3f2fd" stroke="#1565c0" stroke-width="1.5"/>
+          <text x="243" y="48" text-anchor="middle" font-size="9" fill="#1565c0" font-weight="bold">T-Helfer</text>
+          <text x="243" y="62" text-anchor="middle" font-size="8" fill="#555">wird aktiviert</text>
+          <text x="243" y="75" text-anchor="middle" font-size="9">🔔</text>
+        </g>
+        <line x1="286" y1="55" x2="299" y2="55" stroke="#1a7a4a" stroke-width="1.5" marker-end="url(#arr3)"/>
+        <g>
+          <rect x="301" y="25" width="82" height="60" rx="8" fill="#e8eaf6" stroke="#3949ab" stroke-width="1.5"/>
+          <text x="342" y="48" text-anchor="middle" font-size="9" fill="#283593" font-weight="bold">B-Zelle</text>
+          <text x="342" y="62" text-anchor="middle" font-size="8" fill="#555">bildet Antikörper</text>
+          <text x="342" y="75" text-anchor="middle" font-size="9">🏭</text>
+        </g>
+        <line x1="385" y1="55" x2="398" y2="55" stroke="#1a7a4a" stroke-width="1.5" marker-end="url(#arr3)"/>
+        <g>
+          <rect x="400" y="25" width="82" height="60" rx="8" fill="#f3e5f5" stroke="#7b1fa2" stroke-width="1.5"/>
+          <text x="441" y="48" text-anchor="middle" font-size="9" fill="#6a1b9a" font-weight="bold">Antikörper</text>
+          <text x="441" y="62" text-anchor="middle" font-size="8" fill="#555">binden Antigen</text>
+          <text x="441" y="75" text-anchor="middle" font-size="9">🔑</text>
+        </g>
+        <line x1="484" y1="55" x2="497" y2="55" stroke="#1a7a4a" stroke-width="1.5" marker-end="url(#arr3)"/>
+        <g>
+          <rect x="499" y="25" width="82" height="60" rx="8" fill="#e8f5e9" stroke="#2e7d32" stroke-width="1.5"/>
+          <text x="540" y="42" text-anchor="middle" font-size="9" fill="#2e7d32" font-weight="bold">Zerstörung</text>
+          <text x="540" y="55" text-anchor="middle" font-size="8" fill="#555">+ Gedächtnis-</text>
+          <text x="540" y="67" text-anchor="middle" font-size="8" fill="#555">zellen bleiben</text>
+          <text x="540" y="78" text-anchor="middle" font-size="9">✅</text>
+        </g>
+      </svg>
+    </div>
+
   </div>
+</section>
+
+</main>
+
+<!-- IMAGE MODAL -->
+<div class="modal" id="modal" onclick="closeModal()">
+  <button class="modal-x" onclick="closeModal()">✕</button>
+  <img id="modal-img" src="" alt="Lernzettel Großansicht">
 </div>
 
 <script>
-// ── DATA ──────────────────────────────────────────────────────────────
+// ===== DATA =====
+const CARDS = [
+  // MIKROBIOLOGIE
+  {cat:'mikro',catLabel:'🦠 Mikrobiologie',term:'Infektion',def:'Eindringen und Vermehrung von Krankheitserregern (Bakterien, Viren) im Körper → Immunabwehr wird aktiviert.'},
+  {cat:'mikro',catLabel:'🦠 Mikrobiologie',term:'Bakterien',def:'Winzige einzellige Lebewesen ohne Zellkern. Erbsubstanz liegt frei im Zellplasma. Vermehren sich durch Zellteilung.'},
+  {cat:'mikro',catLabel:'🦠 Mikrobiologie',term:'Viren',def:'Keine echten Lebewesen – kein eigener Stoffwechsel, keine selbstständige Vermehrung. Kleiner als Bakterien. Benötigen eine Wirtszelle.'},
+  {cat:'mikro',catLabel:'🦠 Mikrobiologie',term:'Plasmide',def:'Kleine ringförmige DNA-Stücke in Bakterien (zusätzlich zum Haupt-Chromosom).'},
+  {cat:'mikro',catLabel:'🦠 Mikrobiologie',term:'Geißeln',def:'Fortbewegungsorgane vieler Bakterien – peitschenartige Fortsätze.'},
+  {cat:'mikro',catLabel:'🦠 Mikrobiologie',term:'Capsid',def:'Proteinhülle eines Virus, die die Erbsubstanz (DNA oder RNA) schützt.'},
+  {cat:'mikro',catLabel:'🦠 Mikrobiologie',term:'Tröpfcheninfektion',def:'Übertragung von Erregern durch kleine Flüssigkeitstropfen beim Husten, Niesen oder Sprechen.'},
+  {cat:'mikro',catLabel:'🦠 Mikrobiologie',term:'Inkubationszeit',def:'Zeitraum zwischen Infektion und Auftreten der ersten Symptome. Erreger vermehren sich, ohne dass Symptome sichtbar sind.'},
+  {cat:'mikro',catLabel:'🦠 Mikrobiologie',term:'Virale Infektion – Ablauf',def:'Virus dockt an Wirtszelle an → schleust Erbsubstanz ein → Zelle wird umprogrammiert → neue Viren entstehen → breiten sich aus.'},
+  // IMMUNSYSTEM
+  {cat:'immun',catLabel:'🛡️ Immunsystem',term:'Antigen',def:'Merkmal auf der Oberfläche eines Krankheitserregers, das vom Immunsystem erkannt wird.'},
+  {cat:'immun',catLabel:'🛡️ Immunsystem',term:'Antikörper',def:'Spezielle Eiweiße von B-Zellen. Passen nach dem Schlüssel-Schloss-Prinzip genau zu einem Antigen. Machen Erreger unschädlich.'},
+  {cat:'immun',catLabel:'🛡️ Immunsystem',term:'Immunkomplex',def:'Verbindung aus Antikörper + Antigen. Erleichtert die Zerstörung von Krankheitserregern.'},
+  {cat:'immun',catLabel:'🛡️ Immunsystem',term:'Makrophage',def:'Große Fresszelle des Immunsystems. Frisst und verdaut Erreger. Präsentiert Antigene → aktiviert spezifische Abwehr.'},
+  {cat:'immun',catLabel:'🛡️ Immunsystem',term:'Leukozyten',def:'Weiße Blutkörperchen. Gehören zum Immunsystem. Dazu gehören: Makrophagen, B-Zellen, T-Zellen.'},
+  {cat:'immun',catLabel:'🛡️ Immunsystem',term:'Lymphsystem',def:'Zweites Gefäßsystem neben dem Blutkreislauf. Transportiert Wasser zurück ins Blut, verteilt Immunzellen. Lymphknoten filtern Erreger.'},
+  {cat:'immun',catLabel:'🛡️ Immunsystem',term:'Unspezifische Immunabwehr',def:'Angeborene erste Abwehrlinie. Reagiert schnell gegen viele Erreger. Umfasst Haut, Schleimhäute, Fresszellen, Fieber.'},
+  {cat:'immun',catLabel:'🛡️ Immunsystem',term:'Spezifische Immunabwehr',def:'Gezielte Abwehr gegen einen bestimmten Erreger. Langsamer, aber sehr präzise. Bildet Gedächtniszellen → schneller bei Reinfektion.'},
+  {cat:'immun',catLabel:'🛡️ Immunsystem',term:'Humorale Immunantwort',def:'B-Zellen bilden Antikörper gegen Erreger im Blut/Lymphe (außerhalb der Zellen). Ablauf: Erreger → Makrophage → T-Helfer → B-Zelle → Antikörper.'},
+  {cat:'immun',catLabel:'🛡️ Immunsystem',term:'Zelluläre Immunantwort',def:'T-Killerzellen zerstören infizierte Körperzellen direkt. Wichtig bei Virusinfektionen.'},
+  {cat:'immun',catLabel:'🛡️ Immunsystem',term:'Gedächtniszellen',def:'Bleiben nach einer Infektion im Körper. Ermöglichen bei erneuter Infektion eine schnellere Immunantwort.'},
+  {cat:'immun',catLabel:'🛡️ Immunsystem',term:'T-Helferzellen',def:'Aktivieren B-Zellen im Rahmen der humoralen Immunantwort. Werden selbst von Makrophagen aktiviert.'},
+  // GENETIK
+  {cat:'genetik',catLabel:'🧬 Genetik',term:'Chromosom',def:'Besteht aus DNA + Proteinen. Trägt Erbinformationen. Vor der Teilung verdoppelt → besteht aus 2 Schwesterchromatiden.'},
+  {cat:'genetik',catLabel:'🧬 Genetik',term:'Homologe Chromosomen',def:'Gleichartige Chromosomenpaare mit denselben Genen. Eines stammt von der Mutter, das andere vom Vater.'},
+  {cat:'genetik',catLabel:'🧬 Genetik',term:'Autosomen',def:'Alle Chromosomen außer den Geschlechtschromosomen. Beim Menschen: 44 Autosomen (22 Paare).'},
+  {cat:'genetik',catLabel:'🧬 Genetik',term:'Gonosomen',def:'Geschlechtschromosomen. Frau: XX · Mann: XY. Bestimmen das biologische Geschlecht.'},
+  {cat:'genetik',catLabel:'🧬 Genetik',term:'Haploid',def:'Einfacher Chromosomensatz (n). Beim Menschen: 23 Chromosomen. Nur in Keimzellen.'},
+  {cat:'genetik',catLabel:'🧬 Genetik',term:'Diploid',def:'Doppelter Chromosomensatz (2n). Beim Menschen: 46 Chromosomen. In allen Körperzellen.'},
+  {cat:'genetik',catLabel:'🧬 Genetik',term:'Zygote',def:'Erste Zelle eines neuen Menschen. Entsteht aus der Verschmelzung von Spermium + Eizelle. Hat vollständigen Chromosomensatz (2n=46).'},
+  {cat:'genetik',catLabel:'🧬 Genetik',term:'2-Chromatid-Chromosom',def:'Besteht aus zwei identischen Schwesterchromatiden, verbunden am Centromer. Entsteht nach der DNA-Verdopplung vor der Zellteilung.'},
+  {cat:'genetik',catLabel:'🧬 Genetik',term:'1-Chromatid-Chromosom',def:'Besteht aus einem Chromatid. Entsteht nach Trennung der Schwesterchromatiden in Mitose oder Meiose.'},
+  {cat:'genetik',catLabel:'🧬 Genetik',term:'Mitose',def:'Zellteilung → 2 genetisch identische Tochterzellen mit gleichem Chromosomensatz. Dient: Wachstum, Wundheilung, Zellregeneration.'},
+  {cat:'genetik',catLabel:'🧬 Genetik',term:'Meiose',def:'Reduktionsteilung → 4 Keimzellen mit halbem Chromosomensatz (n). Sorgt durch Crossing-over + Rekombination für genetische Vielfalt.'},
+  {cat:'genetik',catLabel:'🧬 Genetik',term:'Crossing-over',def:'Homologe Chromosomen lagern sich zusammen und tauschen DNA-Abschnitte aus. → neue Genkombinationen → genetische Vielfalt.'},
+  {cat:'genetik',catLabel:'🧬 Genetik',term:'Rekombination',def:'Zufällige Verteilung mütterlicher/väterlicher Chromosomen auf Keimzellen. 2²³ = ~8 Mio. Kombinationen möglich.'},
+  {cat:'genetik',catLabel:'🧬 Genetik',term:'Diversität',def:'Genetische Vielfalt innerhalb einer Art. Entsteht durch Rekombination und Crossing-over.'},
+  {cat:'genetik',catLabel:'🧬 Genetik',term:'Trisomie 21',def:'Erbkrankheit: Chromosom 21 liegt dreimal vor (statt zweimal). Entsteht durch Fehler bei der Meiose.'},
+];
 
-const TOPICS = [
-  {
-    id:0, icon:"🧪", title:"Mischungen",
-    sub:"Gemische, homogen/heterogen, Aggregatzustand-Kombinationen",
-    cards:[
-      {q:"Was ist ein Gemisch?", a:"Zwei oder mehr Stoffe, die NICHT chemisch verbunden sind. Jeder Stoff behält seine Eigenschaften. Sie lassen sich durch physikalische Verfahren wieder trennen."},
-      {q:"Homogenes Gemisch", a:"Überall gleich zusammengesetzt – die Bestandteile sind mit bloßem Auge nicht erkennbar. Beispiele: Salzwasser, Luft, Messing."},
-      {q:"Heterogenes Gemisch", a:"Nicht überall gleich zusammengesetzt – die Bestandteile sind erkennbar oder setzen sich ab. Beispiele: Sand+Wasser, Salatdressing, Granit."},
-      {q:"Suspension", a:"Feststoff ist in einer Flüssigkeit fein verteilt → heterogen. Setzt sich mit der Zeit ab. Beispiele: Schlamm, Orangensaft mit Fruchtfleisch."},
-      {q:"Emulsion", a:"Zwei nicht mischbare Flüssigkeiten fein verteilt → heterogen. Beispiele: Milch (Fett+Wasser), Mayonnaise."},
-      {q:"Lösung", a:"Stoff ist vollständig in Lösungsmittel gelöst → homogen. Beispiele: Salzwasser, Zuckerwasser."},
-      {q:"Legierung", a:"Homogenes Gemisch aus Metallen. Beispiele: Messing (Cu+Zn), Bronze (Cu+Sn), Stahl (Fe+C)."},
-      {q:"Gasgemisch", a:"Gas + Gas = homogenes Gemisch. Wichtigstes Beispiel: Luft (78% N₂, 21% O₂, ~1% Ar)."},
-      {q:"Aerosol", a:"Fester oder flüssiger Stoff fein in Gas verteilt → heterogen. Nebel = Flüssigkeit in Gas. Rauch = Feststoff in Gas."},
-      {q:"Aggregatzustand-Kombinationen", a:"fest+fest → Gemenge/Legierung | fest+flüssig → Suspension/Lösung | flüssig+flüssig → Emulsion/Lösung | Gas+Gas → Gasgemisch | fest/flüssig+Gas → Aerosol"},
-    ]
-  },
-  {
-    id:1, icon:"🔬", title:"Trennverfahren",
-    sub:"Methoden zur Trennung von Gemischen",
-    cards:[
-      {q:"Trennverfahren vs. Analyseverfahren", a:"Trennverfahren: Bestandteile werden als einzelne Fraktionen gewonnen (z.B. Filtration). Analyseverfahren: Die Zusammensetzung wird untersucht, ohne alle Stoffe zu trennen (z.B. Chromatographie)."},
-      {q:"Filtration", a:"Trennt Feststoff von Flüssigkeit durch ein Filterpapier. Geeignet für Suspensionen. Filtrat (Flüssigkeit) geht durch, Rückstand (Feststoff) bleibt zurück."},
-      {q:"Destillation", a:"Trennt Flüssigkeiten durch unterschiedliche Siedepunkte. Flüssigkeit mit niedrigerem Siedepunkt verdampft zuerst → kondensiert → wird aufgefangen."},
-      {q:"Magnetische Trennung", a:"Magnetische Stoffe (Eisen, Nickel, Cobalt) werden mit einem Magneten herausgezogen. Funktioniert NUR bei ferromagnetischen Materialien!"},
-      {q:"Eindampfen / Verdampfen", a:"Lösung erhitzen → Lösungsmittel verdampft → gelöster Feststoff bleibt zurück. Beispiel: Salz aus Salzwasser gewinnen."},
-      {q:"Chromatographie", a:"Analyseverfahren: Stoffe wandern unterschiedlich schnell durch ein Trennmittel (z.B. Filterpapier). Trennt Farbstoffe, zeigt Zusammensetzung."},
-      {q:"Zentrifugation", a:"Schnelles Rotieren erzeugt Fliehkraft → schwerere Teilchen sammeln sich außen. Beispiel: Blutplasma von Blutzellen trennen."},
-      {q:"Sieben", a:"Trennt Feststoffe unterschiedlicher Korngröße. Kleinere Körner fallen durch die Maschen, größere bleiben zurück. Beispiel: Sand von Kies trennen."},
-      {q:"Wichtig: Fraktionen erhalten", a:"Bei einem Trennverfahren ist es wichtig, die getrennten Bestandteile als Fraktionen einzeln zu sammeln. Nur dann ist die Trennung vollständig."},
-      {q:"Welches Verfahren für welches Gemisch?", a:"Suspension → Filtration | Lösung → Eindampfen | Flüssigkeitsgemisch → Destillation | Eisengemisch → Magnet | Farbstoffgemisch → Chromatographie"},
-    ]
-  },
-  {
-    id:2, icon:"⚡", title:"Energie & Reaktionen",
-    sub:"Endotherm, exotherm, Oxidation, Verbrennung, Wortgleichung",
-    cards:[
-      {q:"Exotherme Reaktion", a:"Energie wird an die Umgebung abgegeben → es wird WARM. Produkte haben weniger Energie als Ausgangsstoffe. Beispiele: Verbrennung, Rostbildung, Wärmekissen."},
-      {q:"Endotherme Reaktion", a:"Energie wird aus der Umgebung aufgenommen → es wird KALT. Produkte haben mehr Energie als Ausgangsstoffe. Beispiele: Fotosynthese, Kältepacks, Schmelzen."},
-      {q:"Aktivierungsenergie", a:"Die Mindestenergie, die nötig ist, um eine Reaktion zu STARTEN. Auch exotherme Reaktionen brauchen eine Zündung! Im Diagramm: der Berg zwischen Ausgangsstoffen und Produkt-Niveau."},
-      {q:"Energiediagramm", a:"Zeigt Energie auf Y-Achse, Reaktionsverlauf auf X-Achse. Exotherm: Produkte liegen TIEFER als Ausgangsstoffe. Endotherm: Produkte liegen HÖHER. Der Gipfel = Aktivierungsenergie."},
-      {q:"Oxidation", a:"Reaktion eines Stoffes mit Sauerstoff. Kann langsam (Rostbildung von Eisen) oder schnell (Verbrennung) ablaufen."},
-      {q:"Verbrennung", a:"Schnelle Oxidation mit sichtbarer Flamme und starker Wärmeentwicklung. Benötigt: Brennstoff + Sauerstoff + Zündtemperatur (Feuerdreieck!). Produkte meist CO₂ und H₂O."},
-      {q:"Feuerdreieck", a:"Verbrennung braucht alle drei: 1) Brennstoff, 2) Sauerstoff (aus der Luft), 3) Zündtemperatur. Fehlt eines → Feuer erlischt. Löschmethoden: Sauerstoff entziehen oder abkühlen."},
-      {q:"Wortgleichung", a:"Beschreibt eine Reaktion in Worten: Ausgangsstoffe → Produkte. Beispiel: Kohlenstoff + Sauerstoff → Kohlenstoffdioxid. Der Pfeil bedeutet 'reagiert zu'."},
-      {q:"Zerteilungsgrad", a:"Je FEINER ein Stoff zerteilt ist, desto größer die Oberfläche, desto SCHNELLER die Reaktion. Holzspäne brennen schneller als ein Klotz. Zucker-Staub kann explodieren!"},
-      {q:"Luft – Zusammensetzung", a:"78% Stickstoff (N₂) · 21% Sauerstoff (O₂) · ~1% Argon und Spurengase. NUR der Sauerstoff ist reaktiv und beteiligt sich an Verbrennungen!"},
-    ]
-  },
-  {
-    id:3, icon:"⚛️", title:"Teilchenmodell & Aggregatzustände",
-    sub:"Aufbau der Materie, Zustandsänderungen, Eigenschaften",
-    cards:[
-      {q:"Teilchenmodell – Grundidee", a:"Alle Materie besteht aus winzig kleinen Teilchen (Atomen/Molekülen). Zwischen den Teilchen ist leerer Raum. Teilchen sind ständig in Bewegung – schneller bei höherer Temperatur."},
-      {q:"Aggregatzustand: fest", a:"Teilchen dicht gepackt in fester Struktur, schwingen nur. Form und Volumen sind konstant. Beispiele: Eis, Eisen, Salzkristalle."},
-      {q:"Aggregatzustand: flüssig", a:"Teilchen sind nah beieinander, können sich aber bewegen und aneinander vorbeigleiten. Volumen konstant, Form variabel. Beispiele: Wasser, Öl, Quecksilber."},
-      {q:"Aggregatzustand: gasförmig", a:"Teilchen weit voneinander entfernt, bewegen sich sehr schnell. Volumen und Form variabel (füllt Gefäß aus). Beispiele: Wasserdampf, Luft."},
-      {q:"Schmelzen & Erstarren", a:"Schmelzen: fest → flüssig (Energie aufnehmen). Erstarren: flüssig → fest (Energie abgeben). Beispiel: Eis schmilzt bei 0°C zu Wasser."},
-      {q:"Sieden & Kondensieren", a:"Sieden/Verdampfen: flüssig → gasförmig (Energie aufnehmen). Kondensieren: gasförmig → flüssig (Energie abgeben). Wasser siedet bei 100°C."},
-      {q:"Sublimieren & Resublimieren", a:"Sublimieren: fest → gasförmig OHNE flüssige Phase. Resublimieren: gasförmig → fest. Beispiele: Trockeneis (CO₂), Mottenkugeln, Frost."},
-      {q:"Eigenschaften der Materie", a:"Charakteristische Eigenschaften: Farbe, Geruch, Dichte, Schmelzpunkt, Siedepunkt, Löslichkeit, elektrische Leitfähigkeit, Magnetismus, Härte."},
-      {q:"Dichte", a:"Dichte = Masse ÷ Volumen [g/cm³]. Eisen (7,9 g/cm³) sinkt in Wasser (1 g/cm³). Holz (~0,5 g/cm³) schwimmt. Je größer die Dichte, desto schwerer ist das Material pro Volumen."},
-      {q:"Diffusion", a:"Teilchen verteilen sich von selbst von höherer zu niedrigerer Konzentration – wegen ihrer ständigen Bewegung. Beispiel: Parfüm verbreitet sich im Raum."},
-    ]
+const QUIZ = [
+  {q:'Was ist ein Antigen?',opts:['Ein Eiweiß, das B-Zellen produzieren','Ein Merkmal auf der Oberfläche eines Krankheitserregers','Eine Zelle des Immunsystems','Ein Bestandteil der Zellwand'],correct:1,exp:'Antigene sind Oberflächenmerkmale von Erregern – sie werden vom Immunsystem erkannt.'},
+  {q:'Wie viele Chromosomenpaare besitzt ein Mensch?',opts:['46','44','23','22'],correct:2,exp:'Der Mensch hat 23 Chromosomenpaare = 46 Chromosomen gesamt. Keimzellen haben nur 23 (haploid).'},
+  {q:'Was unterscheidet Viren von Bakterien?',opts:['Viren sind größer als Bakterien','Viren haben eine Zellwand, Bakterien nicht','Viren besitzen keinen eigenen Stoffwechsel','Viren können sich selbst vermehren'],correct:2,exp:'Viren sind keine echten Lebewesen – sie haben keinen eigenen Stoffwechsel und brauchen eine Wirtszelle.'},
+  {q:'Welche Zellen bilden Antikörper?',opts:['T-Killerzellen','Makrophagen','B-Zellen','Fresszellen'],correct:2,exp:'B-Zellen (ein Typ der weißen Blutkörperchen) bilden die Antikörper der humoralen Immunantwort.'},
+  {q:'Was bedeutet „haploid"?',opts:['Doppelter Chromosomensatz (2n)','Einfacher Chromosomensatz (n)','46 Chromosomen','Kein Zellkern vorhanden'],correct:1,exp:'Haploid = einfacher Chromosomensatz. Beim Menschen: n = 23 (in Spermien und Eizellen).'},
+  {q:'Was ist Crossing-over?',opts:['Die Trennung der Schwesterchromatiden','Der Austausch von DNA zwischen homologen Chromosomen','Die Befruchtung einer Eizelle','Die Verdopplung der DNA'],correct:1,exp:'Beim Crossing-over tauschen homologe Chromosomen Abschnitte aus → neue Genkombinationen → genetische Vielfalt.'},
+  {q:'Wozu dient die Mitose?',opts:['Bildung von Spermien und Eizellen','Halbierung des Chromosomensatzes','Wachstum, Wundheilung und Zellregeneration','Erzeugung genetischer Vielfalt'],correct:2,exp:'Mitose erzeugt 2 identische Tochterzellen für Wachstum und Wundheilung – kein Chromosomenverlust.'},
+  {q:'Was ist eine Zygote?',opts:['Eine Keimzelle mit haploidem Chromosomensatz','Die erste Zelle nach der Befruchtung','Ein Virus-Typ','Eine T-Zelle des Immunsystems'],correct:1,exp:'Die Zygote entsteht aus Spermium + Eizelle und hat den vollständigen Chromosomensatz (2n=46).'},
+  {q:'Wer bestimmt das Geschlecht eines Kindes?',opts:['Die Eizelle (immer X)','Das Spermium (X oder Y)','Beide Elternteile gleichwertig','Eine zufällige Mutation'],correct:1,exp:'Eizellen enthalten immer X. Spermien enthalten X oder Y. Das Y-Chromosom im Spermium ergibt einen Jungen.'},
+  {q:'Was sind Gonosomen?',opts:['Alle Chromosomen außer den Geschlechtschromosomen','Die Geschlechtschromosomen (X und Y)','Plasmide in Bakterien','Antigene auf Viren'],correct:1,exp:'Gonosomen = Geschlechtschromosomen. Frau: XX, Mann: XY. Der Mensch hat 2 Gonosomen + 44 Autosomen.'},
+  {q:'Welche Strukturen gehören zur unspezifischen Immunabwehr?',opts:['B-Zellen und T-Zellen','Antikörper und Immunkomplexe','Haut, Schleimhäute und Magensäure','Nur die Gedächtniszellen'],correct:2,exp:'Haut, Schleimhäute, Tränenflüssigkeit, Magensäure, Nasenschleim – alle angeboren und nicht erregerspezifisch.'},
+  {q:'Was entsteht am Ende einer vollständigen Meiose?',opts:['2 genetisch identische Tochterzellen','4 Geschlechtszellen mit haploidem Chromosomensatz','2 diploide Zellen','1 Zygote'],correct:1,exp:'Die Meiose erzeugt 4 Keimzellen (n = 23), jede mit einzigartigem Chromosomensatz durch Rekombination.'},
+  {q:'Was ist ein Immunkomplex?',opts:['Alle weißen Blutkörperchen zusammen','Die Verbindung von Antikörper und Antigen','Ein Virus mit Proteinhülle','Eine infizierte Körperzelle'],correct:1,exp:'Antikörper + Antigen = Immunkomplex. Dadurch werden Erreger markiert und leichter zerstört.'},
+  {q:'Was ist der Unterschied zwischen humoraler und zellulärer Immunantwort?',opts:['Sie sind identisch','Humoral nutzt Antikörper gegen freie Erreger, zellulär tötet T-Killerzellen infizierte Zellen','Zellulär ist immer schneller','Humoral wird nur bei Viren eingesetzt'],correct:1,exp:'Humoral (B-Zellen, Antikörper) wirkt gegen Erreger außerhalb der Zellen. Zellulär (T-Killerzellen) gegen infizierte Zellen.'},
+  {q:'Wie viele Chromosomenkombinationen sind durch Rekombination möglich?',opts:['23','46','2²³ (ca. 8 Millionen)','2⁴⁶'],correct:2,exp:'Da 23 Paare zufällig verteilt werden: 2²³ ≈ 8,4 Millionen Kombinationen – zusätzlich noch Crossing-over!'},
+];
+
+// ===== STATE =====
+let allCards = [...CARDS];
+let filteredCards = [...CARDS];
+let cardIdx = 0;
+let quizAnswers = new Array(QUIZ.length).fill(null);
+let currentFilter = 'all';
+
+// ===== NAV =====
+function showTab(id) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  const tabs = document.querySelectorAll('.nav-tab');
+  const map = {dash:0,lz:1,karten:2,quiz:3,illu:4};
+  tabs[map[id]].classList.add('active');
+  window.scrollTo(0,0);
+}
+
+// ===== MODAL =====
+function openModal(src) {
+  document.getElementById('modal-img').src = src;
+  document.getElementById('modal').classList.add('open');
+}
+function closeModal() {
+  document.getElementById('modal').classList.remove('open');
+}
+document.addEventListener('keydown', e => { if(e.key==='Escape') closeModal(); });
+
+// ===== KARTEIKARTEN =====
+function setFilter(f, btn) {
+  currentFilter = f;
+  document.querySelectorAll('.filt-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  filteredCards = f === 'all' ? [...allCards] : allCards.filter(c => c.cat === f);
+  cardIdx = 0;
+  renderCard();
+}
+
+function shuffleCards() {
+  for(let i = filteredCards.length-1; i>0; i--) {
+    const j = Math.floor(Math.random()*(i+1));
+    [filteredCards[i],filteredCards[j]] = [filteredCards[j],filteredCards[i]];
   }
-];
-
-const QUESTIONS = [
-  // MISCHUNGEN
-  {t:0,q:"Was ist ein Gemisch?",
-   o:["Zwei Stoffe chemisch verbunden","Zwei oder mehr Stoffe NICHT chemisch verbunden – behalten ihre Eigenschaften","Ein reiner Stoff aus einem Element","Ein Feststoff, der in Wasser gelöst ist"],
-   c:1,e:"Ein Gemisch besteht aus zwei oder mehr Stoffen, die physikalisch vermischt, aber NICHT chemisch verbunden sind. Jeder Stoff behält seine Eigenschaften und kann durch physikalische Verfahren wieder getrennt werden."},
-  {t:0,q:"Was unterscheidet ein homogenes von einem heterogenen Gemisch?",
-   o:["Homogen = flüssig, heterogen = fest","Homogen: überall gleich zusammengesetzt (Bestandteile nicht erkennbar); Heterogen: Bestandteile erkennbar/sichtbar","Homogen = 2 Stoffe, heterogen = mehr als 2","Homogen ist natürlich, heterogen ist künstlich"],
-   c:1,e:"Homogene Gemische sehen überall gleich aus (z.B. Salzwasser, Luft). Heterogene Gemische haben erkennbare Bestandteile oder setzen sich ab (z.B. Sand+Wasser, Granit)."},
-  {t:0,q:"Was ist eine Suspension?",
-   o:["Homogenes Gemisch aus zwei Flüssigkeiten","Fein verteilter Feststoff in einer Flüssigkeit – heterogenes Gemisch, setzt sich ab","Gas vollständig in Flüssigkeit gelöst","Homogenes Gemisch aus zwei Metallen"],
-   c:1,e:"Eine Suspension ist ein heterogenes Gemisch: Feststoff-Teilchen sind in einer Flüssigkeit verteilt, aber nicht gelöst. Sie setzen sich mit der Zeit ab (z.B. Schlamm, Orangensaft mit Fruchtfleisch)."},
-  {t:0,q:"Luft ist ein Beispiel für …",
-   o:["Eine Emulsion","Einen Reinstoff","Ein homogenes Gasgemisch","Eine Suspension"],
-   c:2,e:"Luft ist ein homogenes Gasgemisch: ca. 78% Stickstoff, 21% Sauerstoff, ~1% Argon. Überall in der Luft ist die Zusammensetzung gleich – deshalb homogen."},
-  {t:0,q:"Welche Kombination ergibt eine Emulsion?",
-   o:["Feststoff + Flüssigkeit","Gas + Gas","Zwei nicht mischbare Flüssigkeiten","Feststoff + Gas"],
-   c:2,e:"Eine Emulsion entsteht, wenn zwei nicht miteinander mischbare Flüssigkeiten fein verteilt werden. Beispiele: Milch (Fett in Wasser), Mayonnaise."},
-  {t:0,q:"Was ist eine Legierung?",
-   o:["Heterogenes Gemisch aus Metallen","Homogenes Gemisch aus Metallen","Lösung von Metall in Wasser","Feststoff + Gas Gemisch"],
-   c:1,e:"Eine Legierung ist ein homogenes Gemisch aus zwei oder mehr Metallen. Beispiele: Messing (Kupfer + Zink), Bronze (Kupfer + Zinn), Stahl (Eisen + Kohlenstoff)."},
-  // TRENNVERFAHREN
-  {t:1,q:"Was ist der Unterschied zwischen Trennverfahren und Analyseverfahren?",
-   o:["Kein Unterschied","Trennverfahren → Bestandteile als Fraktionen gewinnen; Analyseverfahren → Zusammensetzung untersuchen","Trennverfahren = chemisch, Analyseverfahren = physikalisch","Analyseverfahren nutzen immer Wärme"],
-   c:1,e:"Bei Trennverfahren werden die Bestandteile tatsächlich voneinander getrennt und als einzelne Fraktionen gewonnen (z.B. Filtration). Analyseverfahren untersuchen die Zusammensetzung (z.B. Chromatographie), ohne alles zu trennen."},
-  {t:1,q:"Wie trennt man am besten eine Suspension aus Sand und Wasser?",
-   o:["Destillation","Magnetische Trennung","Filtration","Eindampfen"],
-   c:2,e:"Bei der Filtration läuft die Flüssigkeit durch das Filterpapier, während der Feststoff (Rückstand) zurückbleibt. Genau richtig für Suspensionen wie Sand + Wasser."},
-  {t:1,q:"Wie gewinnt man Salz aus Salzwasser zurück?",
-   o:["Filtration – Salz bleibt im Filter","Eindampfen – Wasser verdampft, Salz bleibt zurück","Magnet – Salz ist magnetisch","Sieben – Salzkörner sind größer"],
-   c:1,e:"Salzwasser ist eine Lösung – das Salz ist vollständig gelöst und kann NICHT durch Filtration abgetrennt werden. Beim Eindampfen verdampft das Wasser, das Salz kristallisiert aus."},
-  {t:1,q:"Auf welche Stoffe wirkt die magnetische Trennung?",
-   o:["Alle Metalle","Alle schweren Feststoffe","Nur ferromagnetische Stoffe: Eisen, Nickel, Cobalt","Alle leitfähigen Materialien"],
-   c:2,e:"Magnetische Trennung funktioniert NUR bei ferromagnetischen Stoffen: Eisen, Nickel und Cobalt. Aluminium, Kupfer oder andere Metalle reagieren nicht auf Magnete."},
-  {t:1,q:"Wofür verwendet man die Destillation?",
-   o:["Feststoff von Flüssigkeit trennen","Zwei Flüssigkeiten mit unterschiedlichen Siedepunkten trennen","Magnetische von nicht-magnetischen Stoffen trennen","Stoffe nach Korngröße trennen"],
-   c:1,e:"Bei der Destillation werden Flüssigkeiten mit verschiedenen Siedepunkten getrennt: Die Flüssigkeit mit dem niedrigeren Siedepunkt verdampft zuerst, wird gekühlt (kondensiert) und separat aufgefangen."},
-  {t:1,q:"Was bedeutet 'Fraktionen erhalten' bei einem Trennverfahren?",
-   o:["Das Gemisch in viele Teile zerteilen","Die getrennten Bestandteile einzeln sammeln und aufbewahren","Das Verfahren mehrfach wiederholen","Die Temperatur in Stufen erhöhen"],
-   c:1,e:"Wichtig: Bei einem echten Trennverfahren muss man die getrennten Bestandteile als einzelne Fraktionen gewinnen können. Nur dann ist die Trennung vollständig gelungen."},
-  // ENERGIE & REAKTIONEN
-  {t:2,q:"Was ist eine exotherme Reaktion?",
-   o:["Eine Reaktion, die Energie verbraucht und kühlt","Eine Reaktion, die Energie an die Umgebung abgibt – es wird warm","Eine Reaktion ohne Aktivierungsenergie","Eine Reaktion, die nur im Dunkeln läuft"],
-   c:1,e:"Exotherm = Energie nach außen (lat. 'exo'). Die Produkte haben weniger Energie als die Ausgangsstoffe. Die Differenz wird als Wärme abgegeben. Beispiele: Verbrennung, Rost, Wärmekissen."},
-  {t:2,q:"Was ist Aktivierungsenergie?",
-   o:["Energie die bei der Reaktion freigesetzt wird","Die Energiedifferenz zwischen Produkten und Ausgangsstoffen","Die Mindestenergie, die benötigt wird, um eine Reaktion zu STARTEN","Die Energie, die im Brennstoff gespeichert ist"],
-   c:2,e:"Die Aktivierungsenergie ist die Starterenergie, ohne die eine Reaktion nicht abläuft – auch wenn sie exotherm ist. Ohne Zündung verbrennt Holz nicht, obwohl viel Energie freigesetzt würde."},
-  {t:2,q:"Was zeigt ein Energiediagramm einer ENDOthermen Reaktion?",
-   o:["Produkte liegen energetisch tiefer als Ausgangsstoffe","Produkte liegen energetisch HÖHER als Ausgangsstoffe","Ausgangsstoffe und Produkte liegen gleich hoch","Es gibt keinen Aktivierungsenergie-Gipfel"],
-   c:1,e:"Endotherm = Energie nach innen (lat. 'endo'). Energie wird aufgenommen, deshalb haben die Produkte MEHR Energie als die Ausgangsstoffe → sie liegen im Diagramm höher. Beispiel: Kältepacks werden kalt."},
-  {t:2,q:"Was versteht man unter dem Zerteilungsgrad?",
-   o:["Anzahl der Bestandteile im Gemisch","Wie fein ein Stoff zerteilt ist – je feiner, desto mehr Oberfläche, desto schneller die Reaktion","Geschwindigkeit der Destillation","Anteil von Sauerstoff in der Luft"],
-   c:1,e:"Hoher Zerteilungsgrad = viele kleine Stücke = große Gesamtoberfläche = schnellere Reaktion. Holzspäne brennen viel schneller als ein Klotz. Zucker-Staub kann sogar explodieren!"},
-  {t:2,q:"Was braucht man für eine Verbrennung? (Feuerdreieck)",
-   o:["Wasser, Wärme, Brennstoff","Brennstoff + Sauerstoff + Zündtemperatur","Kohlenstoff, Wasserstoff, Sauerstoff","Stickstoff, Sauerstoff, Wärme"],
-   c:1,e:"Das Feuerdreieck: Brennstoff + Sauerstoff + Zündtemperatur. Alle drei müssen gleichzeitig vorhanden sein. Löschen = eines wegnehmen: Sand (kein O₂), Wasser (Abkühlen)."},
-  {t:2,q:"Was unterscheidet Oxidation von Verbrennung?",
-   o:["Kein Unterschied, beide Begriffe sind identisch","Verbrennung ist eine schnelle Oxidation mit sichtbarer Flamme; Oxidation kann auch langsam ablaufen (z.B. Rost)","Oxidation braucht Wasser, Verbrennung Sauerstoff","Verbrennung ist langsam, Oxidation schnell"],
-   c:1,e:"Oxidation = Reaktion mit Sauerstoff (kann langsam oder schnell sein). Verbrennung = sehr schnelle Oxidation mit sichtbarer Flamme und starker Wärme. Rost ist eine langsame Oxidation, Feuer ist eine schnelle."},
-  {t:2,q:"Wie lautet die Wortgleichung für die Verbrennung von Kohlenstoff?",
-   o:["Kohlenstoff + Wasser → Kohlenmonoxid","Kohlenstoff + Sauerstoff → Kohlenstoffdioxid","Kohlenstoff + Stickstoff → Kohlenstoffnitrid","Kohlenstoffdioxid → Kohlenstoff + Sauerstoff"],
-   c:1,e:"Wortgleichung: Kohlenstoff + Sauerstoff → Kohlenstoffdioxid. Der Pfeil bedeutet 'reagiert zu'. Die Ausgangsstoffe stehen links, die Produkte rechts."},
-  // TEILCHENMODELL
-  {t:3,q:"Was sagt das Teilchenmodell aus?",
-   o:["Materie ist kontinuierlich ohne Lücken","Alle Materie besteht aus winzig kleinen Teilchen in ständiger Bewegung, zwischen denen leerer Raum ist","Nur Flüssigkeiten bestehen aus Teilchen","Feste Stoffe haben keine Teilchenbewegung"],
-   c:1,e:"Das Teilchenmodell: Alle Materie besteht aus Teilchen (Atomen/Molekülen). Zwischen ihnen ist leerer Raum. Sie bewegen sich immer – schneller bei höherer Temperatur."},
-  {t:3,q:"Was passiert beim SCHMELZEN auf Teilchenebene?",
-   o:["Teilchen werden kleiner","Teilchen verschwinden teilweise","Teilchen gewinnen Energie, lösen sich aus ihrer festen Anordnung und können sich bewegen","Teilchen brechen auseinander"],
-   c:2,e:"Schmelzen (fest→flüssig): Die Teilchen bekommen so viel Wärmeenergie, dass die Bindungen überwunden werden. Sie bleiben nah beieinander, können sich aber nun frei bewegen."},
-  {t:3,q:"Was ist 'Sublimieren'?",
-   o:["Flüssig → fest","Gasförmig → flüssig","Fest → gasförmig OHNE flüssige Zwischenphase","Flüssig → gasförmig"],
-   c:2,e:"Sublimieren = direkt von fest nach gasförmig, ohne flüssige Phase. Das Gegenteil heißt Resublimieren. Beispiele: Trockenes CO₂ (Trockeneis), Mottenkugeln, Frost."},
-  {t:3,q:"Wie sind Teilchen im gasförmigen Zustand?",
-   o:["Dicht gepackt, kaum Bewegung","Nah beieinander, können sich bewegen","Sehr weit voneinander entfernt, sehr schnelle Bewegung, füllen den gesamten Raum","In regelmäßiger Gitterstruktur"],
-   c:2,e:"Gas: Teilchen sehr weit entfernt, sehr schnell in alle Richtungen. Deshalb hat Gas kein eigenes Volumen – es dehnt sich aus und füllt jeden Behälter vollständig aus."},
-  {t:3,q:"Was ist Dichte?",
-   o:["Dichte = Volumen × Masse","Dichte = Masse ÷ Volumen [g/cm³] – Masse pro Volumeneinheit","Dichte = Temperatur ÷ Masse","Dichte = Oberfläche ÷ Gewicht"],
-   c:1,e:"Dichte = Masse/Volumen. Eisen: 7,9 g/cm³ → sinkt in Wasser (1 g/cm³). Holz: ~0,5 g/cm³ → schwimmt. Die Dichte ist eine charakteristische Eigenschaft eines Stoffes."},
-  {t:3,q:"Warum steigt Parfüm-Geruch von selbst im Zimmer auf?",
-   o:["Wegen der Schwerkraft","Wegen Kondensation","Diffusion: Teilchen bewegen sich von selbst von hoher zu niedriger Konzentration","Wegen Oxidation"],
-   c:2,e:"Diffusion: Teilchen sind immer in Bewegung und verteilen sich von selbst gleichmäßig. Der Geruch breitet sich aus, weil die Parfüm-Moleküle in Bereiche mit niedrigerer Konzentration wandern."},
-];
-
-// ── STATE ──────────────────────────────────────────────────────────────
-let tid = 0, fcIdx = 0, fcSrc = 'topic';
-let qs = [], qIdx = 0, qOk = 0, qFail = 0, qAnswered = false, qSrc = 'home';
-let prog = [0,0,0,0];
-
-// ── NAVIGATION ──────────────────────────────────────────────────────────
-function showScreen(n){ document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active')); document.getElementById('s-'+n).classList.add('active'); }
-
-function showTopic(id){
-  tid = id;
-  const t = TOPICS[id];
-  const qCount = QUESTIONS.filter(q=>q.t===id).length;
-  document.getElementById('topic-content').innerHTML = `
-    <div style="display:flex;align-items:center;gap:14px;margin-bottom:20px">
-      <span style="font-size:2.8em">${t.icon}</span>
-      <div><h2 style="color:#e2e8f0;margin-bottom:3px">${t.title}</h2><p style="color:#94a3b8;font-size:.88em">${t.sub}</p></div>
-    </div>
-    <div class="card">
-      <h4 style="color:#a78bfa;margin-bottom:10px">Was lernst du hier?</h4>
-      <div class="chips">${t.cards.map(c=>`<span class="chip">${c.q}</span>`).join('')}</div>
-    </div>
-    <div class="act-grid">
-      <div class="act-card" onclick="startFlash(${id})"><div class="icon">🃏</div><h4>Karteikarten lernen</h4><p>${t.cards.length} Karten</p></div>
-      <div class="act-card" onclick="startTopicQuizById(${id})"><div class="icon">❓</div><h4>Quiz starten</h4><p>${qCount} Fragen</p></div>
-    </div>
-    ${id===2?`<div class="card" style="margin-top:14px"><h4 style="color:#a78bfa;margin-bottom:10px">⚡ Energiediagramm interaktiv</h4><button class="btn btn-secondary" onclick="openEnergy()">Diagramm öffnen →</button></div>`:''}
-    ${id===0?`<div class="card" style="margin-top:14px"><h4 style="color:#a78bfa;margin-bottom:14px">🧪 Mischungs-Übersicht</h4>${mixTable()}</div>`:''}
-    ${id===1?`<div class="card" style="margin-top:14px"><h4 style="color:#a78bfa;margin-bottom:14px">🔬 Trennverfahren-Übersicht</h4>${sepTable()}</div>`:''}
-    ${id===3?`<div class="card" style="margin-top:14px"><h4 style="color:#a78bfa;margin-bottom:14px">⚛️ Zustandsänderungen</h4>${phaseDiagram()}</div>`:''}
-  `;
-  showScreen('topic');
+  cardIdx = 0;
+  renderCard();
 }
 
-function mixTable(){return`<table class="itable"><tr><th>Typ</th><th>Bestandteile</th><th>Art</th><th>Beispiel</th></tr><tr><td>Lösung</td><td>Feststoff+Flüssigkeit</td><td><span class="badge badge-p">homogen</span></td><td>Salzwasser</td></tr><tr><td>Suspension</td><td>Feststoff+Flüssigkeit</td><td><span class="badge badge-r">heterogen</span></td><td>Schlamm</td></tr><tr><td>Emulsion</td><td>Flüssig+Flüssig</td><td><span class="badge badge-r">heterogen</span></td><td>Milch</td></tr><tr><td>Gasgemisch</td><td>Gas+Gas</td><td><span class="badge badge-p">homogen</span></td><td>Luft</td></tr><tr><td>Aerosol</td><td>Flüssig/fest+Gas</td><td><span class="badge badge-r">heterogen</span></td><td>Nebel, Rauch</td></tr><tr><td>Legierung</td><td>Metall+Metall</td><td><span class="badge badge-p">homogen</span></td><td>Messing</td></tr><tr><td>Gemenge</td><td>Feststoff+Feststoff</td><td><span class="badge badge-r">heterogen</span></td><td>Sand+Kies</td></tr></table>`;}
-function sepTable(){return`<table class="itable"><tr><th>Verfahren</th><th>Trennt</th><th>Prinzip</th></tr><tr><td>Filtration</td><td>Feststoff / Flüssigkeit</td><td>Porengröße</td></tr><tr><td>Destillation</td><td>Flüssig / Flüssig</td><td>Siedepunkte</td></tr><tr><td>Eindampfen</td><td>Gelöster Stoff / Flüssigkeit</td><td>Verdampfung</td></tr><tr><td>Magnet</td><td>Fe/Ni/Co / Rest</td><td>Magnetismus</td></tr><tr><td>Sieben</td><td>Feste Körner</td><td>Korngröße</td></tr><tr><td>Zentrifuge</td><td>Nach Dichte</td><td>Fliehkraft</td></tr><tr><td>Chromatographie</td><td>Farbstoffe/Gemische</td><td>Wandergeschwindigkeit</td></tr></table>`;}
-function phaseDiagram(){return`<div class="phase-diagram">
-  <div class="phase-box"><div class="state">🧊</div><div class="name">Fest</div></div>
-  <div class="phase-arrow"><div class="up">Schmelzen →</div><div class="arr">⇄</div><div class="down">← Erstarren</div></div>
-  <div class="phase-box"><div class="state">💧</div><div class="name">Flüssig</div></div>
-  <div class="phase-arrow"><div class="up">Sieden/Verdampfen →</div><div class="arr">⇄</div><div class="down">← Kondensieren</div></div>
-  <div class="phase-box"><div class="state">💨</div><div class="name">Gasförmig</div></div>
-</div>
-<p style="color:#94a3b8;font-size:.78em;text-align:center">Sublimieren: fest → gasförmig direkt &nbsp;|&nbsp; Resublimieren: gasförmig → fest direkt</p>`;}
-
-// ── FLASHCARDS ──────────────────────────────────────────────────────────
-function startFlash(id){ tid=id; fcIdx=0; fcSrc='topic'; renderCard(); showScreen('flash'); }
-function renderCard(){
-  const cards=TOPICS[tid].cards, c=cards[fcIdx];
-  document.getElementById('fc-card').classList.remove('flipped');
-  document.getElementById('fc-q').textContent=c.q;
-  document.getElementById('fc-a').textContent=c.a;
-  const p=(fcIdx+1)/cards.length*100;
-  document.getElementById('fc-bar').style.width=p+'%';
-  document.getElementById('fc-num').textContent=`${fcIdx+1} / ${cards.length}`;
+function renderCard() {
+  const fc = document.getElementById('fc');
+  fc.classList.remove('flipped');
+  const c = filteredCards[cardIdx];
+  document.getElementById('fc-cat').textContent = c.catLabel;
+  document.getElementById('fc-cat-b').textContent = c.catLabel;
+  document.getElementById('fc-term').textContent = c.term;
+  document.getElementById('fc-def').textContent = c.def;
+  document.getElementById('card-count').textContent = `${cardIdx+1} / ${filteredCards.length}`;
+  const pct = ((cardIdx+1)/filteredCards.length*100).toFixed(1);
+  document.getElementById('pb-fill').style.width = pct+'%';
 }
-function flipCard(){ document.getElementById('fc-card').classList.toggle('flipped'); }
-function nextCard(){ const l=TOPICS[tid].cards.length; if(fcIdx<l-1){fcIdx++;renderCard();}else if(confirm('Alle Karten gesehen! Quiz starten?')){startTopicQuiz();} }
-function prevCard(){ if(fcIdx>0){fcIdx--;renderCard();} }
-function exitFlash(){ showTopic(tid); }
 
-// ── QUIZ ──────────────────────────────────────────────────────────────
-function startTopicQuizById(id){ tid=id; startTopicQuiz(); }
-function startTopicQuiz(){ qSrc='topic'; qs=shuffle(QUESTIONS.filter(q=>q.t===tid)); initQuiz(); showScreen('quiz'); }
-function startGlobalQuiz(){ qSrc='home'; qs=shuffle([...QUESTIONS]); initQuiz(); showScreen('quiz'); }
-function initQuiz(){ qIdx=0; qOk=0; qFail=0; document.getElementById('q-ok').textContent=0; document.getElementById('q-fail').textContent=0; renderQ(); }
-function renderQ(){
-  if(qIdx>=qs.length){ showResults(); return; }
-  const q=qs[qIdx]; qAnswered=false;
-  document.getElementById('q-bar').style.width=(qIdx/qs.length*100)+'%';
-  document.getElementById('q-num').textContent=`Frage ${qIdx+1} / ${qs.length}`;
-  document.getElementById('q-text').textContent=q.q;
-  const container=document.getElementById('q-opts'); container.innerHTML='';
-  q.o.forEach((o,i)=>{
-    const d=document.createElement('div'); d.className='quiz-opt';
-    d.textContent=String.fromCharCode(65+i)+') '+o;
-    d.onclick=()=>answerQ(i); container.appendChild(d);
+function flipCard() {
+  document.getElementById('fc').classList.toggle('flipped');
+}
+
+function nextCard() {
+  cardIdx = (cardIdx+1) % filteredCards.length;
+  renderCard();
+}
+
+function prevCard() {
+  cardIdx = (cardIdx-1+filteredCards.length) % filteredCards.length;
+  renderCard();
+}
+
+// keyboard nav for cards
+document.addEventListener('keydown', e => {
+  if(!document.getElementById('karten').classList.contains('active')) return;
+  if(e.key==='ArrowRight') nextCard();
+  if(e.key==='ArrowLeft') prevCard();
+  if(e.key===' ') { e.preventDefault(); flipCard(); }
+});
+
+// ===== QUIZ =====
+function buildQuiz() {
+  const prog = document.getElementById('quiz-prog');
+  prog.innerHTML = QUIZ.map((_,i) => `<div class="qdot" id="dot-${i}"></div>`).join('');
+  const container = document.getElementById('quiz-questions');
+  container.innerHTML = QUIZ.map((q,qi) => `
+    <div class="q-card" id="qcard-${qi}">
+      <div class="q-num">Frage ${qi+1} von ${QUIZ.length}</div>
+      <div class="q-text">${q.q}</div>
+      <div class="ans-opts">
+        ${q.opts.map((opt,ai) => `
+          <button class="ans-opt" id="opt-${qi}-${ai}" onclick="selectAnswer(${qi},${ai})">
+            <span class="opt-l">${String.fromCharCode(65+ai)}</span>${opt}
+          </button>`).join('')}
+      </div>
+      <div class="q-fb" id="fb-${qi}"></div>
+    </div>`).join('') +
+    `<div class="quiz-nav">
+      <span style="font-size:.85rem;color:var(--muted)" id="quiz-score-live"></span>
+      <button class="qbtn" id="submit-btn" onclick="submitQuiz()" disabled>Auswerten</button>
+    </div>`;
+}
+
+function selectAnswer(qi, ai) {
+  if(quizAnswers[qi] !== null) return; // already answered
+  quizAnswers[qi] = ai;
+  const q = QUIZ[qi];
+  const correct = ai === q.correct;
+  // style all options
+  q.opts.forEach((_,i) => {
+    const btn = document.getElementById(`opt-${qi}-${i}`);
+    btn.disabled = true;
+    if(i === q.correct) btn.classList.add('ok');
+    else if(i === ai && !correct) btn.classList.add('bad');
   });
-  const fb=document.getElementById('q-fb'); fb.style.display='none'; fb.className='quiz-fb';
-  document.getElementById('q-next').style.display='none';
-}
-function answerQ(sel){
-  if(qAnswered)return; qAnswered=true;
-  const q=qs[qIdx];
-  document.querySelectorAll('.quiz-opt').forEach(o=>o.classList.add('disabled'));
-  document.querySelectorAll('.quiz-opt')[q.c].classList.add('correct');
-  const fb=document.getElementById('q-fb');
-  if(sel===q.c){
-    qOk++; document.getElementById('q-ok').textContent=qOk;
-    fb.className='quiz-fb ok'; fb.innerHTML=`✓ Richtig! ${q.e}`;
-  } else {
-    qFail++; document.getElementById('q-fail').textContent=qFail;
-    document.querySelectorAll('.quiz-opt')[sel].classList.add('wrong');
-    fb.className='quiz-fb fail'; fb.innerHTML=`✗ Falsch! Richtig wäre: <strong>${String.fromCharCode(65+q.c)}) ${q.o[q.c]}</strong><br><br>${q.e}`;
+  // feedback
+  const fb = document.getElementById(`fb-${qi}`);
+  fb.textContent = (correct ? '✅ Richtig! ' : '❌ Falsch. ') + q.exp;
+  fb.className = `q-fb show ${correct ? 'ok' : 'bad'}`;
+  // dot
+  document.getElementById(`dot-${qi}`).className = `qdot ${correct ? 'ok' : 'bad'}`;
+  // check if all answered
+  const answered = quizAnswers.filter(a => a !== null).length;
+  document.getElementById('quiz-score-live').textContent = `${answered} / ${QUIZ.length} beantwortet`;
+  if(answered === QUIZ.length) {
+    document.getElementById('submit-btn').disabled = false;
   }
-  fb.style.display='block'; document.getElementById('q-next').style.display='block';
-}
-function nextQuestion(){ qIdx++; renderQ(); }
-function exitQuiz(){ qSrc==='topic'?showTopic(tid):showScreen('home'); }
-function retryQuiz(){ qSrc==='topic'?startTopicQuizById(tid):startGlobalQuiz(); }
-function showResults(){
-  const total=qs.length, pct=Math.round(qOk/total*100);
-  document.getElementById('s-ring').style.setProperty('--deg',(pct/100*360)+'deg');
-  document.getElementById('s-pct').textContent=pct+'%';
-  const msgs=[['⭐⭐⭐','Ausgezeichnet! Bestens vorbereitet für die KA!'],['⭐⭐','Gut gemacht! Noch ein bisschen wiederholen.'],['⭐','Grundlagen vorhanden – nochmal die schwachen Punkte üben.'],['','Nochmal durch die Karteikarten – du schaffst das!']];
-  const [stars,msg]=pct>=90?msgs[0]:pct>=70?msgs[1]:pct>=50?msgs[2]:msgs[3];
-  document.getElementById('s-stars').textContent=stars;
-  document.getElementById('s-msg').textContent=msg;
-  document.getElementById('s-stats').innerHTML=`<div style="display:flex;justify-content:center;gap:30px"><div style="text-align:center"><div style="font-size:1.8em;color:#34d399;font-weight:700">${qOk}</div><div style="font-size:.8em;color:#94a3b8">Richtig</div></div><div style="text-align:center"><div style="font-size:1.8em;color:#f87171;font-weight:700">${qFail}</div><div style="font-size:.8em;color:#94a3b8">Falsch</div></div><div style="text-align:center"><div style="font-size:1.8em;color:#a78bfa;font-weight:700">${total}</div><div style="font-size:.8em;color:#94a3b8">Gesamt</div></div></div>`;
-  if(qSrc==='topic'){ prog[tid]=Math.max(prog[tid],pct); document.getElementById('p'+tid).style.width=prog[tid]+'%'; }
-  showScreen('results');
 }
 
-// ── ENERGY DIAGRAM ──────────────────────────────────────────────────────
-function openEnergy(){ showScreen('energy'); drawDiagram('exotherm'); }
-function drawDiagram(type){
-  const isExo=type==='exotherm';
-  document.getElementById('e-exo').className=isExo?'btn btn-primary':'btn btn-secondary';
-  document.getElementById('e-endo').className=!isExo?'btn btn-primary':'btn btn-secondary';
-  const startY=isExo?75:195, endY=isExo?195:75, peakY=28, ac=isExo?'#34d399':'#f87171';
-  document.getElementById('e-svg').innerHTML=`
-    <defs>
-      <marker id="ay" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3z" fill="#fbbf24"/></marker>
-      <marker id="ac" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3z" fill="${ac}"/></marker>
-      <marker id="acu" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto" orient="270"><path d="M0,0 L0,6 L8,3z" fill="${ac}"/></marker>
-    </defs>
-    <text x="14" y="155" fill="#475569" font-size="10" font-family="system-ui" transform="rotate(-90,14,155)">Energie</text>
-    <line x1="25" y1="250" x2="475" y2="250" stroke="rgba(255,255,255,.08)" stroke-width="1"/>
-    <text x="200" y="270" fill="#475569" font-size="10" font-family="system-ui">Reaktionsverlauf →</text>
-    <line x1="${55}" y1="${startY}" x2="135" y2="${startY}" stroke="rgba(255,255,255,.15)" stroke-width="1" stroke-dasharray="4,3"/>
-    <line x1="${355}" y1="${endY}" x2="445" y2="${endY}" stroke="rgba(255,255,255,.15)" stroke-width="1" stroke-dasharray="4,3"/>
-    <path d="M 60 ${startY} L 130 ${startY} Q 195 ${startY} 250 ${peakY} Q 305 ${endY} 360 ${endY} L 440 ${endY}" stroke="#7c3aed" stroke-width="3" fill="none" stroke-linecap="round"/>
-    <line x1="290" y1="${startY-2}" x2="290" y2="${peakY+5}" stroke="#fbbf24" stroke-width="1.5" stroke-dasharray="3,3" marker-end="url(#ay)"/>
-    <text x="296" y="${Math.round((startY+peakY)/2)}" fill="#fbbf24" font-size="10" font-family="system-ui">E_A</text>
-    <line x1="420" y1="${startY}" x2="420" y2="${endY+(isExo?4:-4)}" stroke="${ac}" stroke-width="1.5" stroke-dasharray="3,3" marker-end="url(#ac)"/>
-    <text x="426" y="${Math.round((startY+endY)/2)}" fill="${ac}" font-size="10" font-family="system-ui">ΔE</text>
-    <text x="62" y="${startY-8}" fill="#94a3b8" font-size="11" font-family="system-ui">Ausgangsstoffe</text>
-    <text x="${isExo?360:358}" y="${endY-8}" fill="#94a3b8" font-size="11" font-family="system-ui">Produkte</text>
-    <text x="215" y="${peakY-6}" fill="#a78bfa" font-size="10" font-family="system-ui">Aktivierungs-energie</text>
-    <rect x="155" y="256" width="190" height="22" rx="5" fill="rgba(124,58,237,.18)"/>
-    <text x="250" y="271" fill="#a78bfa" font-size="12" font-family="system-ui" font-weight="bold" text-anchor="middle">${isExo?'🔥 Exotherm – Wärme wird abgegeben':'❄️ Endotherm – Wärme wird aufgenommen'}</text>
-  `;
-  document.getElementById('e-info').innerHTML=`<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;text-align:center">
-    <div style="padding:10px;background:rgba(124,58,237,.12);border-radius:10px;border:1px solid rgba(124,58,237,.25)"><div style="font-size:.72em;color:#a78bfa;margin-bottom:4px">Aktivierungsenergie</div><div style="font-size:.82em;color:#e2e8f0">Startenergie der Reaktion</div></div>
-    <div style="padding:10px;background:rgba(${isExo?'5,150,105':'220,38,38'},.12);border-radius:10px;border:1px solid rgba(${isExo?'5,150,105':'220,38,38'},.25)"><div style="font-size:.72em;color:${isExo?'#34d399':'#f87171'};margin-bottom:4px">Energiedifferenz (ΔE)</div><div style="font-size:.82em;color:#e2e8f0">${isExo?'Energie abgegeben':'Energie aufgenommen'}</div></div>
-    <div style="padding:10px;background:rgba(251,191,36,.08);border-radius:10px;border:1px solid rgba(251,191,36,.2)"><div style="font-size:.72em;color:#fbbf24;margin-bottom:4px">Produkte</div><div style="font-size:.82em;color:#e2e8f0">${isExo?'Weniger':'Mehr'} Energie als Ausgangsstoffe</div></div>
-  </div>`;
+function submitQuiz() {
+  const correct = quizAnswers.filter((a,i) => a === QUIZ[i].correct).length;
+  const pct = Math.round(correct/QUIZ.length*100);
+  document.getElementById('res-score').textContent = `${correct} / ${QUIZ.length}`;
+  const msgs = [
+    [100,'🏆 Perfekt! Du hast alles drauf!'],
+    [80,'🎉 Sehr gut! Fast alles richtig.'],
+    [60,'👍 Gut! Noch ein bisschen Übung.'],
+    [40,'📚 Weiter üben – du schaffst das!'],
+    [0,'💪 Nochmal durcharbeiten – nutze die Karteikarten!']
+  ];
+  const msg = msgs.find(([min]) => pct >= min)[1];
+  document.getElementById('res-msg').textContent = `${pct}% – ${msg}`;
+  document.getElementById('quiz-result').classList.add('show');
+  document.getElementById('quiz-result').scrollIntoView({behavior:'smooth'});
 }
 
-// ── UTILS ──────────────────────────────────────────────────────────────
-function shuffle(a){ for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a; }
+function resetQuiz() {
+  quizAnswers = new Array(QUIZ.length).fill(null);
+  document.getElementById('quiz-result').classList.remove('show');
+  buildQuiz();
+  window.scrollTo(0,0);
+}
+
+// ===== INIT =====
+renderCard();
+buildQuiz();
 </script>
 </body>
 </html>
