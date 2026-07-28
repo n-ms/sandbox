@@ -211,7 +211,7 @@ Follow these steps exactly to obtain an OAuth 2.0 Client ID for Google Sheets ac
 6. Leave **Authorized redirect URIs** empty — Google Identity Services (GIS) uses a popup flow that does not require a redirect URI.
 7. Click **"CREATE"**.
 8. A dialog will show your credentials:
-   4. **Client ID**: looks like `123456789012-abcdefghijklmnopqrstuvwxyz123456.apps.googleusercontent.com`
+   4. **Client ID**:
    5. **Client secret**: not needed for this app (PKCE/implicit flow)
 9. Copy the **Client ID** and paste it into `js/config.js` in the app (see [File Structure][16]).
 
